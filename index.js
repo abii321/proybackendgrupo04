@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
+require("dotenv").config();
 
 //Creacion de la aplicacion 
 var app = express();
