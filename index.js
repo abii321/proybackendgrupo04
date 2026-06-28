@@ -15,7 +15,9 @@ app.use(cors({ origin: 'http://localhost:4200' })); //permite que angular acceda
 const swaggerFile = require('./swagger_output.json'); // Asegúrate de que esta ruta sea correcta*/
 
 //Rutas 
-//app.use('/api/socio', require('./src/routes/socio.route.js'));
+app.use('/api/autenticacion', require('./src/routes/autenticacion.route.js'));
+//app.use('/api/alumno', require('./src/routes/alumno.route.js'));
+app.use('/api/profesor', require('./src/routes/profesor.route.js'));
 //app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 //Configuracion del puerto  

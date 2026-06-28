@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 
 //Crear la conexion  
 // se crea el objeto que representa la conexion a la BD : nombreBD,usuario,contraseña,configuracion 
-const sequelize = new Sequelize('tpFinal', 'postgres', 'password', {
+const sequelize = new Sequelize('tpFinal', 'postgres', 'abi321', {
     host: 'localhost',
     dialect: 'postgres',
     logging: false, // evita que llene la consola con logs de consultas SQL básicas 
