@@ -17,8 +17,7 @@ const swaggerFile = require('./swagger_output.json'); // Asegúrate de que esta 
 
 //Rutas 
 app.use('/api/autenticacion', require('./src/routes/autenticacion.route.js'));
-//app.use('/api/alumno', require('./src/routes/alumno.route.js'));
-app.use('/api/profesor', require('./src/routes/profesor.route.js'));
+app.use('/api/usuario', require('./src/routes/usuario.route.js'));
 //app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 //Configuracion del puerto  
