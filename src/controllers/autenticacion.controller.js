@@ -1,6 +1,9 @@
 const Usuario = require('../models/usuario.model');
 const passwordService = require('../services/password.service')
 
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client( '514983060587-l7mo7rrdidk3p0l1skhemau7lmddajvi.apps.googleusercontent.com' );
+
 const autenticacionCtrl = {};
 
 autenticacionCtrl.signUpUsuario = async (req, res) => {
@@ -65,18 +68,19 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
 
 }
 
-/*autenticacionCtrl.signUpGoogle = async (req, res) => {
+autenticacionCtrl.signUpGoogle = async (req, res) => {
     try {
         const data = req.body;
 
         // Verificar que el token realmente proviene de Google
         const ticket = await client.verifyIdToken({
             idToken: data.token,
-            audience: process.env.GOOGLE_CLIENT_ID
+            audience: '514983060587-l7mo7rrdidk3p0l1skhemau7lmddajvi.apps.googleusercontent.com'
         });
 
         // Información del usuario
         const payload = ticket.getPayload();
+        //console.log(payload);
 
         // Buscar si ya existe
         let usuario = await Usuario.findOne({
@@ -88,44 +92,29 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
         // Si no existe, lo registramos
         if (!usuario) {
             usuario = await Usuario.create({
-                nombre: payload.name,
+                nombre: payload.given_name,
+                apellido: payload.family_name || '',
                 email: payload.email,
                 contraseniaHash: null,
                 rol: data.rol,
                 estado: "activo",
                 proveedorAuth: "Google",
                 foto: payload.picture,
-                ubicacion: data.ubicacion
+                ubicacion: data.ubicacion,
+                universidad: data.universidad,
+                carrera: data.carrera,
             });
-
-            if ( data.rol == 'alumno') {
-                await Alumno.create({
-                    usuarioId: usuario.id,
-                    estudios: data.estudios
-                });
-            }
-            else {
-                await Profesor.create({
-                    usuarioId: usuario.id,
-                    descripcion: data.descripcion,
-                    estudios: data.estudios,
-                    estadoEstudio: false,
-                    precioHora: data.precioHora,
-                    //precioAyuda: data.precioAyuda
-                });
-            }
-            res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
         }
-
-        res.status(200).json({ status: "1", msg: "Inicio de sesión correcto." });
-
+        res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
+        
     } catch (error) {
-        res.status(500).json({ status: "0", msg: "Error al iniciar sesión con Google." });
-    }
+    console.error(error);
 
+    res.status(500).json({ status: "0", msg: error.message });
+}
 }
 
-autenticacionCtrl.loginGoogle = async (req, res) => {
+/*autenticacionCtrl.loginGoogle = async (req, res) => {
     try{
         // Verificar que el token realmente proviene de Google
         const ticket = await client.verifyIdToken({
