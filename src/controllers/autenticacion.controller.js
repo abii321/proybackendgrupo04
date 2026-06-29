@@ -114,36 +114,44 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
 }
 }
 
-/*autenticacionCtrl.loginGoogle = async (req, res) => {
-    try{
-        // Verificar que el token realmente proviene de Google
+autenticacionCtrl.loginGoogle = async (req, res) => {
+    try {
+        const { token } = req.body;
+
         const ticket = await client.verifyIdToken({
-            idToken: data.token,
-            audience: process.env.GOOGLE_CLIENT_ID
+            idToken: token,
+            audience: '514983060587-l7mo7rrdidk3p0l1skhemau7lmddajvi.apps.googleusercontent.com'
         });
 
-        // Información del usuario
         const payload = ticket.getPayload();
-    
-        // Buscar si ya existe
-        let usuario = await Usuario.findOne({
+
+        console.log(payload);
+
+        const usuario = await Usuario.findOne({
             where: {
                 email: payload.email
             }
         });
-        if(!usuario) res.json({ status: 0, msg: "not found" });
-    
-        res.json({
-            status: 1, msg: "success",
-            email: user.email,
-            nombre: user.nombre,
-            apellido: user.apellido,
-            rol: user.rol,
+
+        if (!usuario) {
+            return res.json({
+                status: 0,
+                msg: "Usuario no registrado"
+            });
+        }
+
+        return res.json({
+            status: 1,
+            msg: "success",
+            email: usuario.email,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            rol: usuario.rol,
         });
 
     } catch (error) {
-        res.json({ status: 0, msg: 'error' });
+        console.log(error);
+        return res.status(500).json({ status: 0, msg: error.message });
     }
-}*/
-
+}
 module.exports = autenticacionCtrl;
