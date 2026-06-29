@@ -2,7 +2,10 @@ const Usuario = require('../models/usuario.model');
 const passwordService = require('../services/password.service')
 
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client( '514983060587-l7mo7rrdidk3p0l1skhemau7lmddajvi.apps.googleusercontent.com' );
+const GOOGLE_ID = process.env.GOOGLE_CLIENT_ID
+const client = new OAuth2Client( GOOGLE_ID );
+
+const jwt = require('jsonwebtoken'); 
 
 const autenticacionCtrl = {};
 
@@ -50,6 +53,7 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
         });
         if (!user || !passwordService.comparePassword(req.body.password, user.contraseniaHash)) res.json({ status: 0, msg: "not found" })
         else {
+            const unToken = jwt.sign({id: user.id}, process.env.JWT_SECRET); 
             res.json({
                 status: 1, msg: "success",
                 email: user.email,
@@ -59,7 +63,9 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
                 ubicacion: user.ubicacion,
                 universidad: user.universidad,
                 carrera: user.carrera,
+                token: unToken,
             });
+            console.log("sisisis"+unToken);
         }
 
     } catch (error) {
