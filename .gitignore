@@ -19,3 +19,6 @@ logs
 # Carpetas de compilación (si usás TypeScript)
 /dist
 /build
+
+# Temporal para pruebas locales
+/temp
