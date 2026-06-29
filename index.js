@@ -21,6 +21,9 @@ app.use('/api/autenticacion', require('./src/routes/autenticacion.route.js'));
 app.use('/api/profesor', require('./src/routes/profesor.route.js'));
 //app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
+app.use('/api/solicitud', require('./src/routes/solicitudes/solicitudAyuda.route'));
+app.use('/api/respuesta', require('./src/routes/solicitudes/respuestaAyuda.route'));
+
 //Configuracion del puerto  
 app.set('port', process.env.PORT || 3000);
 
