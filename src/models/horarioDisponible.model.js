@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
-const Profesor = require('./profesor.model');
+const Usuario = require('./usuario.model');
 
 
 const HorarioDisponible = sequelize.define('HorarioDisponible', {
@@ -13,7 +13,7 @@ const HorarioDisponible = sequelize.define('HorarioDisponible', {
     timestamps: true,
 });
 
-HorarioDisponible.belongsTo(Profesor, {as: 'profesor'});
-Profesor.hasMany(HorarioDisponible, { as: 'horarios', foreignKey: 'profesorId' });
+HorarioDisponible.belongsTo(Usuario, {as: 'usuario'});
+Usuario.hasMany(HorarioDisponible, { as: 'horarios', foreignKey: 'usuarioId' });
 
 module.exports = HorarioDisponible;
