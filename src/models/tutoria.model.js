@@ -3,7 +3,6 @@ const sequelize = require('../../config/database');
 const Usuario = require('./usuario.model');
 const Categoria = require('./categoria.model');
 const Alumno = require('./alumno.model'); 
-//const Agente = require('./agente.model');
 
 const Tutoria = sequelize.define('Tutoria', {
     alumno_id: {
@@ -52,9 +51,8 @@ const Tutoria = sequelize.define('Tutoria', {
     timestamps: true,
 });
 
-Tutoria.belongsTo(Alumno, { as: 'alumno', foreignKey: 'alumno_id' });
-//Tutoria.belongsTo(Agente, { as: 'profesor', foreignKey: 'profesor_id' });//asumiendo que 'profesor' es un Agente
-//Tutoria.belongsTo(Usuario, { as: 'alumno', foreignKey: 'alumno_id' });
+//Tutoria.belongsTo(Alumno, { as: 'alumno', foreignKey: 'alumno_id' });
+Tutoria.belongsTo(Usuario, { as: 'alumno', foreignKey: 'alumno_id' });
 Tutoria.belongsTo(Usuario, { as: 'profesor', foreignKey: 'profesor_id' });
 Tutoria.belongsTo(Categoria, { as: 'categoria', foreignKey: 'categoria_id' });
 
