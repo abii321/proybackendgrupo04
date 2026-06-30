@@ -45,16 +45,16 @@ tutoriaCtrl.getTutoria = async (req, res) => {
 
 tutoriaCtrl.createTutoria = async (req, res) => {
     try {
-        const alumno = await Alumno.findByPk(req.body.alumno_id);
-        //const agente = await Agente.findByPk(req.body.profesor_id); // Asumiendo que 'profesor' es un Agente
+        const alumno = await Usuario.findOne({ where: { id: req.body.alumno_id, rol: 'alumno' } });
+        const profesor = await Usuario.findOne({ where: { id: req.body.profesor_id, rol: 'profesor' } });
 
-        if (!alumno /*|| !agente*/) {
-            return res.status(400).json({ status: 0, msg: 'El alumno o el agente especificado no existe.' });
+        if (!alumno || !profesor) {
+            return res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido para esta tutoría.' });
         }
 
         const nueva = await Tutoria.create({
             alumno_id: req.body.alumno_id,
-            profesor_id: req.body.profesor_id, 
+            profesor_id: req.body.profesor_id,
             categoria_id: req.body.categoria_id,
             fecha_hora: req.body.fecha_hora,
             estado: req.body.estado || 'pendiente'

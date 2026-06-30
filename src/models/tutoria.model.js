@@ -55,7 +55,7 @@ const Tutoria = sequelize.define('Tutoria', {
 Tutoria.belongsTo(Alumno, { as: 'alumno', foreignKey: 'alumno_id' });
 //Tutoria.belongsTo(Agente, { as: 'profesor', foreignKey: 'profesor_id' });//asumiendo que 'profesor' es un Agente
 //Tutoria.belongsTo(Usuario, { as: 'alumno', foreignKey: 'alumno_id' });
-//Tutoria.belongsTo(Usuario, { as: 'profesor', foreignKey: 'profesor_id' });
+Tutoria.belongsTo(Usuario, { as: 'profesor', foreignKey: 'profesor_id' });
 Tutoria.belongsTo(Categoria, { as: 'categoria', foreignKey: 'categoria_id' });
 
 Usuario.hasMany(Tutoria, { as: 'tutoriasComoAlumno', foreignKey: 'alumno_id' });
