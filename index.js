@@ -9,6 +9,11 @@ var app = express();
 
 //Middlewares  
 app.use(express.json()); //permite recibir JSON 
+app.use(express.urlencoded({ extended: true }))
+app.use((req, res, next) => {
+    console.log(`--- LLEGÓ UNA PETICIÓN: ${req.method} ${req.url} ---`);
+    next();
+});
 app.use(cors({ origin: 'http://localhost:4200' })); //permite que angular acceda a la API 
 
 //Cargar swagger 
