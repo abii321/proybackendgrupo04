@@ -1,98 +1,163 @@
 const Usuario = require('../models/usuario.model');
-const Alumno = require('../models/alumno.model');
-const Profesor = require('../models/profesor.model');
+const passwordService = require('../services/password.service')
+
+const { OAuth2Client } = require('google-auth-library');
+const GOOGLE_ID = process.env.GOOGLE_CLIENT_ID
+const client = new OAuth2Client( GOOGLE_ID );
+
+const jwt = require('jsonwebtoken'); 
 
 const autenticacionCtrl = {};
 
-autenticacionCtrl.registrarAlumno = async (req, res) => {
-    const transaction = await sequelize.transaction();
-
+autenticacionCtrl.signUpUsuario = async (req, res) => {
     try {
         const data = req.body;
 
-        // Verificar si ya existe el email
         const existe = await Usuario.findOne({
             where: {
                 email: data.email
             }
         });
-        if (existe) {
-            await transaction.rollback();
-            return res.status(400).json({ status: "0", msg: "El email ya está registrado." });
-        }
+        if (existe) res.status(400).json({ status: "0", msg: "El email ya está registrado." });
 
-        // Crear usuario
+        const hash = await passwordService.hashPassword(data.password);
         const usuario = await Usuario.create({
             nombre: data.nombre,
+            apellido: data.apellido,
             email: data.email,
-            contraseniaHash: data.password,
-            rol: "alumno",
+            contraseniaHash: hash,
+            rol: data.rol,
             estado: "activo",
             proveedorAuth: "local",
-            foto: data.foto,
-            ubicacion: data.ubicacion
-        }, { transaction });
+            //foto: data.foto,
+            ubicacion: data.ubicacion,
+            universidad: data.universidad,
+            carrera: data.carrera,
+        });
 
-        // Crear alumno
-        await Alumno.create({
-            usuarioId: usuario.id,
-            estudios: data.estudios
-        }, { transaction });
-
-        await transaction.commit();
-        res.status(201).json({ status: "1", msg: "Alumno registrado correctamente." });
+        res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
 
     } catch (error) {
-        await transaction.rollback();
-        res.status(500).json({ status: "0", msg: "Error al registrar alumno." });
+        res.status(500).json({ status: "0", msg: "Error al registrar usuario." });
     }
 }
 
-autenticacionCtrl.registrarProfesor = async (req, res) => {
-    const transaction = await sequelize.transaction();
+autenticacionCtrl.loginUsuario = async (req, res) => {
+    if (!req.body.email || !req.body.password) res.status(400).json({ status: 0, msg: "Faltan credenciales" });
+
+    try {
+        const user = await Usuario.findOne({
+            where: {
+                email: req.body.email,
+            }
+        });
+        if (!user || !passwordService.comparePassword(req.body.password, user.contraseniaHash)) res.json({ status: 0, msg: "not found" })
+        else {
+            const unToken = jwt.sign({id: user.id}, process.env.JWT_SECRET); 
+            res.json({
+                status: 1, msg: "success",
+                email: user.email,
+                nombre: user.nombre,
+                apellido: user.apellido,
+                rol: user.rol,
+                ubicacion: user.ubicacion,
+                universidad: user.universidad,
+                carrera: user.carrera,
+                token: unToken,
+            });
+            console.log("sisisis"+unToken);
+        }
+
+    } catch (error) {
+        res.json({ status: 0, msg: 'error' });
+    }
+
+}
+
+autenticacionCtrl.signUpGoogle = async (req, res) => {
     try {
         const data = req.body;
-        const existe = await Usuario.findOne({
+
+        // Verificar que el token realmente proviene de Google
+        const ticket = await client.verifyIdToken({
+            idToken: data.token,
+            audience: '514983060587-l7mo7rrdidk3p0l1skhemau7lmddajvi.apps.googleusercontent.com'
+        });
+
+        // Información del usuario
+        const payload = ticket.getPayload();
+        //console.log(payload);
+
+        // Buscar si ya existe
+        let usuario = await Usuario.findOne({
             where: {
-                email: data.email
+                email: payload.email
             }
         });
 
-        if (existe) {
-            await transaction.rollback();
-            return res.status(400).json({ status: "0", msg: "El email ya está registrado." });
+        // Si no existe, lo registramos
+        if (!usuario) {
+            usuario = await Usuario.create({
+                nombre: payload.given_name,
+                apellido: payload.family_name || '',
+                email: payload.email,
+                contraseniaHash: null,
+                rol: data.rol,
+                estado: "activo",
+                proveedorAuth: "Google",
+                foto: payload.picture,
+                ubicacion: data.ubicacion,
+                universidad: data.universidad,
+                carrera: data.carrera,
+            });
         }
+        res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
+        
+    } catch (error) {
+    console.error(error);
 
-        const usuario = await Usuario.create({
-            nombre: data.nombre,
-            email: data.email,
-            contraseniaHash: data.password,
-            rol: "profesor",
-            estado: "activo",
-            proveedorAuth: "local",
-            foto: data.foto,
-            ubicacion: data.ubicacion
-
-        }, { transaction });
-
-        await Profesor.create({
-            usuarioId: usuario.id,
-            descripcionPersonal: data.descripcionPersonal,
-            estudios: data.estudios,
-            estadoEstudio: false,
-            precioHora: data.precioHora,
-            precioAyuda: data.precioAyuda
-        }, { transaction });
-
-        await transaction.commit();
-        res.status(201).json({ status: "1", msg: "Profesor registrado correctamente."});
-    }
-
-    catch (error) {
-        await transaction.rollback();
-        res.status(500).json({ status: "0", msg: "Error al registrar profesor." });
-    }
+    res.status(500).json({ status: "0", msg: error.message });
+}
 }
 
+autenticacionCtrl.loginGoogle = async (req, res) => {
+    try {
+        const { token } = req.body;
 
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: '514983060587-l7mo7rrdidk3p0l1skhemau7lmddajvi.apps.googleusercontent.com'
+        });
+
+        const payload = ticket.getPayload();
+
+        console.log(payload);
+
+        const usuario = await Usuario.findOne({
+            where: {
+                email: payload.email
+            }
+        });
+
+        if (!usuario) {
+            return res.json({
+                status: 0,
+                msg: "Usuario no registrado"
+            });
+        }
+
+        return res.json({
+            status: 1,
+            msg: "success",
+            email: usuario.email,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            rol: usuario.rol,
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: 0, msg: error.message });
+    }
+}
 module.exports = autenticacionCtrl;

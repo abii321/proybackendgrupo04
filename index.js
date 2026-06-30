@@ -2,12 +2,18 @@
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
+require("dotenv").config();
 
 //Creacion de la aplicacion 
 var app = express();
 
 //Middlewares  
 app.use(express.json()); //permite recibir JSON 
+app.use(express.urlencoded({ extended: true }))
+app.use((req, res, next) => {
+    console.log(`--- LLEGÓ UNA PETICIÓN: ${req.method} ${req.url} ---`);
+    next();
+});
 app.use(cors({ origin: 'http://localhost:4200' })); //permite que angular acceda a la API 
 
 //Cargar swagger 
@@ -16,9 +22,13 @@ const swaggerFile = require('./swagger_output.json'); // Asegúrate de que esta 
 
 //Rutas 
 app.use('/api/autenticacion', require('./src/routes/autenticacion.route.js'));
-//app.use('/api/alumno', require('./src/routes/alumno.route.js'));
-app.use('/api/profesor', require('./src/routes/profesor.route.js'));
+app.use('/api/usuario', require('./src/routes/usuario.route.js'));
 //app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+app.use('/api/solicitud', require('./src/routes/solicitudes/solicitudAyuda.route'));
+app.use('/api/respuesta', require('./src/routes/solicitudes/respuestaAyuda.route'));
+app.use('/api/tutoria', require('./src/routes/tutoria.route.js'));
+app.use('/api/categoria', require('./src/routes/categoria.route.js'));
 
 //Configuracion del puerto  
 app.set('port', process.env.PORT || 3000);
