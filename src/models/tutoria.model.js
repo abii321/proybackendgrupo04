@@ -2,7 +2,6 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 const Usuario = require('./usuario.model');
 const Categoria = require('./categoria.model');
-const Alumno = require('./alumno.model'); 
 
 const Tutoria = sequelize.define('Tutoria', {
     alumno_id: {

@@ -2,7 +2,6 @@ const Tutoria = require('../models/tutoria.model');
 const Usuario = require('../models/usuario.model');
 const { crearEventoTutoría } = require('../services/calendar.service');
 const Categoria = require('../models/categoria.model'); 
-const Alumno = require('../models/alumno.model');
 
 const tutoriaCtrl = {};
 
