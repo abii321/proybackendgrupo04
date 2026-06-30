@@ -35,15 +35,15 @@ autenticacionCtrl.signUpUsuario = async (req, res) => {
             carrera: data.carrera,
         });
 
-        res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
+        return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
 
     } catch (error) {
-        res.status(500).json({ status: "0", msg: "Error al registrar usuario." });
+        return res.status(500).json({ status: "0", msg: "Error al registrar usuario." });
     }
 }
 
 autenticacionCtrl.loginUsuario = async (req, res) => {
-    if (!req.body.email || !req.body.password) res.status(400).json({ status: 0, msg: "Faltan credenciales" });
+    if (!req.body.email || !req.body.password) return res.status(400).json({ status: 0, msg: "Faltan credenciales" });
 
     try {
         const user = await Usuario.findOne({
@@ -51,7 +51,7 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
                 email: req.body.email,
             }
         });
-        if (!user || !passwordService.comparePassword(req.body.password, user.contraseniaHash)) res.json({ status: 0, msg: "not found" })
+        if (!user || !passwordService.comparePassword(req.body.password, user.contraseniaHash)) return res.json({ status: 0, msg: "not found" });
         else {
             const unToken = jwt.sign({id: user.id}, process.env.JWT_SECRET); 
             res.json({
@@ -69,7 +69,7 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
         }
 
     } catch (error) {
-        res.json({ status: 0, msg: 'error' });
+        return res.json({ status: 0, msg: 'error' });
     }
 
 }
@@ -111,12 +111,12 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
                 carrera: data.carrera,
             });
         }
-        res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
+        return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
         
     } catch (error) {
     console.error(error);
 
-    res.status(500).json({ status: "0", msg: error.message });
+    return res.status(500).json({ status: "0", msg: error.message });
 }
 }
 

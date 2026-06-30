@@ -1,7 +1,7 @@
 const Tutoria = require('../models/tutoria.model');
 const Usuario = require('../models/usuario.model');
 const { crearEventoTutoría } = require('../services/calendar.service');
-const Categoria = require('../models/categoria.model'); // Asegurate de importarlo
+const Categoria = require('../models/categoria.model'); 
 const Alumno = require('../models/alumno.model');
 
 const tutoriaCtrl = {};
@@ -10,12 +10,12 @@ tutoriaCtrl.getTutorias = async (req, res) => {
     try {
         const tutorias = await Tutoria.findAll({
             include: [
-                { model: Usuario, as: 'alumno', attributes: ['id', 'nombre', 'apellido', /*'email'*/] },
-                { model: Usuario, as: 'profesor', attributes: ['id', 'nombre', 'apellido', /*'email'*/] },
+                { model: Usuario, as: 'alumno', attributes: ['id', 'nombre', 'apellido', 'email'] },
+                { model: Usuario, as: 'profesor', attributes: ['id', 'nombre', 'apellido', 'email'] },
                 { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] }
             ]
         });
-        if (!tutorias) return res.json({ status: 0, msg: 'Tutoría no encontrada' });
+        if (!tutorias) res.json({ status: 0, msg: 'Tutoría no encontrada' });
 
         res.json({ status: 1, msg: 'success', data: tutorias });
     } catch (error) {
@@ -29,12 +29,12 @@ tutoriaCtrl.getTutoria = async (req, res) => {
         const tutoria = await Tutoria.findOne({
             where: { id: req.params.id },
             include: [
-                { model: Usuario, as: 'alumno', attributes: ['id', 'nombre', 'apellido', /*'email'*/] },
-                { model: Usuario, as: 'profesor', attributes: ['id', 'nombre', 'apellido', /*'email'*/] },
+                { model: Usuario, as: 'alumno', attributes: ['id', 'nombre', 'apellido', 'email'] },
+                { model: Usuario, as: 'profesor', attributes: ['id', 'nombre', 'apellido', 'email'] },
                 { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] }
             ]
         });
-        if (!tutoria) return res.json({ status: 0, msg: 'Tutoría no encontrada' });
+        if (!tutoria) res.json({ status: 0, msg: 'Tutoría no encontrada' });
 
         res.json({ status: 1, msg: 'success', data: tutoria });
     } catch (error) {
@@ -49,7 +49,7 @@ tutoriaCtrl.createTutoria = async (req, res) => {
         const profesor = await Usuario.findOne({ where: { id: req.body.profesor_id, rol: 'profesor' } });
 
         if (!alumno || !profesor) {
-            return res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido para esta tutoría.' });
+            res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido para esta tutoría.' });
         }
 
         const nueva = await Tutoria.create({
@@ -73,7 +73,7 @@ tutoriaCtrl.editTutoria = async (req, res) => {
         const categoria = await Categoria.findOne({ where: { id: req.body.categoria_id } });
 
         if (!alumno || !profesor) {
-            return res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido.' });
+                res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido.' });
         }
 
         let enlaceMeet = null;
@@ -92,7 +92,7 @@ tutoriaCtrl.editTutoria = async (req, res) => {
                 eventId = googleData.eventId;
             } catch (googleError) {
                 console.error("Error en Google Calendar:", googleError);
-                return res.status(500).json({ status: 0, msg: 'Error al generar el link de Meet' });
+                res.status(500).json({ status: 0, msg: 'Error al generar el link de Meet' });
             }
         }
 
@@ -102,8 +102,8 @@ tutoriaCtrl.editTutoria = async (req, res) => {
             categoria_id: req.body.categoria_id,
             fecha_hora: req.body.fecha_hora,
             estado: req.body.estado,
-            enlace_meet: enlaceMeet,       // Guardamos el link
-            google_event_id: eventId       // Guardamos el ID del evento
+            enlace_meet: enlaceMeet,       //  el link
+            google_event_id: eventId       //  el ID del evento
         }, { where: { id: req.params.id } });
 
         res.json({ status: 1, msg: 'Tutoría actualizada correctamente', enlace_meet: enlaceMeet });
