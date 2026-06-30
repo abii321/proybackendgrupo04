@@ -23,6 +23,7 @@ app.use('/api/usuario', require('./src/routes/usuario.route.js'));
 app.use('/api/solicitud', require('./src/routes/solicitudes/solicitudAyuda.route'));
 app.use('/api/respuesta', require('./src/routes/solicitudes/respuestaAyuda.route'));
 app.use('/api/tutoria', require('./src/routes/tutoria.route.js'));
+app.use('/api/categoria', require('./src/routes/categoria.route.js'));
 
 //Configuracion del puerto  
 app.set('port', process.env.PORT || 3000);
