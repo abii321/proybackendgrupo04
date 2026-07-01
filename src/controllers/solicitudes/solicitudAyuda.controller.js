@@ -18,7 +18,7 @@ solicitudCtrl.getSolicitud = async (req, res) => {
     try {
         const solicitud = await SolicitudAyuda.findOne({
             where: { id: req.params.id },
-            include: [{ model: RespuestaAyuda, as: 'respuesta' }]
+            include: [{ model: RespuestaAyuda, as: 'respuestas' }]
         });
         if (!solicitud) return res.json({ status: 0, msg: 'Solicitud no encontrada' });
 
@@ -32,7 +32,7 @@ solicitudCtrl.getSolicitud = async (req, res) => {
 solicitudCtrl.createSolicitud = async (req, res) => {
     try {
         const nueva = await SolicitudAyuda.create({
-            id_alumno: req.body.id_alumno,
+            id_usuario: req.body.id_usuario,
             id_categoria: req.body.id_categoria,
             titulo: req.body.titulo,
             descripcion: req.body.descripcion,
