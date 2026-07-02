@@ -3,7 +3,7 @@ const sequelize = require('./../../../config/database');
 const RespuestaAyuda = require('./respuestaAyuda.model');
 
 const SolicitudAyuda = sequelize.define('SolicitudAyuda', {
-    id_alumno:    { type: DataTypes.INTEGER, allowNull: false },
+    id_usuario:    { type: DataTypes.INTEGER, allowNull: false },
     id_categoria: { type: DataTypes.INTEGER },
     titulo:       { type: DataTypes.STRING(150), allowNull: false },
     descripcion:  { type: DataTypes.TEXT, allowNull: false },

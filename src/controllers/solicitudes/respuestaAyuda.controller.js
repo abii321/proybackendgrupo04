@@ -18,12 +18,6 @@ respuestaCtrl.getRespuestasBySolicitud = async (req, res) => {
 // Crear una nueva respuesta (POST)
 respuestaCtrl.createRespuesta = async (req, res) => {
     try {
-        const yaExiste = await RespuestaAyuda.findOne({
-            where: { id_solicitud: req.body.id_solicitud }
-        });
-        if (yaExiste) {
-            return res.status(400).json({ status: 0, msg: 'Esta solicitud ya tiene una respuesta' });
-        }
 
         const nueva = await RespuestaAyuda.create({
             id_solicitud: req.body.id_solicitud,
