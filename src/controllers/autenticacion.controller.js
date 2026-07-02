@@ -51,11 +51,13 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
                 email: req.body.email,
             }
         });
+        //falta un await para que comparePassword sea asincrono, sino entra con cualquier contraseña.
         if (!user || !passwordService.comparePassword(req.body.password, user.contraseniaHash)) return res.json({ status: 0, msg: "not found" });
         else {
             const unToken = jwt.sign({id: user.id}, process.env.JWT_SECRET); 
             res.json({
                 status: 1, msg: "success",
+                id: user.id, 
                 email: user.email,
                 nombre: user.nombre,
                 apellido: user.apellido,
@@ -145,14 +147,16 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
                 msg: "Usuario no registrado"
             });
         }
-
+        const unToken = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET);
         return res.json({
             status: 1,
             msg: "success",
+            id: usuario.id,
             email: usuario.email,
             nombre: usuario.nombre,
             apellido: usuario.apellido,
             rol: usuario.rol,
+            token: unToken,
         });
 
     } catch (error) {
