@@ -1,3 +1,4 @@
+const PerfilProfesor = require('../models/perfilProfesor');
 const Usuario = require('../models/usuario.model');
 const passwordService = require('../services/password.service')
 
@@ -12,33 +13,47 @@ const autenticacionCtrl = {};
 autenticacionCtrl.signUpUsuario = async (req, res) => {
     try {
         const data = req.body;
+        console.log(data);
 
         const existe = await Usuario.findOne({
             where: {
-                email: data.email
+                email: data.usuario.email
             }
         });
         if (existe) res.status(400).json({ status: "0", msg: "El email ya está registrado." });
 
-        const hash = await passwordService.hashPassword(data.password);
+        const hash = await passwordService.hashPassword(data.contrasenia);
         const usuario = await Usuario.create({
-            nombre: data.nombre,
-            apellido: data.apellido,
-            email: data.email,
+            nombre: data.usuario.nombre,
+            apellido: data.usuario.apellido,
+            email: data.usuario.email,
             contraseniaHash: hash,
-            rol: data.rol,
+            genero: data.usuario.genero,
+            rol: data.usuario.rol,
             estado: "activo",
             proveedorAuth: "local",
             //foto: data.foto,
-            ubicacion: data.ubicacion,
-            universidad: data.universidad,
-            carrera: data.carrera,
+            ubicacion: data.usuario.ubicacion,
+            universidad: data.usuario.universidad,
+            carrera: data.usuario.carrera,
         });
+
+        if( usuario.rol=='profesor'){
+            const perfilProfesor = await PerfilProfesor.create({
+                primario: data.perfilProfesor.primario,
+                secundario: data.perfilProfesor.secundario,
+                universitario: data.perfilProfesor.universitario,
+                doctorado: data.perfilProfesor.doctorado,
+                usuarioId: usuario.id,
+            })
+        }
 
         return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
 
     } catch (error) {
-        return res.status(500).json({ status: "0", msg: "Error al registrar usuario." });
+         console.error('ERROR:', error.message);
+        res.status(500).json({ status: '0', msg: error.message });
+        //return res.status(500).json({ status: "0", msg: "Error al registrar usuario." });
     }
 }
 
