@@ -79,13 +79,13 @@ adminCtrl.getTutorialsByMonth = async (req, res) => {
 // Listado completo de tutorías para DataTable
 adminCtrl.getFullTutorials = async (req, res) => {
     try {
-        const Usuario  = require('../models/usuario.model');
+        const Usuario = require('../models/usuario.model');
         const Categoria = require('../models/categoria.model');
         const data = await Tutoria.findAll({
             include: [
-                { model: Usuario, as: 'alumno',   attributes: ['nombre', 'apellido', 'email'] },
-                { model: Usuario, as: 'profesor',  attributes: ['nombre', 'apellido', 'email'] },
-                { model: Categoria, as: 'categoria', attributes: ['nombre'] }
+                { model: Usuario, as: 'alumno', attributes: ['id', 'nombre', 'apellido', 'email'] },
+                { model: Usuario, as: 'profesor', attributes: ['id', 'nombre', 'apellido', 'email'] },
+                { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] }
             ],
             order: [['createdAt', 'DESC']]
         });
