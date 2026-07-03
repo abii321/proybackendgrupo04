@@ -7,26 +7,31 @@ const Tutoria = sequelize.define('Tutoria', {
     alumno_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'usuarios',
-            key: 'id'
-        }
+        references: { model: 'usuarios', key: 'id' }
     },
     profesor_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'usuarios',
-            key: 'id'
-        }
+        references: { model: 'usuarios', key: 'id' }
     },
     categoria_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'categorias',
-            key: 'id'
-        }
+        references: { model: 'categorias', key: 'id' }
+    },
+    modalidad: {
+        type: DataTypes.ENUM('virtual', 'presencial'),
+        allowNull: false,
+        defaultValue: 'virtual'
+    },
+    precio_acordado: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 0
+    },
+    mensaje: {
+        type: DataTypes.TEXT,
+        allowNull: true
     },
     fecha_hora: {
         type: DataTypes.DATE,
@@ -50,13 +55,12 @@ const Tutoria = sequelize.define('Tutoria', {
     timestamps: true,
 });
 
-//Tutoria.belongsTo(Alumno, { as: 'alumno', foreignKey: 'alumno_id' });
 Tutoria.belongsTo(Usuario, { as: 'alumno', foreignKey: 'alumno_id' });
 Tutoria.belongsTo(Usuario, { as: 'profesor', foreignKey: 'profesor_id' });
 Tutoria.belongsTo(Categoria, { as: 'categoria', foreignKey: 'categoria_id' });
 
-Usuario.hasMany(Tutoria, { as: 'tutoriasComoAlumno', foreignKey: 'alumno_id' });
-Usuario.hasMany(Tutoria, { as: 'tutoriasComoProfesor', foreignKey: 'profesor_id' });
-Categoria.hasMany(Tutoria, { as: 'tutorias', foreignKey: 'categoria_id' });
+//Usuario.hasMany(Tutoria, { as: 'tutoriasComoAlumno', foreignKey: 'alumno_id' });
+//Usuario.hasMany(Tutoria, { as: 'tutoriasComoProfesor', foreignKey: 'profesor_id' });
+//Categoria.hasMany(Tutoria, { as: 'tutorias', foreignKey: 'categoria_id' });
 
 module.exports = Tutoria;

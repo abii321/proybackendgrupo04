@@ -3,7 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
-
+const { DataTypes } = require('sequelize'); 
+const HorarioDisponible = require('./src/models/horarioDisponible.model');
+// --------------------------------
 //Creacion de la aplicacion 
 var app = express();
 
@@ -30,7 +32,7 @@ app.set('port', process.env.PORT || 3000);
 //Sincronizar Base de Datos y arrancar el servidor 
 // .sync() crea las tablas automáticamente en Postgres si aún no existen 
 // force en false crea las tablas solo si no existe, no borra datos en cada inicio 
-sequelize.sync({ force: false })
+sequelize.sync({ force: false }) // Cambiar a false en producción para no perder datos
     .then(() => {
         console.log('Tablas de PostgreSQL sincronizadas');
         app.listen(app.get('port'), () => { // Arranca el servidor 
