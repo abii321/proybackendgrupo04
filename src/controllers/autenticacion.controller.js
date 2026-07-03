@@ -6,6 +6,7 @@ const { OAuth2Client } = require('google-auth-library');
 const GOOGLE_ID = process.env.GOOGLE_CLIENT_ID
 const client = new OAuth2Client( GOOGLE_ID );
 
+require('dotenv').config();
 const jwt = require('jsonwebtoken'); 
 
 const autenticacionCtrl = {};
@@ -22,7 +23,7 @@ autenticacionCtrl.signUpUsuario = async (req, res) => {
         });
         if (existe) res.status(400).json({ status: "0", msg: "El email ya está registrado." });
 
-        const hash = await passwordService.hashPassword(data.contrasenia);
+        const hash = await passwordService.hashPassword(data.usuario.contrasenia);
         const usuario = await Usuario.create({
             nombre: data.usuario.nombre,
             apellido: data.usuario.apellido,
@@ -66,9 +67,12 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
                 email: req.body.email,
             }
         });
-        //falta un await para que comparePassword sea asincrono, sino entra con cualquier contraseña.
-        if (!user || !passwordService.comparePassword(req.body.password, user.contraseniaHash)) return res.json({ status: 0, msg: "not found" });
+        
+        const coincide = await passwordService.comparePassword( req.body.password, user.contraseniaHash );
+        if (!user || !coincide) return res.json({ status: 0, msg: "not found" });
+
         else {
+            console.log("JWT_SECRET:", process.env.JWT_SECRET);
             const unToken = jwt.sign({id: user.id}, process.env.JWT_SECRET); 
             res.json({
                 status: 1, msg: "success",
@@ -82,7 +86,6 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
                 carrera: user.carrera,
                 token: unToken,
             });
-            console.log("sisisis"+unToken);
         }
 
     } catch (error) {
@@ -98,8 +101,7 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
         // Verificar que el token realmente proviene de Google
         const ticket = await client.verifyIdToken({
             idToken: data.token,
-            audience: '514983060587-l7mo7rrdidk3p0l1skhemau7lmddajvi.apps.googleusercontent.com'
-        });
+            audience: process.env.GOOGLE_CLIENT_ID })
 
         // Información del usuario
         const payload = ticket.getPayload();
@@ -126,7 +128,18 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
                 ubicacion: data.ubicacion,
                 universidad: data.universidad,
                 carrera: data.carrera,
+                genero: data.genero,
             });
+            if( usuario.rol == 'profesor'){
+                const perfilProfesor = await PerfilProfesor.create({
+                    primario: data.perfilProfesor.primario,
+                    secundario: data.perfilProfesor.secundario,
+                    universitario: data.perfilProfesor.universitario,
+                    doctorado: data.perfilProfesor.doctorado,
+                    usuarioId: usuario.id,
+                })
+            }
+
         }
         return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
         
@@ -143,7 +156,7 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
 
         const ticket = await client.verifyIdToken({
             idToken: token,
-            audience: '514983060587-l7mo7rrdidk3p0l1skhemau7lmddajvi.apps.googleusercontent.com'
+            audience: process.env.GOOGLE_CLIENT_ID
         });
 
         const payload = ticket.getPayload();
