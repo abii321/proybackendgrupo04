@@ -3,9 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
-const { DataTypes } = require('sequelize'); 
+const { DataTypes } = require('sequelize');
 const HorarioDisponible = require('./src/models/horarioDisponible.model');
-const pagoRoutes=require("./src/routes/mercadoPago.route.js");
+const pagoRoutes = require("./src/routes/mercadoPago.route.js");
 // --------------------------------
 //Creacion de la aplicacion 
 var app = express();
@@ -28,6 +28,7 @@ app.use('/api/respuesta', require('./src/routes/solicitudes/respuestaAyuda.route
 app.use('/api/tutoria', require('./src/routes/tutoria.route.js'));
 app.use('/api/categoria', require('./src/routes/categoria.route.js'));
 app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
+app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
 //Configuracion del puerto  
 app.set('port', process.env.PORT || 3000);
 

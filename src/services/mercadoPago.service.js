@@ -36,7 +36,7 @@ async function crearPreferencia(idTutoria) {
 
                     currency_id: "ARS",
 
-                    unit_price: Number(tutoria.precio)
+                    unit_price: Number(tutoria.precio_acordado)
 
                 }
 
