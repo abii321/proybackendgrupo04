@@ -7,6 +7,7 @@ const respuestaCtrl = require('./../../controllers/solicitudes/respuestaAyuda.co
 router.get('/solicitud/:id_solicitud',  respuestaCtrl.getRespuestasBySolicitud);
 router.post('/', respuestaCtrl.createRespuesta);
 router.put('/:id', respuestaCtrl.editRespuesta);
+router.put('/:id/aceptar', respuestaCtrl.aceptarRespuesta);
 router.delete('/:id', respuestaCtrl.deleteRespuesta);
 
 module.exports = router;
