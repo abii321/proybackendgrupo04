@@ -49,6 +49,19 @@ const Tutoria = sequelize.define('Tutoria', {
     google_event_id: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    preference_id: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    payment_id: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    pagada: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 }, {
     tableName: 'tutorias',
