@@ -14,7 +14,7 @@ const PerfilProfesor = sequelize.define('PerfilProfesor', {
     timestamps: true,
 });
 
-PerfilProfesor.belongsTo(Usuario, { as: 'profesor', foreignKey: 'usuarioId' });
-Usuario.hasOne(PerfilProfesor, { as: 'perfilProfesor', foreignKey: 'usuarioId' });
+PerfilProfesor.belongsTo(Usuario, { as: 'profesor', foreignKey: 'profesorId' });
+Usuario.hasOne(PerfilProfesor, { as: 'perfilProfesor', foreignKey: 'profesorId' });
 
 module.exports = PerfilProfesor;
