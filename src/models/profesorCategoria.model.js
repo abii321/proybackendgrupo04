@@ -3,24 +3,7 @@ const sequelize = require('../../config/database');
 const Usuario = require('./usuario.model');
 const Categoria = require('./categoria.model');
 
-const ProfesorCategoria = sequelize.define('ProfesorCategoria', {
-    profesor_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'usuarios',
-            key: 'id'
-        }
-    },
-    categoria_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'categorias',
-            key: 'id'
-        }
-    }
-}, {
+const ProfesorCategoria = sequelize.define('ProfesorCategoria', { }, {
     tableName: 'profesores_categorias',
     timestamps: true,
 });
@@ -28,15 +11,15 @@ const ProfesorCategoria = sequelize.define('ProfesorCategoria', {
 Usuario.belongsToMany(Categoria, {
     through: ProfesorCategoria,
     as: 'categoriasEnseniadas',
-    foreignKey: 'profesor_id',
-    otherKey: 'categoria_id'
+    foreignKey: 'profesorId',
+    otherKey: 'categoriaId'
 });
 
 Categoria.belongsToMany(Usuario, {
     through: ProfesorCategoria,
     as: 'profesores',
-    foreignKey: 'categoria_id',
-    otherKey: 'profesor_id'
+    foreignKey: 'categoriaId',
+    otherKey: 'profesorId'
 });
 
 module.exports = ProfesorCategoria;

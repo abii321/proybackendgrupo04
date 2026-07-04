@@ -6,6 +6,7 @@ const PerfilProfesor = sequelize.define('PerfilProfesor', {
     // id automatico
     primario:       { type: DataTypes.BOOLEAN, allowNull: false },
     secundario:     { type: DataTypes.BOOLEAN, allowNull: false },
+    terciario:      { type: DataTypes.BOOLEAN, allowNull: false },
     universitario:  { type: DataTypes.BOOLEAN, allowNull: false },
     doctorado:      { type: DataTypes.BOOLEAN, allowNull: false },
 }, {
@@ -13,7 +14,7 @@ const PerfilProfesor = sequelize.define('PerfilProfesor', {
     timestamps: true,
 });
 
-PerfilProfesor.belongsTo(Usuario, { as: 'profesor', foreignKey: 'usuarioId' });
-Usuario.hasOne(PerfilProfesor, { as: 'perfilProfesor', foreignKey: 'usuarioId' });
+PerfilProfesor.belongsTo(Usuario, { as: 'profesor', foreignKey: 'profesorId' });
+Usuario.hasOne(PerfilProfesor, { as: 'perfilProfesor', foreignKey: 'profesorId' });
 
 module.exports = PerfilProfesor;
