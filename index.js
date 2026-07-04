@@ -29,11 +29,13 @@ app.use('/api/tutoria', require('./src/routes/tutoria.route.js'));
 app.use('/api/categoria', require('./src/routes/categoria.route.js'));
 //app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
 app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
-//Configuracion del puerto  
+
+
 app.set('port', process.env.PORT || 3000);
 
 
 const seedPrecios = require('./src/seeders/precios.seed.js')
+const seedCategorias = require('./src/seeders/categorias.seed.js');
 
 sequelize.sync({ force: true }) 
     .then( async () => {
@@ -41,6 +43,7 @@ sequelize.sync({ force: true })
 
         // datos precargados
         await seedPrecios();
+        await seedCategorias();
 
         app.listen(app.get('port'), () => { // Arranca el servidor 
             console.log(`Server started on port`, app.get('port'));
