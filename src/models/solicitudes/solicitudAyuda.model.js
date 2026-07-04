@@ -7,7 +7,6 @@ const SolicitudAyuda = sequelize.define('SolicitudAyuda', {
     id_categoria: { type: DataTypes.INTEGER },
     titulo:       { type: DataTypes.STRING(150), allowNull: false },
     descripcion:  { type: DataTypes.TEXT, allowNull: false },
-    precio:       { type: DataTypes.FLOAT, allowNull: false },
     archivoAdjunto: { type: DataTypes.TEXT, allowNull: true, defaultValue: null },
     estado:       { type: DataTypes.ENUM('ABIERTA', 'RESUELTA', 'CERRADA'), allowNull: false, defaultValue: 'ABIERTA' }
 }, {

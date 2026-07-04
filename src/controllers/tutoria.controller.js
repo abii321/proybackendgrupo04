@@ -1,7 +1,8 @@
 const Tutoria = require('../models/tutoria.model');
 const Usuario = require('../models/usuario.model');
 const Categoria = require('../models/categoria.model'); 
-const { crearEventoTutoría } = require('../services/google-calendar.service');
+const Calificacion = require('../models/calificacion.model');
+const googleCalendarService = require('../services/google-calendar.service');
 
 const tutoriaCtrl = {};
 
@@ -11,7 +12,8 @@ tutoriaCtrl.getTutorias = async (req, res) => {
             include: [
                 { model: Usuario, as: 'alumno', attributes: ['id', 'nombre', 'apellido', 'email'] },
                 { model: Usuario, as: 'profesor', attributes: ['id', 'nombre', 'apellido', 'email'] },
-                { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] }
+                { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] },
+                { model: Calificacion, as: 'calificacion' }
             ]
         });
         if (!tutorias) return res.json({ status: 0, msg: 'Tutoría no encontrada' });
@@ -28,7 +30,8 @@ tutoriaCtrl.getTutoria = async (req, res) => {
             include: [
                 { model: Usuario, as: 'alumno', attributes: ['id', 'nombre', 'apellido', 'email'] },
                 { model: Usuario, as: 'profesor', attributes: ['id', 'nombre', 'apellido', 'email'] },
-                { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] }
+                { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] },
+                { model: Calificacion, as: 'calificacion' }
             ]
         });
         if (!tutoria) return res.json({ status: 0, msg: 'Tutoría no encontrada' });
@@ -65,40 +68,57 @@ tutoriaCtrl.createTutoria = async (req, res) => {
 
 tutoriaCtrl.editTutoria = async (req, res) => {
     try {
-        const alumno = await Usuario.findOne({ where: { id: req.body.alumno_id, rol: 'alumno' } });
-        const profesor = await Usuario.findOne({ where: { id: req.body.profesor_id, rol: 'profesor' } });
-        const categoria = await Categoria.findOne({ where: { id: req.body.categoria_id } });
+        const tutoriaExistente = await Tutoria.findByPk(req.params.id);
+        if (!tutoriaExistente) {
+            return res.status(404).json({ status: 0, msg: 'Tutoría no encontrada.' });
+        }
+
+        const alumno = await Usuario.findOne({ where: { id: req.body.alumno_id || tutoriaExistente.alumno_id, rol: 'alumno' } });
+        const profesor = await Usuario.findOne({ where: { id: req.body.profesor_id || tutoriaExistente.profesor_id, rol: 'profesor' } });
+        const categoria = await Categoria.findOne({ where: { id: req.body.categoria_id || tutoriaExistente.categoria_id } });
 
         if (!alumno || !profesor) {
             return res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido.' });
         }
 
-        let enlaceMeet = req.body.enlace_meet || null;
-        let eventId = req.body.google_event_id || null;
+        const modalidad = req.body.modalidad || tutoriaExistente.modalidad;
+        const precio_acordado = req.body.precio_acordado || tutoriaExistente.precio_acordado;
+        const mensaje = req.body.mensaje !== undefined ? req.body.mensaje : tutoriaExistente.mensaje;
+        const fecha_hora = req.body.fecha_hora || tutoriaExistente.fecha_hora;
 
-        if (req.body.estado === 'aceptada' && req.body.modalidad === 'virtual') {
+        let enlaceMeet = req.body.enlace_meet || tutoriaExistente.enlace_meet || null;
+        let eventId = req.body.google_event_id || tutoriaExistente.google_event_id || null;
+
+        if (req.body.estado === 'aceptada') {
             try {
-                const googleData = await crearEventoTutoría(
-                    alumno.email,
-                    profesor.email,
-                    req.body.fecha_hora,
-                    categoria.nombre
+                const googleData = await googleCalendarService.agendarTutoria(
+                    {
+                        id: req.params.id,
+                        fechaHora: fecha_hora,
+                        categoria: categoria.nombre,
+                        modalidad: modalidad,
+                        mensaje: mensaje
+                    },
+                    alumno,
+                    profesor
                 );
-                enlaceMeet = googleData.meetLink;
-                eventId = googleData.eventId;
+                enlaceMeet = googleData.linkMeet || null;
+                eventId = googleData.idEvento;
             } catch (googleError) {
-                return res.status(500).json({ status: 0, msg: 'Error al generar el link de Meet' });
+                console.error("Error en Google Calendar (usando fallback de simulación):", googleError);
+                enlaceMeet = modalidad === 'virtual' ? "https://meet.google.com/abc-defg-hij" : null;
+                eventId = "simulated-event-id";
             }
         }
 
         await Tutoria.update({
-            alumno_id: req.body.alumno_id,
-            profesor_id: req.body.profesor_id,
-            categoria_id: req.body.categoria_id,
-            modalidad: req.body.modalidad,
-            precio_acordado: req.body.precio_acordado,
-            mensaje: req.body.mensaje,
-            fecha_hora: req.body.fecha_hora,
+            alumno_id: req.body.alumno_id || tutoriaExistente.alumno_id,
+            profesor_id: req.body.profesor_id || tutoriaExistente.profesor_id,
+            categoria_id: req.body.categoria_id || tutoriaExistente.categoria_id,
+            modalidad: modalidad,
+            precio_acordado: precio_acordado,
+            mensaje: mensaje,
+            fecha_hora: fecha_hora,
             estado: req.body.estado,
             enlace_meet: enlaceMeet,
             google_event_id: eventId

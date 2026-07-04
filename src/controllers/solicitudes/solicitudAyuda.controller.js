@@ -36,7 +36,6 @@ solicitudCtrl.createSolicitud = async (req, res) => {
             id_categoria: req.body.id_categoria,
             titulo: req.body.titulo,
             descripcion: req.body.descripcion,
-            precio: req.body.precio,
             archivoAdjunto: req.body.archivoAdjunto
         });
         res.json({ status: 1, msg: 'Solicitud creada correctamente', data: nueva });
@@ -51,7 +50,6 @@ solicitudCtrl.editSolicitud = async (req, res) => {
         await SolicitudAyuda.update({
             titulo: req.body.titulo,
             descripcion: req.body.descripcion,
-            precio: req.body.precio,
             id_categoria: req.body.id_categoria,
             archivoAdjunto: req.body.archivoAdjunto
         }, { where: { id: req.params.id } });

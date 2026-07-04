@@ -1,113 +1,87 @@
 const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
 
-const Tutoria = require("../models/tutoria.model");
+const RespuestaAyuda = require("../models/solicitudes/respuestaAyuda.model");
 
 const client = new MercadoPagoConfig({
-
     accessToken: process.env.MP_ACCESS_TOKEN
-
+    
 });
+console.log(process.env.MP_ACCESS_TOKEN);
 
 const preference = new Preference(client);
-
 const payment = new Payment(client);
 
-async function crearPreferencia(idTutoria) {
+async function crearPreferencia(idRespuesta) {
 
-    const tutoria = await Tutoria.findByPk(idTutoria);
+    const respuesta = await RespuestaAyuda.findByPk(idRespuesta);
 
-    if (!tutoria) {
-
-        throw new Error("Tutoría inexistente");
-
+    if (!respuesta) {
+        throw new Error("Respuesta inexistente");
     }
 
-    const respuesta = await preference.create({
+    const preferencia = await preference.create({
 
         body: {
 
             items: [
-
                 {
-
-                    title: "Tutoría",
-
+                    title: "Pago de respuesta a solicitud de ayuda",
                     quantity: 1,
-
                     currency_id: "ARS",
-
-                    unit_price: Number(tutoria.precio)
-
+                    unit_price: Number(respuesta.precio)
                 }
-
             ],
 
-            external_reference: String(tutoria.id),
+            external_reference: String(respuesta.id),
 
-            notification_url: "https://TU-DOMINIO/api/mercadopago/webhook",
+            //notification_url: "https://localhost:3000/api/mercadopago/webhook",
 
             back_urls: {
-
                 success: "http://localhost:4200/pago-exitoso",
-
                 failure: "http://localhost:4200/pago-error",
-
                 pending: "http://localhost:4200/pago-pendiente"
-
             },
 
-            auto_return: "approved"
+        
 
         }
 
     });
 
-    tutoria.preference_id = respuesta.id;
+     console.log("RESPUESTA COMPLETA:", respuesta);
 
-    await tutoria.save();
+    respuesta.preference_id = preferencia.id;
 
-    return respuesta;
+    await respuesta.save();
+
+    return preferencia;
 
 }
+
 async function procesarWebhook(data) {
 
-    if (data.type !== "payment") {
-
-        return;
-
-    }
+    if (data.type !== "payment") return;
 
     const paymentId = data.data.id;
 
     const pago = await payment.get({
-
         id: paymentId
-
     });
 
-    if (pago.status !== "approved") {
+    if (pago.status !== "approved") return;
 
-        return;
+    const idRespuesta = pago.external_reference;
 
-    }
+    const respuesta = await RespuestaAyuda.findByPk(idRespuesta);
 
-    const idTutoria = pago.external_reference;
+    if (!respuesta) return;
 
-    const tutoria = await Tutoria.findByPk(idTutoria);
+    respuesta.pagada = true;
+    respuesta.payment_id = paymentId;
 
-    if (!tutoria) {
+    await respuesta.save();
 
-        return;
-
-    }
-
-    tutoria.pagada = true;
-
-    tutoria.payment_id = paymentId;
-
-    await tutoria.save();
-
-    console.log("Tutoría pagada correctamente");
+    console.log("Respuesta pagada correctamente");
 
 }
 
