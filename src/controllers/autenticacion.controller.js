@@ -18,36 +18,26 @@ autenticacionCtrl.signUpUsuario = async (req, res) => {
 
         const existe = await Usuario.findOne({
             where: {
-                email: data.usuario.email
+                email: data.email
             }
         });
         if (existe) res.status(400).json({ status: "0", msg: "El email ya está registrado." });
 
-        const hash = await passwordService.hashPassword(data.usuario.contrasenia);
+        const hash = await passwordService.hashPassword(data.contrasenia);
         const usuario = await Usuario.create({
-            nombre: data.usuario.nombre,
-            apellido: data.usuario.apellido,
-            email: data.usuario.email,
+            nombre: data.nombre,
+            apellido: data.apellido,
+            email: data.email,
             contraseniaHash: hash,
-            genero: data.usuario.genero,
-            rol: data.usuario.rol,
+            genero: data.genero,
+            rol: data.rol,
             estado: "activo",
             proveedorAuth: "local",
             //foto: data.foto,
-            ubicacion: data.usuario.ubicacion,
-            universidad: data.usuario.universidad,
-            carrera: data.usuario.carrera,
+            ubicacion: data.ubicacion,
+            universidad: data.universidad,
+            carrera: data.carrera,
         });
-
-        if( usuario.rol=='profesor'){
-            const perfilProfesor = await PerfilProfesor.create({
-                primario: data.perfilProfesor.primario,
-                secundario: data.perfilProfesor.secundario,
-                universitario: data.perfilProfesor.universitario,
-                doctorado: data.perfilProfesor.doctorado,
-                usuarioId: usuario.id,
-            })
-        }
 
         return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
 
@@ -130,16 +120,6 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
                 carrera: data.carrera,
                 genero: data.genero,
             });
-            if( usuario.rol == 'profesor'){
-                const perfilProfesor = await PerfilProfesor.create({
-                    primario: data.perfilProfesor.primario,
-                    secundario: data.perfilProfesor.secundario,
-                    universitario: data.perfilProfesor.universitario,
-                    doctorado: data.perfilProfesor.doctorado,
-                    usuarioId: usuario.id,
-                })
-            }
-
         }
         return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
         
@@ -198,4 +178,4 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
 }
 
 module.exports = autenticacionCtrl;
-//200
+//181
