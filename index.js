@@ -37,7 +37,7 @@ app.set('port', process.env.PORT || 3000);
 const seedPrecios = require('./src/seeders/precios.seed.js')
 const seedCategorias = require('./src/seeders/categorias.seed.js');
 
-sequelize.sync({ force: true }) 
+sequelize.sync({ force: false }) 
     .then( async () => {
         console.log('Tablas de PostgreSQL sincronizadas');
 
