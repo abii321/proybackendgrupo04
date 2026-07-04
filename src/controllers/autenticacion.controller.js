@@ -37,8 +37,6 @@ autenticacionCtrl.signUpUsuario = async (req, res) => {
             ubicacion: data.usuario.ubicacion,
             universidad: data.usuario.universidad,
             carrera: data.usuario.carrera,
-            tarifaBase: data.usuario.tarifaBase || null,
-            nivelAcademico: data.usuario.nivelAcademico || null
         });
 
         if( usuario.rol=='profesor'){
@@ -86,9 +84,6 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
                 ubicacion: user.ubicacion,
                 universidad: user.universidad,
                 carrera: user.carrera,
-                tarifaBase: user.tarifaBase,
-                nivelAcademico: user.nivelAcademico,
-                proveedorAuth: user.proveedorAuth,
                 token: unToken,
             });
         }
@@ -134,8 +129,6 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
                 universidad: data.universidad,
                 carrera: data.carrera,
                 genero: data.genero,
-                tarifaBase: data.tarifaBase || null,
-                nivelAcademico: data.nivelAcademico || null
             });
             if( usuario.rol == 'profesor'){
                 const perfilProfesor = await PerfilProfesor.create({
@@ -194,8 +187,6 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
             ubicacion: usuario.ubicacion,
             universidad: usuario.universidad,
             carrera: usuario.carrera,
-            tarifaBase: usuario.tarifaBase,
-            nivelAcademico: usuario.nivelAcademico,
             proveedorAuth: usuario.proveedorAuth,
             token: unToken,
         });
@@ -206,61 +197,5 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
     }
 }
 
-autenticacionCtrl.vincularGoogle = async (req, res) => {
-    try {
-        const { usuarioId, token } = req.body;
-
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID
-        });
-
-        const payload = ticket.getPayload();
-
-        const existeOtro = await Usuario.findOne({
-            where: {
-                email: payload.email
-            }
-        });
-
-        if (existeOtro && existeOtro.id !== parseInt(usuarioId)) {
-            return res.json({ status: 0, msg: "Este correo de Google ya está vinculado a otra cuenta." });
-        }
-
-        const usuario = await Usuario.findByPk(usuarioId);
-        if (!usuario) {
-            return res.json({ status: 0, msg: "Usuario no encontrado." });
-        }
-
-        await usuario.update({
-            email: payload.email,
-            proveedorAuth: "Google",
-            foto: payload.picture || usuario.foto
-        });
-
-        return res.json({
-            status: 1,
-            msg: "Cuenta vinculada a Google correctamente.",
-            usuario: {
-                id: usuario.id,
-                email: usuario.email,
-                nombre: usuario.nombre,
-                apellido: usuario.apellido,
-                rol: usuario.rol,
-                ubicacion: usuario.ubicacion,
-                universidad: usuario.universidad,
-                carrera: usuario.carrera,
-                tarifaBase: usuario.tarifaBase,
-                nivelAcademico: usuario.nivelAcademico,
-                proveedorAuth: usuario.proveedorAuth,
-                foto: usuario.foto
-            }
-        });
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ status: 0, msg: error.message });
-    }
-};
-
 module.exports = autenticacionCtrl;
+//200

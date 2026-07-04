@@ -15,12 +15,11 @@ const Usuario = sequelize.define('Usuario', {
     ubicacion: { type: DataTypes.STRING, allowNull: true },
     universidad: { type: DataTypes.STRING, allowNull: false},
     carrera: { type: DataTypes.STRING, allowNull: false },
-    nivelAcademico: { type: DataTypes.ENUM('primario', 'secundario', 'universitario', 'doctorado'), allowNull: true },
-    biografia: { type: DataTypes.STRING, allowNull: true },
-    tarifaBase: { type: DataTypes.FLOAT, allowNull: true },
+    
 }, {
     tableName: 'usuarios',
     timestamps: true,
 });
 
 module.exports = Usuario;
+//24
