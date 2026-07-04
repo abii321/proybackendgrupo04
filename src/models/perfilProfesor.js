@@ -6,6 +6,7 @@ const PerfilProfesor = sequelize.define('PerfilProfesor', {
     // id automatico
     primario:       { type: DataTypes.BOOLEAN, allowNull: false },
     secundario:     { type: DataTypes.BOOLEAN, allowNull: false },
+    terciario:      { type: DataTypes.BOOLEAN, allowNull: false },
     universitario:  { type: DataTypes.BOOLEAN, allowNull: false },
     doctorado:      { type: DataTypes.BOOLEAN, allowNull: false },
 }, {
