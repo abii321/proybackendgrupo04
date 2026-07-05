@@ -12,7 +12,11 @@ var app = express();
 
 //Middlewares  
 app.use(express.json()); //permite recibir JSON 
-app.use(cors({ origin: 'http://localhost:4200' })); //permite que angular acceda a la API 
+app.use(cors({
+    origin: process.env.FRONTEND_URL
+        ? ['http://localhost:4200', process.env.FRONTEND_URL]
+        : 'http://localhost:4200'
+}));
 
 //Cargar swagger 
 /*const swaggerUi = require('swagger-ui-express'); 
