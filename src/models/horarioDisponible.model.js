@@ -7,6 +7,7 @@ const HorarioDisponible = sequelize.define('HorarioDisponible', {
     horaInicio: { type: DataTypes.TIME, allowNull: false },
     horaFin: { type: DataTypes.TIME, allowNull: false },
     modalidad: { type: DataTypes.ENUM('presencial','virtual','ambas'), allowNull: false },
+    estado: { type: DataTypes.ENUM('activo','inactivo'), allowNull: false}
 }, {
     tableName: 'horarios_disponibles',
     timestamps: false

@@ -3,8 +3,8 @@ const sequelize = require('./../../../config/database');
 const RespuestaAyuda = require('./respuestaAyuda.model');
 
 const SolicitudAyuda = sequelize.define('SolicitudAyuda', {
-    id_usuario:    { type: DataTypes.INTEGER, allowNull: false },
-    id_categoria: { type: DataTypes.INTEGER },
+    usuarioId:    { type: DataTypes.INTEGER, allowNull: false },
+    categoriaId: { type: DataTypes.INTEGER },
     titulo:       { type: DataTypes.STRING(150), allowNull: false },
     descripcion:  { type: DataTypes.TEXT, allowNull: false },
     archivoAdjunto: { type: DataTypes.TEXT, allowNull: true, defaultValue: null },
@@ -16,7 +16,7 @@ const SolicitudAyuda = sequelize.define('SolicitudAyuda', {
     updatedAt: 'fecha_actualizacion'
 });
 
-SolicitudAyuda.hasMany(RespuestaAyuda, { foreignKey: 'id_solicitud', as: 'respuestas' });
-RespuestaAyuda.belongsTo(SolicitudAyuda, { foreignKey: 'id_solicitud', as: 'solicitud' });
+SolicitudAyuda.hasMany(RespuestaAyuda, { foreignKey: 'solicitudId', as: 'respuestas' });
+RespuestaAyuda.belongsTo(SolicitudAyuda, { foreignKey: 'solicitudId', as: 'solicitud' });
 
 module.exports = SolicitudAyuda;

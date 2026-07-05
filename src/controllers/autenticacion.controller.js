@@ -1,12 +1,12 @@
+require('dotenv').config(); // Mover al inicio del archivo
+
 const Usuario = require('../models/usuario.model');
 const passwordService = require('../services/password.service')
 
 const { OAuth2Client } = require('google-auth-library');
-const GOOGLE_ID = process.env.GOOGLE_CLIENT_ID
-const client = new OAuth2Client( GOOGLE_ID );
+const client = new OAuth2Client( process.env.GOOGLE_CLIENT_ID );
 
-require('dotenv').config();
-const jwt = require('jsonwebtoken'); 
+const jwt = require('jsonwebtoken');
 
 const autenticacionCtrl = {};
 

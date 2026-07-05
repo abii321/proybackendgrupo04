@@ -4,7 +4,7 @@ const respuestaCtrl = require('./../../controllers/solicitudes/respuestaAyuda.co
 // const authCtrl = require('./../../controllers/auth.controller');
 
 //después agregar authCtrl.verifyToken para proteger las rutas
-router.get('/solicitud/:id_solicitud',  respuestaCtrl.getRespuestasBySolicitud);
+router.get('/solicitud/:solicitudId',  respuestaCtrl.getRespuestasBySolicitud);
 router.post('/', respuestaCtrl.createRespuesta);
 router.put('/:id', respuestaCtrl.editRespuesta);
 router.put('/:id/aceptar', respuestaCtrl.aceptarRespuesta);

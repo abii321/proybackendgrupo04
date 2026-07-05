@@ -28,15 +28,15 @@ contextService.buildContext = async () => {
 
     const solicitudesAbiertas = await SolicitudAyuda.findAll({
         where: { estado: 'ABIERTA' },
-        attributes: ['id', 'id_usuario', 'id_categoria', 'titulo', 'descripcion', 'fecha_creacion']
+        attributes: ['id', 'usuarioId', 'categoriaId', 'titulo', 'descripcion', 'fecha_creacion']
     });
 
     const tutorias = await Tutoria.findAll({
-        attributes: ['id', 'alumno_id', 'profesor_id', 'categoria_id', 'modalidad', 'precio_acordado', 'fecha_hora', 'estado', 'pagada']
+        attributes: ['id', 'alumnoId', 'profesorId', 'categoriaId', 'modalidad', 'precioAcordado', 'fechaHora', 'estado', 'pagada']
     });
 
     const calificaciones = await Calificacion.findAll({
-        attributes: ['id', 'tutoria_id', 'calificacion', 'comentario']
+        attributes: ['id', 'tutoriaId', 'calificacion', 'comentario']
     });
 
     const horariosDisponibles = await HorarioDisponible.findAll({

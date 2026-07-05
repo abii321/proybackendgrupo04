@@ -3,7 +3,7 @@ const sequelize = require('../../config/database');
 const Tutoria = require('./tutoria.model');
 
 const Calificacion = sequelize.define('Calificacion', {
-    tutoria_id: {
+    tutoriaId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         unique: true,
@@ -26,7 +26,7 @@ const Calificacion = sequelize.define('Calificacion', {
     timestamps: true,
 });
 
-Calificacion.belongsTo(Tutoria, { as: 'tutoria', foreignKey: 'tutoria_id' });
-Tutoria.hasOne(Calificacion, { as: 'calificacion', foreignKey: 'tutoria_id' });
+Calificacion.belongsTo(Tutoria, { as: 'tutoria', foreignKey: 'tutoriaId' });
+Tutoria.hasOne(Calificacion, { as: 'calificacion', foreignKey: 'tutoriaId' });
 
 module.exports = Calificacion;

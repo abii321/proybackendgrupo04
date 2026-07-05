@@ -5,28 +5,28 @@ const calificacionCtrl = {};
 
 calificacionCtrl.crearCalificacion = async (req, res) => {
     try {
-        const { tutoria_id, calificacion, comentario } = req.body;
+        const { tutoriaId, calificacion, comentario } = req.body;
 
-        if (!tutoria_id || !calificacion) {
+        if (!tutoriaId || !calificacion) {
             return res.status(400).json({ status: 0, msg: 'La tutoría y la calificación son obligatorias.' });
         }
 
-        const tutoria = await Tutoria.findByPk(tutoria_id);
+        const tutoria = await Tutoria.findByPk(tutoriaId);
         if (!tutoria) {
             return res.status(404).json({ status: 0, msg: 'Tutoría no encontrada.' });
         }
 
         if (tutoria.estado !== 'finalizada' && tutoria.estado !== 'completada') {
-            return res.status(400).json({ status: 0, msg: 'Solo se pueden calificar tutorías finalizadas.' });
+            return res.status(400).json({ status: 0, msg: 'Solo se pueden calificar tutorías finalizadas o completadas.' });
         }
 
-        const calificacionExistente = await Calificacion.findOne({ where: { tutoria_id } });
+        const calificacionExistente = await Calificacion.findOne({ where: { tutoriaId: tutoriaId } });
         if (calificacionExistente) {
             return res.status(400).json({ status: 0, msg: 'Esta tutoría ya ha sido calificada.' });
         }
 
         const nuevaCalificacion = await Calificacion.create({
-            tutoria_id,
+            tutoriaId,
             calificacion,
             comentario
         });
@@ -40,7 +40,7 @@ calificacionCtrl.crearCalificacion = async (req, res) => {
 
 calificacionCtrl.obtenerCalificacionPorTutoria = async (req, res) => {
     try {
-        const rating = await Calificacion.findOne({ where: { tutoria_id: req.params.tutoriaId } });
+        const rating = await Calificacion.findOne({ where: { tutoriaId: req.params.tutoriaId } });
         res.json({ status: 1, data: rating });
     } catch (error) {
         console.error("Error al obtener calificación:", error);

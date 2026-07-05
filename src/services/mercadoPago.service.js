@@ -50,7 +50,7 @@ async function crearPreferencia(idRespuesta) {
 
      console.log("RESPUESTA COMPLETA:", respuesta);
 
-    respuesta.preference_id = preferencia.id;
+    respuesta.preferenceId = preferencia.id;
 
     await respuesta.save();
 
@@ -77,7 +77,7 @@ async function procesarWebhook(data) {
     if (!respuesta) return;
 
     respuesta.pagada = true;
-    respuesta.payment_id = paymentId;
+    respuesta.paymentId = paymentId;
 
     await respuesta.save();
 
