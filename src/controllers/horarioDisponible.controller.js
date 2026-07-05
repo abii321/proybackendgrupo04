@@ -21,33 +21,14 @@ horarioCtrl.getHorariosProfesor = async (req, res) => {
 
 horarioCtrl.createHorario = async (req, res) => {
     try {
+        //console.log(req.body);
         const busq = await HorarioDisponible.findOne({
             where: {
                 profesorId: req.body.profesorId,
                 diaSemana: req.body.diaSemana,
                 horaInicio: req.body.horaInicio,
-                horaFin: req.body.horaFin
-            }
-        })
-        if(busq) { busq.estado = 'activo'; await busq.save(); }
-        else {
-            const nuevo = await HorarioDisponible.create(req.body);
-        }
-        res.json({ status: 1, msg: 'Horario creado', data: nuevo });
-        
-    } catch (error) {
-        res.status(500).json({ status: 0, msg: 'Error al crear horario' });
-    }
-};
-
-horarioCtrl.createHorario = async (req, res) => {
-    try {
-        const busq = await HorarioDisponible.findOne({
-            where: {
-                profesorId: req.body.profesorId,
-                diaSemana: req.body.diaSemana,
-                horaInicio: req.body.horaInicio,
-                horaFin: req.body.horaFin
+                horaFin: req.body.horaFin,
+                modalidad: req.body.modalidad,
             }
         });
         if (busq) {
@@ -59,6 +40,7 @@ horarioCtrl.createHorario = async (req, res) => {
         return res.json({ status: 1, msg: 'Horario creado', data: nuevo });
 
     } catch (error) {
+        console.log(error);
         res.status(500).json({ status: 0, msg: 'Error al crear horario' });
     }
 };
