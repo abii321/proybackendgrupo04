@@ -3,6 +3,7 @@ const Usuario = require('../models/usuario.model');
 const Tutoria = require('../models/tutoria.model');
 const SolicitudAyuda = require('../models/solicitudes/solicitudAyuda.model');
 const Categoria = require('../models/categoria.model');
+const Calificacion = require('../models/calificacion.model');
 
 const adminCtrl = {};
 
@@ -13,11 +14,17 @@ adminCtrl.getSummary = async (req, res) => {
         const totalTutorials = await Tutoria.count();
         const totalHelpRequests = await SolicitudAyuda.count();
         const totalCategories = await Categoria.count();
+        const avgRatingResult = await Calificacion.findOne({
+            attributes: [[fn('AVG', col('calificacion')), 'avgRating']]
+        });
+        const avgRating = avgRatingResult
+            ? parseFloat(avgRatingResult.dataValues.avgRating || 0).toFixed(1)
+            : '0.0';
 
         res.json({
             status: 1,
             msg: 'success',
-            data: { totalUsers, totalTutorials, totalHelpRequests, totalCategories }
+            data: { totalUsers, totalTutorials, totalHelpRequests, totalCategories, avgRating }
         });
     } catch (error) {
         console.error(error);
@@ -25,15 +32,17 @@ adminCtrl.getSummary = async (req, res) => {
     }
 };
 
-// Usuarios por rol — gráfico barra
+// Usuarios por rol y estado — gráfico barra apilada 
 adminCtrl.getUsersByRole = async (req, res) => {
     try {
         const data = await Usuario.findAll({
             attributes: [
                 'rol',
+                'estado',
                 [fn('COUNT', col('id')), 'count']
             ],
-            group: ['rol']
+            group: ['rol', 'estado'],
+            order: [['rol', 'ASC']]
         });
         res.json({ status: 1, msg: 'success', data });
     } catch (error) {
@@ -54,6 +63,23 @@ adminCtrl.getHelpRequestsByState = async (req, res) => {
         res.json({ status: 1, msg: 'success', data });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al obtener solicitudes por estado' });
+    }
+};
+
+// Tutorías por estado — gráfico torta
+adminCtrl.getTutorialsByState = async (req, res) => {
+    try {
+        const data = await Tutoria.findAll({
+            attributes: [
+                'estado',
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: ['estado'],
+            order: [['estado', 'ASC']]
+        });
+        res.json({ status: 1, msg: 'success', data });
+    } catch (error) {
+        res.status(500).json({ status: 0, msg: 'Error al obtener tutorías por estado' });
     }
 };
 
@@ -82,17 +108,19 @@ adminCtrl.getFullTutorials = async (req, res) => {
         const data = await Tutoria.findAll({
             attributes: [
                 'id', 'modalidad', 'precioAcordado', 'fechaHora',
-                'estado', 'pagada', 'createdAt'
+                'estado', 'enlaceMeet', 'pagada', 'createdAt'
             ],
             include: [
                 { model: Usuario, as: 'alumno', attributes: ['id', 'nombre', 'apellido', 'email'] },
                 { model: Usuario, as: 'profesor', attributes: ['id', 'nombre', 'apellido', 'email'] },
-                { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] }
+                { model: Categoria, as: 'categoria', attributes: ['id', 'nombre'] },
+                { model: Calificacion, as: 'calificacion', attributes: ['calificacion', 'comentario'], required: false }
             ],
             order: [['createdAt', 'DESC']]
         });
         res.json({ status: 1, msg: 'success', data });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ status: 0, msg: 'Error al obtener tutorías' });
     }
 };
