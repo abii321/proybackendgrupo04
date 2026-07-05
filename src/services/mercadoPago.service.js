@@ -34,14 +34,14 @@ async function crearPreferencia(idRespuesta) {
 
             external_reference: String(respuesta.id),
 
-            //notification_url: "https://localhost:3000/api/mercadopago/webhook",
+            notification_url: "https://thesaurus-thong-doing.ngrok-free.dev/api/mercadopago/webhook",
 
-            back_urls: {
-                success: "http://localhost:4200/pago-exitoso",
-                failure: "http://localhost:4200/pago-error",
-                pending: "http://localhost:4200/pago-pendiente"
+           back_urls: {
+                success: "https://thesaurus-thong-doing.ngrok-free.dev/pago-exitoso",
+                failure: "https://thesaurus-thong-doing.ngrok-free.dev/pago-error",
+                pending: "https://thesaurus-thong-doing.ngrok-free.dev/pago-pendiente"
             },
-
+            auto_return: "approved"
         
 
         }
