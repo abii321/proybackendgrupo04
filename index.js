@@ -5,7 +5,7 @@ const cors = require('cors');
 const sequelize = require('./config/database');
 const { DataTypes } = require('sequelize');
 
-//const pagoRoutes = require("./src/routes/mercadoPago.route.js");
+const pagoRoutes = require("./src/routes/mercadoPago.route.js");
 // --------------------------------
 //Creacion de la aplicacion 
 var app = express();
@@ -27,8 +27,41 @@ app.use('/api/solicitud', require('./src/routes/solicitudes/solicitudAyuda.route
 app.use('/api/respuesta', require('./src/routes/solicitudes/respuestaAyuda.route'));
 app.use('/api/tutoria', require('./src/routes/tutoria.route.js'));
 app.use('/api/categoria', require('./src/routes/categoria.route.js'));
-//app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
+app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
 app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
+
+
+// =========================
+// REDIRECCIONES DE MERCADO PAGO
+// AGREGALAS ACÁ
+// =========================
+
+app.get("/pago-exitoso", (req, res) => {
+    res.redirect(
+        "http://localhost:4200/pago-exitoso?" +
+        new URLSearchParams(req.query).toString()
+    );
+});
+
+app.get("/pago-error", (req, res) => {
+    res.redirect(
+        "http://localhost:4200/pago-error?" +
+        new URLSearchParams(req.query).toString()
+    );
+});
+
+app.get("/pago-pendiente", (req, res) => {
+    res.redirect(
+        "http://localhost:4200/pago-pendiente?" +
+        new URLSearchParams(req.query).toString()
+    );
+});
+
+
+// =========================
+// INICIO DEL SERVIDOR
+// =========================
+
 
 
 app.set('port', process.env.PORT || 3000);
@@ -37,7 +70,7 @@ app.set('port', process.env.PORT || 3000);
 const seedPrecios = require('./src/seeders/precios.seed.js')
 const seedCategorias = require('./src/seeders/categorias.seed.js');
 
-sequelize.sync({ force: true }) 
+sequelize.sync({ force: false }) 
     .then( async () => {
         console.log('Tablas de PostgreSQL sincronizadas');
 
