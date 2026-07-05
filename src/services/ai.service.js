@@ -5,6 +5,7 @@ const aiService = {};
 
 aiService.getResponse = async (systemPrompt, userMessage) => {
     const response = await groq.chat.completions.create({
+        //openai/gpt-oss-120b usar este si se acaban los tokens
         model: 'openai/gpt-oss-20b',
         messages: [
             { role: 'system', content: systemPrompt },

@@ -1,18 +1,26 @@
 const Usuario = require('../models/usuario.model');
 const Categoria = require('../models/categoria.model');
 const SolicitudAyuda = require('../models/solicitudes/solicitudAyuda.model');
-const RespuestaAyuda = require('../models/solicitudes/respuestaAyuda.model');
 const Tutoria = require('../models/tutoria.model');
 const Calificacion = require('../models/calificacion.model');
 const HorarioDisponible = require('../models/horarioDisponible.model');
 const PerfilProfesor = require('../models/perfilProfesor');
+const ProfesorCategoria = require('../models/profesorCategoria.model');
 
 const contextService = {};
 
 contextService.buildContext = async () => {
     const profesores = await Usuario.findAll({
         where: { rol: 'profesor', estado: 'activo' },
-        attributes: ['id', 'nombre', 'apellido', 'email', 'genero', 'ubicacion', 'universidad', 'carrera', 'nivelAcademico', 'biografia', 'tarifaBase']
+        attributes: ['id', 'nombre', 'apellido', 'email', 'genero', 'ubicacion', 'universidad', 'carrera'],
+        include: [
+            {
+                model: Categoria,
+                as: 'categoriasEnseniadas',
+                attributes: ['id', 'nombre'],
+                through: { attributes: [] }
+            }
+        ]
     });
 
     const categorias = await Categoria.findAll({
@@ -33,11 +41,11 @@ contextService.buildContext = async () => {
     });
 
     const horariosDisponibles = await HorarioDisponible.findAll({
-        attributes: ['id', 'profesor_id', 'dia_semana', 'hora_inicio', 'hora_fin']
+        attributes: ['id', 'profesorId', 'diaSemana', 'horaInicio', 'horaFin', 'modalidad']
     });
 
     const perfilesProfesor = await PerfilProfesor.findAll({
-        attributes: ['id', 'usuarioId', 'primario', 'secundario', 'universitario', 'doctorado']
+        attributes: ['id', 'profesorId', 'primario', 'secundario', 'terciario', 'universitario', 'doctorado']
     });
 
     return `
@@ -49,7 +57,7 @@ contextService.buildContext = async () => {
 
         CONTEXTO ACTUAL DE LA PLATAFORMA:
 
-        PROFESORES ACTIVOS (${profesores.length} en total):
+        PROFESORES ACTIVOS (${profesores.length} en total, con sus categorías que enseñan):
         ${JSON.stringify(profesores)}
 
         CATEGORÍAS DE TUTORÍAS DISPONIBLES:
