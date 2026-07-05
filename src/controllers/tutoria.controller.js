@@ -43,21 +43,21 @@ tutoriaCtrl.getTutoria = async (req, res) => {
 
 tutoriaCtrl.createTutoria = async (req, res) => {
     try {
-        const alumno = await Usuario.findOne({ where: { id: req.body.alumno_id, rol: 'alumno' } });
-        const profesor = await Usuario.findOne({ where: { id: req.body.profesor_id, rol: 'profesor' } });
+        const alumno = await Usuario.findOne({ where: { id: req.body.alumnoId, rol: 'alumno' } });
+        const profesor = await Usuario.findOne({ where: { id: req.body.profesorId, rol: 'profesor' } });
 
         if (!alumno || !profesor) {
             return res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido para esta tutoría.' });
         }
 
         const nueva = await Tutoria.create({
-            alumno_id: req.body.alumno_id,
-            profesor_id: req.body.profesor_id,
-            categoria_id: req.body.categoria_id,
+            alumnoId: req.body.alumnoId,
+            profesorId: req.body.profesorId,
+            categoriaId: req.body.categoriaId,
             modalidad: req.body.modalidad,
-            precio_acordado: req.body.precio_acordado,
+            precioAcordado: req.body.precioAcordado,
             mensaje: req.body.mensaje,
-            fecha_hora: req.body.fecha_hora,
+            fechaHora: req.body.fechaHora,
             estado: req.body.estado || 'pendiente'
         });
         res.json({ status: 1, msg: 'Tutoría creada correctamente', data: nueva });
@@ -73,28 +73,28 @@ tutoriaCtrl.editTutoria = async (req, res) => {
             return res.status(404).json({ status: 0, msg: 'Tutoría no encontrada.' });
         }
 
-        const alumno = await Usuario.findOne({ where: { id: req.body.alumno_id || tutoriaExistente.alumno_id, rol: 'alumno' } });
-        const profesor = await Usuario.findOne({ where: { id: req.body.profesor_id || tutoriaExistente.profesor_id, rol: 'profesor' } });
-        const categoria = await Categoria.findOne({ where: { id: req.body.categoria_id || tutoriaExistente.categoria_id } });
+        const alumno = await Usuario.findOne({ where: { id: req.body.alumnoId || tutoriaExistente.alumnoId, rol: 'alumno' } });
+        const profesor = await Usuario.findOne({ where: { id: req.body.profesorId || tutoriaExistente.profesorId, rol: 'profesor' } });
+        const categoria = await Categoria.findOne({ where: { id: req.body.categoriaId || tutoriaExistente.categoriaId } });
 
         if (!alumno || !profesor) {
             return res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido.' });
         }
 
         const modalidad = req.body.modalidad || tutoriaExistente.modalidad;
-        const precio_acordado = req.body.precio_acordado || tutoriaExistente.precio_acordado;
+        const precioAcordado = req.body.precioAcordado || tutoriaExistente.precioAcordado;
         const mensaje = req.body.mensaje !== undefined ? req.body.mensaje : tutoriaExistente.mensaje;
-        const fecha_hora = req.body.fecha_hora || tutoriaExistente.fecha_hora;
+        const fechaHora = req.body.fechaHora || tutoriaExistente.fechaHora;
 
-        let enlaceMeet = req.body.enlace_meet || tutoriaExistente.enlace_meet || null;
-        let eventId = req.body.google_event_id || tutoriaExistente.google_event_id || null;
+        let enlaceMeet = req.body.enlaceMeet || tutoriaExistente.enlaceMeet || null;
+        let eventId = req.body.googleEventId || tutoriaExistente.googleEventId || null;
 
         if (req.body.estado === 'aceptada') {
             try {
                 const googleData = await googleCalendarService.agendarTutoria(
                     {
                         id: req.params.id,
-                        fechaHora: fecha_hora,
+                        fechaHora: fechaHora,
                         categoria: categoria.nombre,
                         modalidad: modalidad,
                         mensaje: mensaje
@@ -112,19 +112,19 @@ tutoriaCtrl.editTutoria = async (req, res) => {
         }
 
         await Tutoria.update({
-            alumno_id: req.body.alumno_id || tutoriaExistente.alumno_id,
-            profesor_id: req.body.profesor_id || tutoriaExistente.profesor_id,
-            categoria_id: req.body.categoria_id || tutoriaExistente.categoria_id,
+            alumnoId: req.body.alumnoId || tutoriaExistente.alumnoId,
+            profesorId: req.body.profesorId || tutoriaExistente.profesorId,
+            categoriaId: req.body.categoriaId || tutoriaExistente.categoriaId,
             modalidad: modalidad,
-            precio_acordado: precio_acordado,
+            precioAcordado: precioAcordado,
             mensaje: mensaje,
-            fecha_hora: fecha_hora,
+            fechaHora: fechaHora,
             estado: req.body.estado,
-            enlace_meet: enlaceMeet,
-            google_event_id: eventId
+            enlaceMeet: enlaceMeet,
+            googleEventId: eventId
         }, { where: { id: req.params.id } });
 
-        res.json({ status: 1, msg: 'Tutoría actualizada correctamente', enlace_meet: enlaceMeet });
+        res.json({ status: 1, msg: 'Tutoría actualizada correctamente', enlaceMeet: enlaceMeet });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al actualizar tutoría' });
     }

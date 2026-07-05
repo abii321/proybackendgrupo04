@@ -11,7 +11,6 @@ usuarioCtrl.getUsuarios = async (req, res) => {
         const include = [];
 
         if (!rol || rol === 'profesor') {
-            include.push({ model: PerfilProfesor, as: 'perfilProfesor' });
             include.push({ 
                 model: Categoria, 
                 as: 'categoriasEnseniadas', 
@@ -38,7 +37,7 @@ usuarioCtrl.getUsuarios = async (req, res) => {
             if (userJson.rol === 'profesor') {
                 const tutorias = await Tutoria.findAll({
                     where: {
-                        profesor_id: userJson.id,
+                        profesorId: userJson.id,
                         estado: 'finalizada'
                     },
                     include: [
@@ -133,12 +132,12 @@ usuarioCtrl.updateUsuario = async (req, res) => {
 
 usuarioCtrl.addHorario = async (req, res) => {
     try {
-        const { usuario_id, diaSemana, horaInicio, horaFin } = req.body;
+        const { usuarioId, diaSemana, horaInicio, horaFin } = req.body;
         const nuevo = await HorarioDisponible.create({
-            profesor_id: usuario_id,
-            dia_semana: diaSemana,
-            hora_inicio: horaInicio,
-            hora_fin: horaFin
+            profesorId: usuarioId,
+            diaSemana: diaSemana,
+            horaInicio: horaInicio,
+            horaFin: horaFin
         });
         res.json({ status: 1, msg: 'Horario agregado correctamente', data: nuevo });
     } catch (error) {

@@ -32,8 +32,8 @@ solicitudCtrl.getSolicitud = async (req, res) => {
 solicitudCtrl.createSolicitud = async (req, res) => {
     try {
         const nueva = await SolicitudAyuda.create({
-            id_usuario: req.body.id_usuario,
-            id_categoria: req.body.id_categoria,
+            usuarioId: req.body.usuarioId,
+            categoriaId: req.body.categoriaId,
             titulo: req.body.titulo,
             descripcion: req.body.descripcion,
             archivoAdjunto: req.body.archivoAdjunto
@@ -50,7 +50,7 @@ solicitudCtrl.editSolicitud = async (req, res) => {
         await SolicitudAyuda.update({
             titulo: req.body.titulo,
             descripcion: req.body.descripcion,
-            id_categoria: req.body.id_categoria,
+            categoriaId: req.body.categoriaId,
             archivoAdjunto: req.body.archivoAdjunto
         }, { where: { id: req.params.id } });
         res.json({ status: 1, msg: 'Solicitud actualizada correctamente' });

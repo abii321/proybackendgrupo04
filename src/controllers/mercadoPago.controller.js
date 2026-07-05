@@ -7,7 +7,7 @@ mercadoPagoCtrl.crearPreferencia = async (req, res) => {
     try {
 
         const respuesta = await mercadoPagoService.crearPreferencia(
-            req.body.respuesta_id
+            req.body.respuestaId
         );
 
         res.json({

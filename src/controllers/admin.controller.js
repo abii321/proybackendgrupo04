@@ -81,7 +81,7 @@ adminCtrl.getFullTutorials = async (req, res) => {
     try {
         const data = await Tutoria.findAll({
             attributes: [
-                'id', 'modalidad', 'precio_acordado', 'fecha_hora',
+                'id', 'modalidad', 'precioAcordado', 'fechaHora',
                 'estado', 'pagada', 'createdAt'
             ],
             include: [

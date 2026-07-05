@@ -7,7 +7,7 @@ const respuestaCtrl = {};
 respuestaCtrl.getRespuestasBySolicitud = async (req, res) => {
     try {
         const respuestas = await RespuestaAyuda.findAll({
-            where: { id_solicitud: req.params.id_solicitud }
+            where: { solicitudId: req.params.solicitudId }
         });
 
         res.json({ status: 1, msg: 'success', data: respuestas });
@@ -21,7 +21,7 @@ respuestaCtrl.createRespuesta = async (req, res) => {
 
     try {
 
-        const solicitud = await SolicitudAyuda.findByPk(req.body.id_solicitud);
+        const solicitud = await SolicitudAyuda.findByPk(req.body.solicitudId);
 
         if (!solicitud) {
 
@@ -49,9 +49,9 @@ respuestaCtrl.createRespuesta = async (req, res) => {
 
         const nueva = await RespuestaAyuda.create({
 
-            id_solicitud: req.body.id_solicitud,
+            solicitudId: req.body.solicitudId,
 
-            id_usuario: req.body.id_usuario,
+            usuarioId: req.body.usuarioId,
 
             respuesta: req.body.respuesta,
 
@@ -169,7 +169,7 @@ respuestaCtrl.aceptarRespuesta = async (req, res) => {
 
             where: {
 
-                id: respuesta.id_solicitud
+                id: respuesta.solicitudId
 
             }
 

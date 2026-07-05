@@ -2,13 +2,13 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('./../../../config/database');
 
 const RespuestaAyuda = sequelize.define('RespuestaAyuda', {
-    id_solicitud:{ type: DataTypes.INTEGER, allowNull: false },
-    id_usuario:  { type: DataTypes.INTEGER, allowNull: false },
+    solicitudId:{ type: DataTypes.INTEGER, allowNull: false },
+    usuarioId:  { type: DataTypes.INTEGER, allowNull: false },
     respuesta:   { type: DataTypes.TEXT, allowNull: false },
     precio: {type: DataTypes.FLOAT,allowNull: false },
     estado: {type: DataTypes.ENUM('PENDIENTE', 'ACEPTADA', 'RECHAZADA'), allowNull: false, defaultValue: 'PENDIENTE'  },
     pagada: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
-    payment_id: { type: DataTypes.STRING, allowNull: true  },
+    paymentId: { type: DataTypes.STRING, allowNull: true  },
     archivoAdjunto: { type: DataTypes.TEXT, allowNull: true, defaultValue: null }
 }, {
     tableName: 'respuestas_ayuda',
