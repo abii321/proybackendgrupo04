@@ -15,7 +15,7 @@ authCtrl.verifyToken = async (req, res, next) => {
 
     try {
         // 4. Capturar errores de verificación (token expirado, firma inválida, etc.) 
-        const payload = jwt.verify(token, "secretkey");
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
         req.userId = payload.id;
         next();
     } catch (error) {
