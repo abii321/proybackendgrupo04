@@ -68,7 +68,8 @@ app.get("/pago-pendiente", (req, res) => {
 app.use('/api/precio', require('./src/routes/precio.route.js'));
 //app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
 app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
-
+app.use('/api/chat', require('./src/routes/chat.route'));
+//Configuracion del puerto  
 app.set('port', process.env.PORT || 3000);
 
 const seedPrecios = require('./src/seeders/precios.seed.js')
