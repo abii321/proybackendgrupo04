@@ -1,5 +1,4 @@
 const Usuario = require('../models/usuario.model');
-const PerfilProfesor = require('../models/perfilProfesor');
 const Categoria = require('../models/categoria.model');
 const HorarioDisponible = require('../models/horarioDisponible.model');
 

@@ -1,11 +1,11 @@
-const HorarioDisponible = require('../models/horario.model');
+const HorarioDisponible = require('../models/horarioDisponible.model');
 
 const horarioCtrl = {};
 
 horarioCtrl.getHorariosProfesor = async (req, res) => {
     try {
         const horarios = await HorarioDisponible.findAll({
-            where: { profesor_id: req.params.profesor_id }
+            where: { profesorId: req.params.profesorId }
         });
         res.json({ status: 1, data: horarios });
     } catch (error) {

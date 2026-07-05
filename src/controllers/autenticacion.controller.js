@@ -1,4 +1,3 @@
-const PerfilProfesor = require('../models/perfilProfesor');
 const Usuario = require('../models/usuario.model');
 const passwordService = require('../services/password.service')
 

@@ -5,154 +5,266 @@ async function seedCategorias() {
         [
             {
                 nombre: "Matemática",
-                descripcion: "Resolución de ejercicios y refuerzo de conceptos matemáticos generales."
+                nivel: "primario",
+                descripcion: "Refuerzo de conceptos matemáticos para nivel primario."
+            },
+            {
+                nombre: "Matemática",
+                nivel: "secundario",
+                descripcion: "Resolución de ejercicios y refuerzo de conceptos matemáticos para nivel secundario."
             },
             {
                 nombre: "Álgebra",
-                descripcion: "Matrices, vectores, sistemas de ecuaciones y espacios vectoriales."
+                nivel: "secundario",
+                descripcion: "Introducción al álgebra, ecuaciones y polinomios para nivel secundario."
+            },
+            {
+                nombre: "Álgebra",
+                nivel: "universitario",
+                descripcion: "Matrices, vectores, sistemas de ecuaciones y espacios vectoriales para nivel universitario."
             },
             {
                 nombre: "Análisis Matemático",
-                descripcion: "Límites, derivadas, integrales y aplicaciones del cálculo."
+                nivel: "universitario",
+                descripcion: "Límites, derivadas, integrales y aplicaciones del cálculo a nivel universitario."
             },
             {
                 nombre: "Geometría",
-                descripcion: "Geometría plana, analítica y del espacio."
+                nivel: "secundario",
+                descripcion: "Geometría plana y del espacio para nivel secundario."
+            },
+            {
+                nombre: "Geometría",
+                nivel: "universitario",
+                descripcion: "Geometría analítica, diferencial y topología para nivel universitario."
             },
             {
                 nombre: "Estadística",
-                descripcion: "Análisis e interpretación de datos, estadística descriptiva e inferencial."
+                nivel: "secundario",
+                descripcion: "Estadística descriptiva y conceptos básicos de probabilidad para nivel secundario."
+            },
+            {
+                nombre: "Estadística",
+                nivel: "universitario",
+                descripcion: "Análisis e interpretación de datos, estadística descriptiva e inferencial para nivel universitario."
             },
             {
                 nombre: "Probabilidad",
-                descripcion: "Eventos aleatorios, distribuciones y cálculo de probabilidades."
+                nivel: "universitario",
+                descripcion: "Eventos aleatorios, distribuciones y cálculo de probabilidades para nivel universitario."
             },
 
             {
                 nombre: "Programación",
-                descripcion: "Fundamentos de programación, lógica y resolución de problemas."
+                nivel: "secundario",
+                descripcion: "Introducción a la lógica de programación y primeros algoritmos para nivel secundario."
+            },
+            {
+                nombre: "Programación",
+                nivel: "universitario",
+                descripcion: "Fundamentos de programación, lógica y resolución de problemas para nivel universitario."
             },
             {
                 nombre: "Algoritmos",
-                descripcion: "Diseño, análisis y optimización de algoritmos."
+                nivel: "universitario",
+                descripcion: "Diseño, análisis y optimización de algoritmos para nivel universitario."
             },
             {
                 nombre: "Estructuras de Datos",
-                descripcion: "Listas, pilas, colas, árboles, grafos y estructuras avanzadas."
+                nivel: "universitario",
+                descripcion: "Listas, pilas, colas, árboles, grafos y estructuras avanzadas para nivel universitario."
             },
             {
                 nombre: "Bases de Datos",
-                descripcion: "Modelado de datos, SQL, normalización y consultas."
+                nivel: "universitario",
+                descripcion: "Modelado de datos, SQL, normalización y consultas para nivel universitario."
             },
             {
                 nombre: "Ingeniería de Software",
-                descripcion: "Análisis, diseño, patrones y metodologías de desarrollo."
+                nivel: "universitario",
+                descripcion: "Análisis, diseño, patrones y metodologías de desarrollo para nivel universitario."
             },
             {
                 nombre: "Desarrollo Web",
-                descripcion: "Creación de aplicaciones web con tecnologías frontend y backend."
+                nivel: "universitario",
+                descripcion: "Creación de aplicaciones web con tecnologías frontend y backend para nivel universitario."
             },
             {
                 nombre: "Desarrollo Móvil",
-                descripcion: "Desarrollo de aplicaciones para dispositivos móviles."
+                nivel: "universitario",
+                descripcion: "Desarrollo de aplicaciones para dispositivos móviles para nivel universitario."
             },
             {
                 nombre: "Redes de Computadoras",
-                descripcion: "Protocolos, direccionamiento, configuración y seguridad de redes."
+                nivel: "universitario",
+                descripcion: "Protocolos, direccionamiento, configuración y seguridad de redes para nivel universitario."
             },
             {
                 nombre: "Sistemas Operativos",
-                descripcion: "Procesos, memoria, archivos y administración del sistema."
+                nivel: "universitario",
+                descripcion: "Procesos, memoria, archivos y administración del sistema para nivel universitario."
             },
             {
                 nombre: "Arquitectura de Computadoras",
-                descripcion: "Componentes del computador, procesadores y organización interna."
+                nivel: "universitario",
+                descripcion: "Componentes del computador, procesadores y organización interna para nivel universitario."
             },
             {
                 nombre: "Inteligencia Artificial",
-                descripcion: "Machine Learning, redes neuronales e IA aplicada."
+                nivel: "universitario",
+                descripcion: "Machine Learning, redes neuronales e IA aplicada para nivel universitario."
             },
             {
                 nombre: "Ciberseguridad",
-                descripcion: "Seguridad informática, criptografía y protección de sistemas."
+                nivel: "universitario",
+                descripcion: "Seguridad informática, criptografía y protección de sistemas para nivel universitario."
             },
 
             {
                 nombre: "Física",
-                descripcion: "Mecánica, electricidad, magnetismo y física moderna."
+                nivel: "secundario",
+                descripcion: "Conceptos fundamentales de mecánica, óptica y electricidad para nivel secundario."
+            },
+            {
+                nombre: "Física",
+                nivel: "universitario",
+                descripcion: "Mecánica, electromagnetismo, termodinámica y física moderna para nivel universitario."
             },
             {
                 nombre: "Química",
-                descripcion: "Química general, orgánica e inorgánica."
+                nivel: "secundario",
+                descripcion: "Química general, nomenclatura y reacciones básicas para nivel secundario."
+            },
+            {
+                nombre: "Química",
+                nivel: "universitario",
+                descripcion: "Química general, orgánica, inorgánica y analítica para nivel universitario."
             },
             {
                 nombre: "Biología",
-                descripcion: "Biología celular, genética y ciencias de la vida."
+                nivel: "secundario",
+                descripcion: "Biología celular, reinos y ecología para nivel secundario."
+            },
+            {
+                nombre: "Biología",
+                nivel: "universitario",
+                descripcion: "Biología celular, molecular, genética y fisiología para nivel universitario."
             },
 
             {
                 nombre: "Contabilidad",
-                descripcion: "Registros contables, balances y estados financieros."
+                nivel: "secundario",
+                descripcion: "Introducción a la contabilidad, libros diarios y mayores para nivel secundario."
+            },
+            {
+                nombre: "Contabilidad",
+                nivel: "universitario",
+                descripcion: "Registros contables, balances y estados financieros para nivel universitario."
             },
             {
                 nombre: "Economía",
-                descripcion: "Microeconomía, macroeconomía y análisis económico."
+                nivel: "universitario",
+                descripcion: "Microeconomía, macroeconomía y análisis económico para nivel universitario."
             },
             {
                 nombre: "Administración",
-                descripcion: "Gestión empresarial, planificación y organización."
+                nivel: "universitario",
+                descripcion: "Gestión empresarial, planificación y organización para nivel universitario."
             },
             {
                 nombre: "Marketing",
-                descripcion: "Marketing digital, estrategias comerciales y posicionamiento."
+                nivel: "universitario",
+                descripcion: "Marketing digital, estrategias comerciales y posicionamiento para nivel universitario."
             },
 
             {
                 nombre: "Inglés",
-                descripcion: "Apoyo en gramática, conversación y comprensión del idioma."
+                nivel: "primario",
+                descripcion: "Apoyo en gramática, conversación y comprensión del idioma para nivel primario."
+            },
+            {
+                nombre: "Inglés",
+                nivel: "secundario",
+                descripcion: "Apoyo en gramática, conversación y comprensión del idioma para nivel secundario."
             },
             {
                 nombre: "Portugués",
-                descripcion: "Clases para niveles iniciales, intermedios y avanzados."
+                nivel: "secundario",
+                descripcion: "Clases para niveles iniciales, intermedios y avanzados de portugués."
             },
             {
                 nombre: "Francés",
-                descripcion: "Aprendizaje del idioma y preparación para exámenes."
+                nivel: "secundario",
+                descripcion: "Aprendizaje del idioma y preparación para exámenes de francés."
             },
 
             {
                 nombre: "Historia",
-                descripcion: "Historia universal, regional y contemporánea."
+                nivel: "secundario",
+                descripcion: "Historia universal, regional y contemporánea para nivel secundario."
             },
             {
                 nombre: "Geografía",
-                descripcion: "Geografía física, humana y política."
+                nivel: "secundario",
+                descripcion: "Geografía física, humana y política para nivel secundario."
             },
             {
                 nombre: "Filosofía",
-                descripcion: "Pensamiento filosófico, ética y lógica."
+                nivel: "secundario",
+                descripcion: "Pensamiento filosófico, ética y lógica para nivel secundario."
             },
 
             {
                 nombre: "Derecho",
-                descripcion: "Derecho civil, penal, laboral y constitucional."
+                nivel: "universitario",
+                descripcion: "Derecho civil, penal, laboral y constitucional para nivel universitario."
             },
             {
                 nombre: "Psicología",
-                descripcion: "Psicología general, educativa y del desarrollo."
+                nivel: "universitario",
+                descripcion: "Psicología general, educativa y del desarrollo para nivel universitario."
             },
 
             {
                 nombre: "Electrónica",
-                descripcion: "Circuitos eléctricos, componentes y electrónica digital."
+                nivel: "universitario",
+                descripcion: "Circuitos eléctricos, componentes y electrónica digital para nivel universitario."
             },
             {
                 nombre: "Mecánica",
-                descripcion: "Mecánica clásica, resistencia de materiales y dinámica."
+                nivel: "universitario",
+                descripcion: "Mecánica clásica, resistencia de materiales y dinámica para nivel universitario."
             },
             {
                 nombre: "Dibujo Técnico",
-                descripcion: "Planos, normas de representación y diseño asistido."
+                nivel: "secundario",
+                descripcion: "Planos, normas de representación y diseño asistido para nivel secundario."
+            },
+
+            {
+                nombre: "Investigación Avanzada",
+                nivel: "doctorado",
+                descripcion: "Metodologías de investigación, análisis de literatura y escritura académica para doctorado."
+            },
+            {
+                nombre: "Seminario de Tesis",
+                nivel: "doctorado",
+                descripcion: "Asesoramiento y seguimiento en la elaboración de tesis doctorales en diversas áreas."
+            },
+            {
+                nombre: "Tópicos Avanzados en Física",
+                nivel: "doctorado",
+                descripcion: "Estudio de temas de frontera en física teórica y experimental para nivel doctorado."
+            },
+            {
+                nombre: "Inteligencia Artificial Avanzada",
+                nivel: "doctorado",
+                descripcion: "Investigación en redes neuronales profundas, reinforcement learning y temas de vanguardia para doctorado."
+            },
+            {
+                nombre: "Derecho Comparado",
+                nivel: "doctorado",
+                descripcion: "Análisis comparativo de sistemas legales y jurisprudencia a nivel doctoral."
             }
         ],
         {
