@@ -6,12 +6,17 @@ const categoriaCtrl = {};
 
 categoriaCtrl.getCategorias = async (req, res) => {
     try {
-        const categorias = await Categoria.findAll();
+        const categorias = await Categoria.findAll({
+            attributes: {
+                exclude: [ 'createdAt, updatedAt' ]
+            }
+        });
         res.json({ status: 1, msg: 'success', data: categorias });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al obtener categorías' });
     }
 };
+
 
 categoriaCtrl.getCategoria = async (req, res) => {
     try {
