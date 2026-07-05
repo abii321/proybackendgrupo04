@@ -5,10 +5,10 @@ const horarioCtrl = {};
 horarioCtrl.getHorariosProfesor = async (req, res) => {
     try {
         const horarios = await HorarioDisponible.findAll({
-            where: { 
+            where: {
                 profesorId: req.params.profesorId,
                 estado: 'activo'
-            }, 
+            },
             attributes: {
                 exclude: ['createdAt', 'updatedAt']
             }
@@ -36,8 +36,7 @@ horarioCtrl.createHorario = async (req, res) => {
             await busq.save();
             return res.json({ status: 1, msg: 'Horario reactivado', data: busq });
         }
-        const nuevo = await HorarioDisponible.create(req.body);
-        return res.json({ status: 1, msg: 'Horario creado', data: nuevo });
+        const nuevo = await HorarioDisponible.create({ ...req.body, estado: 'activo' }); return res.json({ status: 1, msg: 'Horario creado', data: nuevo });
 
     } catch (error) {
         console.log(error);
