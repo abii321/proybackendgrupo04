@@ -38,7 +38,7 @@ app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
 
 // =========================
 // REDIRECCIONES DE MERCADO PAGO
-// AGREGALAS ACÁ
+// AGREGUEN ACÁ
 // =========================
 
 app.get("/pago-exitoso", (req, res) => {
@@ -77,8 +77,8 @@ app.set('port', process.env.PORT || 3000);
 const seedPrecios = require('./src/seeders/precios.seed.js')
 const seedCategorias = require('./src/seeders/categorias.seed.js');
 
-sequelize.sync({ force: false }) 
-    .then( async () => {
+sequelize.sync({ force: true })
+    .then(async () => {
         console.log('Tablas de PostgreSQL sincronizadas');
 
         // datos precargados
