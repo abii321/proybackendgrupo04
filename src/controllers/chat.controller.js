@@ -6,14 +6,12 @@ const chatCtrl = {};
 chatCtrl.sendMessage = async (req, res) => {
     try {
         const { message } = req.body;
-
         if (!message || message.trim() === '') {
             return res.status(400).json({ status: 0, msg: 'El mensaje no puede estar vacío' });
         }
 
-        // construir contexto desde la BD
-        const systemPrompt = await contextService.buildContext();
-
+        // construir contexto desde la BD y pasamos el mensaje para filtrar lo que necesitamos
+        const systemPrompt = await contextService.buildContext(message);
         // llamar a la IA
         const response = await aiService.getResponse(systemPrompt, message);
 
