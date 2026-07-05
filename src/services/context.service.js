@@ -4,7 +4,6 @@ const SolicitudAyuda = require('../models/solicitudes/solicitudAyuda.model');
 const Tutoria = require('../models/tutoria.model');
 const Calificacion = require('../models/calificacion.model');
 const HorarioDisponible = require('../models/horarioDisponible.model');
-const PerfilProfesor = require('../models/perfilProfesor');
 const ProfesorCategoria = require('../models/profesorCategoria.model');
 
 const contextService = {};
