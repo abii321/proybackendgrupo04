@@ -13,6 +13,8 @@ const Usuario = sequelize.define('Usuario', {
     proveedorAuth: { type: DataTypes.ENUM('local','Google','Microsoft'), allowNull: false},
     foto: { type: DataTypes.STRING, allowNull: true },
     ubicacion: { type: DataTypes.STRING, allowNull: true },
+    lat: { type: DataTypes.FLOAT, allowNull: true },
+    lng: { type: DataTypes.FLOAT, allowNull: true },
     universidad: { type: DataTypes.STRING, allowNull: false},
     carrera: { type: DataTypes.STRING, allowNull: false },
     
