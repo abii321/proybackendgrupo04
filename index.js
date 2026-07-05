@@ -26,6 +26,7 @@ app.use('/api/usuario', require('./src/routes/usuario.route.js'));
 app.use('/api/solicitud', require('./src/routes/solicitudes/solicitudAyuda.route'));
 app.use('/api/respuesta', require('./src/routes/solicitudes/respuestaAyuda.route'));
 app.use('/api/tutoria', require('./src/routes/tutoria.route.js'));
+
 app.use('/api/categoria', require('./src/routes/categoria.route.js'));
 app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
 app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
@@ -64,8 +65,11 @@ app.get("/pago-pendiente", (req, res) => {
 
 
 
-app.set('port', process.env.PORT || 3000);
+app.use('/api/precio', require('./src/routes/precio.route.js'));
+//app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
+app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
 
+app.set('port', process.env.PORT || 3000);
 
 const seedPrecios = require('./src/seeders/precios.seed.js')
 const seedCategorias = require('./src/seeders/categorias.seed.js');
