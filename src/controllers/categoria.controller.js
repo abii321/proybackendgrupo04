@@ -63,17 +63,17 @@ categoriaCtrl.deleteCategoria = async (req, res) => {
 
 categoriaCtrl.asociarProfesor = async (req, res) => {
     try {
-        const { profesor_id, categoria_id } = req.body;
+        const { profesorId, categoriaId } = req.body;
 
-        const profesor = await Usuario.findOne({ where: { id: profesor_id, rol: 'profesor' } });
-        const categoria = await Categoria.findByPk(categoria_id);
+        const profesor = await Usuario.findOne({ where: { id: profesorId } });
+        const categoria = await Categoria.findByPk(categoriaId);
 
         if (!profesor || !categoria) {
             return res.status(400).json({ status: 0, msg: 'El profesor o la categoría especificada no es válida.' });
         }
 
         const [relacion, creada] = await ProfesorCategoria.findOrCreate({
-            where: { profesor_id, categoria_id }
+            where: { profesorId, categoriaId }
         });
 
         res.json({
@@ -88,12 +88,30 @@ categoriaCtrl.asociarProfesor = async (req, res) => {
 
 categoriaCtrl.desasociarProfesor = async (req, res) => {
     try {
-        const { profesor_id, categoria_id } = req.body;
-        await ProfesorCategoria.destroy({ where: { profesor_id, categoria_id } });
+        const { profesorId, categoriaId } = req.body;
+        await ProfesorCategoria.destroy({ where: { profesorId, categoriaId } });
         res.json({ status: 1, msg: 'Profesor desasociado de la categoría' });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al desasociar profesor' });
     }
 };
+
+categoriaCtrl.getCategoriasProfesor = async (req, res) => {
+    try {
+        const { profesorId } = req.params;
+        const categorias = await Categoria.findAll({
+            include: [
+                {
+                    model: Usuario,
+                    as: 'profesores',
+                    where: { id: profesorId }
+                }
+            ]
+        });
+        res.json({ status: 1, data: categorias });
+    } catch (error) {   
+        res.status(500).json({ status: 0, msg: 'Error al obtener categorías del profesor' });
+    }
+}
 
 module.exports = categoriaCtrl;

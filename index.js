@@ -31,6 +31,8 @@ app.use('/api/categoria', require('./src/routes/categoria.route.js'));
 app.use('/api/precio', require('./src/routes/precio.route.js'));
 //app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
 app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
+app.use('/api/horarioDisponible', require('./src/routes/horarioDisponible.route.js'))
+
 
 app.set('port', process.env.PORT || 3000);
 
