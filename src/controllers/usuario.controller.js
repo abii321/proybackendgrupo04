@@ -11,7 +11,6 @@ usuarioCtrl.getUsuarios = async (req, res) => {
         const include = [];
 
         if (!rol || rol === 'profesor') {
-            include.push({ model: PerfilProfesor, as: 'perfilProfesor' });
             include.push({ 
                 model: Categoria, 
                 as: 'categoriasEnseniadas', 
@@ -103,22 +102,9 @@ usuarioCtrl.updateUsuario = async (req, res) => {
             tarifaBase: data.tarifaBase
         });
 
-        if (usuario.rol === 'profesor' && data.perfilProfesor) {
-            const [perfil] = await PerfilProfesor.findOrCreate({
-                where: { usuarioId: id },
-                defaults: { primario: false, secundario: false, universitario: false, doctorado: false }
-            });
-            await perfil.update({
-                primario: !!data.perfilProfesor.primario,
-                secundario: !!data.perfilProfesor.secundario,
-                universitario: !!data.perfilProfesor.universitario,
-                doctorado: !!data.perfilProfesor.doctorado
-            });
-        }
 
         const usuarioActualizado = await Usuario.findByPk(id, {
             include: [
-                { model: PerfilProfesor, as: 'perfilProfesor' },
                 { model: Categoria, as: 'categoriasEnseniadas', attributes: ['id', 'nombre'], through: { attributes: [] } },
                 { model: HorarioDisponible, as: 'horarios' }
             ]
@@ -133,12 +119,14 @@ usuarioCtrl.updateUsuario = async (req, res) => {
 
 usuarioCtrl.addHorario = async (req, res) => {
     try {
-        const { usuario_id, diaSemana, horaInicio, horaFin } = req.body;
+        const { usuario_id, diaSemana, horaInicio, horaFin, modalidad } = req.body;
+        
         const nuevo = await HorarioDisponible.create({
             profesor_id: usuario_id,
             dia_semana: diaSemana,
             hora_inicio: horaInicio,
-            hora_fin: horaFin
+            hora_fin: horaFin,
+            modalidad: modalidad 
         });
         res.json({ status: 1, msg: 'Horario agregado correctamente', data: nuevo });
     } catch (error) {
