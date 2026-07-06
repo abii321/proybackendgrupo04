@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const adminCtrl = require('../controllers/admin.controller');
+const authCtrl = require('../controllers/auth.controller');
+
+// Proteger todas las rutas de administración (requiere token y rol admin)
+router.use(authCtrl.verifyToken, authCtrl.verifyAdmin);
 
 router.get('/summary', adminCtrl.getSummary);
 router.get('/users-by-role', adminCtrl.getUsersByRole);
