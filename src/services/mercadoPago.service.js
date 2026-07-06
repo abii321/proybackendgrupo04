@@ -1,6 +1,7 @@
 const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
 
 const RespuestaAyuda = require("../models/solicitudes/respuestaAyuda.model");
+const Tutoria = require("../models/tutoria.model");
 
 const client = new MercadoPagoConfig({
     accessToken: process.env.MP_ACCESS_TOKEN
@@ -12,12 +13,20 @@ const preference = new Preference(client);
 const payment = new Payment(client);
 
 async function crearPreferencia(idRespuesta) {
+    let tipo = 'ayuda';
+    let entidad = await RespuestaAyuda.findByPk(idRespuesta);
 
-    const respuesta = await RespuestaAyuda.findByPk(idRespuesta);
-
-    if (!respuesta) {
-        throw new Error("Respuesta inexistente");
+    if (!entidad) {
+        entidad = await Tutoria.findByPk(idRespuesta);
+        tipo = 'tutoria';
     }
+
+    if (!entidad) {
+        throw new Error("Entidad inexistente");
+    }
+
+    const precioCobrar = tipo === 'ayuda' ? Number(entidad.precio) : Number(entidad.precioAcordado);
+    const tituloItem = tipo === 'ayuda' ? "Pago de respuesta a solicitud de ayuda" : "Pago de sesión de tutoría";
 
     const preferencia = await preference.create({
 
@@ -25,21 +34,21 @@ async function crearPreferencia(idRespuesta) {
 
             items: [
                 {
-                    title: "Pago de respuesta a solicitud de ayuda",
+                    title: tituloItem,
                     quantity: 1,
                     currency_id: "ARS",
-                    unit_price: Number(respuesta.precio)
+                    unit_price: precioCobrar
                 }
             ],
 
-            external_reference: String(respuesta.id),
+            external_reference: `${tipo}:${entidad.id}`,
 
             notification_url: "https://thesaurus-thong-doing.ngrok-free.dev/api/mercadopago/webhook",
 
            back_urls: {
-                success: "https://thesaurus-thong-doing.ngrok-free.dev/pago-exitoso",
-                failure: "https://thesaurus-thong-doing.ngrok-free.dev/pago-error",
-                pending: "https://thesaurus-thong-doing.ngrok-free.dev/pago-pendiente"
+                success: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-exitoso`,
+                failure: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-error`,
+                pending: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-pendiente`
             },
             auto_return: "approved"
         
@@ -48,11 +57,11 @@ async function crearPreferencia(idRespuesta) {
 
     });
 
-     console.log("RESPUESTA COMPLETA:", respuesta);
+     console.log("ENTIDAD COMPLETA:", entidad);
 
-    respuesta.preferenceId = preferencia.id;
+    entidad.preferenceId = preferencia.id;
 
-    await respuesta.save();
+    await entidad.save();
 
     return preferencia;
 
@@ -70,18 +79,33 @@ async function procesarWebhook(data) {
 
     if (pago.status !== "approved") return;
 
-    const idRespuesta = pago.external_reference;
+    const ref = pago.external_reference;
+    let tipo = 'ayuda';
+    let id = ref;
 
-    const respuesta = await RespuestaAyuda.findByPk(idRespuesta);
+    if (ref && ref.includes(':')) {
+        const parts = ref.split(':');
+        tipo = parts[0];
+        id = parts[1];
+    }
 
-    if (!respuesta) return;
-
-    respuesta.pagada = true;
-    respuesta.paymentId = paymentId;
-
-    await respuesta.save();
-
-    console.log("Respuesta pagada correctamente");
+    if (tipo === 'ayuda') {
+        const respuesta = await RespuestaAyuda.findByPk(id);
+        if (respuesta) {
+            respuesta.pagada = true;
+            respuesta.paymentId = paymentId;
+            await respuesta.save();
+            console.log("Respuesta pagada correctamente");
+        }
+    } else if (tipo === 'tutoria') {
+        const tutoria = await Tutoria.findByPk(id);
+        if (tutoria) {
+            tutoria.pagada = true;
+            tutoria.paymentId = paymentId;
+            await tutoria.save();
+            console.log("Tutoría pagada correctamente");
+        }
+    }
 
 }
 

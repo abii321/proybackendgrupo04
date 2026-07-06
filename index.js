@@ -42,22 +42,25 @@ app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
 // =========================
 
 app.get("/pago-exitoso", (req, res) => {
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
     res.redirect(
-        "http://localhost:4200/pago-exitoso?" +
+        `${frontendUrl}/pago-exitoso?` +
         new URLSearchParams(req.query).toString()
     );
 });
 
 app.get("/pago-error", (req, res) => {
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
     res.redirect(
-        "http://localhost:4200/pago-error?" +
+        `${frontendUrl}/pago-error?` +
         new URLSearchParams(req.query).toString()
     );
 });
 
 app.get("/pago-pendiente", (req, res) => {
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
     res.redirect(
-        "http://localhost:4200/pago-pendiente?" +
+        `${frontendUrl}/pago-pendiente?` +
         new URLSearchParams(req.query).toString()
     );
 });
