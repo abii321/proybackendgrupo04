@@ -125,4 +125,130 @@ adminCtrl.getFullTutorials = async (req, res) => {
     }
 };
 
+// Obtener listado de usuarios para el dashboard
+adminCtrl.getUsers = async (req, res) => {
+    try {
+        const data = await Usuario.findAll({
+            attributes: [
+                'id', 'nombre', 'apellido', 'email', 'rol', 'estado', 
+                'universidad', 'carrera', 'genero', 'ubicacion', 'createdAt'
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+        res.json({ status: 1, msg: 'success', data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 0, msg: 'Error al obtener usuarios' });
+    }
+};
+
+// Actualizar atributos de un usuario desde admin
+adminCtrl.updateUserAdmin = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+
+        const usuario = await Usuario.findByPk(id);
+        if (!usuario) {
+            return res.status(404).json({ status: 0, msg: 'Usuario no encontrado.' });
+        }
+
+        await usuario.update({
+            nombre: data.nombre,
+            apellido: data.apellido,
+            email: data.email,
+            universidad: data.universidad,
+            carrera: data.carrera,
+            rol: data.rol,
+            estado: data.estado
+        });
+
+        res.json({ status: 1, msg: 'Usuario actualizado correctamente.', data: usuario });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 0, msg: 'Error al actualizar el usuario' });
+    }
+};
+
+// --- TUTORÍAS ---
+adminCtrl.updateTutorial = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+        const tutoria = await Tutoria.findByPk(id);
+        if (!tutoria) return res.status(404).json({ status: 0, msg: 'Tutoría no encontrada' });
+        
+        await tutoria.update({
+            estado: data.estado,
+            modalidad: data.modalidad,
+            precioAcordado: data.precioAcordado,
+            fechaHora: data.fechaHora,
+            pagada: data.pagada
+        });
+        res.json({ status: 1, msg: 'Tutoría actualizada', data: tutoria });
+    } catch (error) {
+        res.status(500).json({ status: 0, msg: 'Error al actualizar tutoría' });
+    }
+};
+
+adminCtrl.deleteTutorial = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Tutoria.destroy({ where: { id } });
+        res.json({ status: 1, msg: 'Tutoría eliminada' });
+    } catch (error) {
+        if (error.name === 'SequelizeForeignKeyConstraintError') {
+            return res.status(400).json({ status: 0, msg: 'No se puede eliminar la tutoría porque tiene registros asociados (ej. calificaciones).' });
+        }
+        res.status(500).json({ status: 0, msg: 'Error al eliminar tutoría' });
+    }
+};
+
+// --- CATEGORÍAS ---
+adminCtrl.getCategoriesList = async (req, res) => {
+    try {
+        const data = await Categoria.findAll({
+            order: [['nombre', 'ASC']]
+        });
+        res.json({ status: 1, msg: 'success', data });
+    } catch (error) {
+        res.status(500).json({ status: 0, msg: 'Error al obtener categorías' });
+    }
+};
+
+adminCtrl.updateCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+        const categoria = await Categoria.findByPk(id);
+        if (!categoria) return res.status(404).json({ status: 0, msg: 'Categoría no encontrada' });
+        
+        await categoria.update({
+            nombre: data.nombre,
+            nivel: data.nivel,
+            descripcion: data.descripcion
+        });
+        res.json({ status: 1, msg: 'Categoría actualizada', data: categoria });
+    } catch (error) {
+        res.status(500).json({ status: 0, msg: 'Error al actualizar categoría' });
+    }
+};
+
+adminCtrl.deleteCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const count = await Tutoria.count({ where: { categoriaId: id } });
+        if (count > 0) {
+            return res.status(400).json({ status: 0, msg: 'No se puede eliminar la categoría porque hay tutorías asociadas a ella.' });
+        }
+        await Categoria.destroy({ where: { id } });
+        res.json({ status: 1, msg: 'Categoría eliminada' });
+    } catch (error) {
+        if (error.name === 'SequelizeForeignKeyConstraintError') {
+            return res.status(400).json({ status: 0, msg: 'No se puede eliminar la categoría porque tiene registros asociados.' });
+        }
+        res.status(500).json({ status: 0, msg: 'Error al eliminar categoría' });
+    }
+};
+
 module.exports = adminCtrl;
