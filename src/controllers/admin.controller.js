@@ -1,4 +1,4 @@
-const { fn, col, literal } = require('sequelize');
+const { fn, col, literal, Op } = require('sequelize');
 const Usuario = require('../models/usuario.model');
 const Tutoria = require('../models/tutoria.model');
 const SolicitudAyuda = require('../models/solicitudes/solicitudAyuda.model');
@@ -167,6 +167,37 @@ adminCtrl.updateUserAdmin = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 0, msg: 'Error al actualizar el usuario' });
+    }
+};
+
+adminCtrl.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const usuario = await Usuario.findByPk(id);
+        if (!usuario) {
+            return res.status(404).json({ status: 0, msg: 'Usuario no encontrado.' });
+        }
+
+        // Verificar dependencias manualmente
+        const tutoriasCount = await Tutoria.count({
+            where: { [Op.or]: [{ alumnoId: id }, { profesorId: id }] }
+        });
+        const solicitudesCount = await SolicitudAyuda.count({
+            where: { usuarioId: id }
+        });
+
+        if (tutoriasCount > 0 || solicitudesCount > 0) {
+            return res.status(400).json({ status: 0, msg: 'No se puede eliminar el usuario porque tiene tutorías o solicitudes asociadas. Por favor, cambia su estado a Inactivo.' });
+        }
+
+        await usuario.destroy();
+        res.json({ status: 1, msg: 'Usuario eliminado correctamente.' });
+    } catch (error) {
+        console.error(error);
+        if (error.name === 'SequelizeForeignKeyConstraintError') {
+            return res.status(400).json({ status: 0, msg: 'No se puede eliminar el usuario porque tiene registros asociados.' });
+        }
+        res.status(500).json({ status: 0, msg: 'Error al eliminar el usuario' });
     }
 };
 

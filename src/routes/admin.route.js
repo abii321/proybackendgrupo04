@@ -15,6 +15,7 @@ router.get('/full-tutorials', adminCtrl.getFullTutorials);
 
 router.get('/users', adminCtrl.getUsers);
 router.put('/users/:id', adminCtrl.updateUserAdmin);
+router.delete('/users/:id', adminCtrl.deleteUser);
 
 router.put('/tutorials/:id', adminCtrl.updateTutorial);
 router.delete('/tutorials/:id', adminCtrl.deleteTutorial);

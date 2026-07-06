@@ -79,6 +79,7 @@ app.set('port', process.env.PORT || 3000);
 
 const seedPrecios = require('./src/seeders/precios.seed.js')
 const seedCategorias = require('./src/seeders/categorias.seed.js');
+const seedAdmin = require('./src/seeders/admin.seed.js');
 
 sequelize.sync({ force: false })
     .then(async () => {
@@ -87,6 +88,7 @@ sequelize.sync({ force: false })
         // datos precargados
         await seedPrecios();
         await seedCategorias();
+        await seedAdmin();
 
         app.listen(app.get('port'), () => { // Arranca el servidor 
             console.log(`Server started on port`, app.get('port'));
