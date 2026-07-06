@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const respuestaCtrl = require('./../../controllers/solicitudes/respuestaAyuda.controller');
-// const authCtrl = require('./../../controllers/auth.controller');
+const authCtrl = require('./../../controllers/auth.controller');
 
-//después agregar authCtrl.verifyToken para proteger las rutas
-router.get('/solicitud/:solicitudId',  respuestaCtrl.getRespuestasBySolicitud);
+router.get('/solicitud/:solicitudId', respuestaCtrl.getRespuestasBySolicitud);
+
+// Proteger todas las rutas de solicitudes (requiere sesión iniciada)
+router.use(authCtrl.verifyToken);
 router.post('/', respuestaCtrl.createRespuesta);
 router.put('/:id', respuestaCtrl.editRespuesta);
 router.put('/:id/aceptar', respuestaCtrl.aceptarRespuesta);
