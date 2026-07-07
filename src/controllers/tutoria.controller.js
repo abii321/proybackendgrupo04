@@ -8,6 +8,15 @@ const googleCalendarService = require('../services/google-calendar.service');
 const tutoriaCtrl = {};
 
 tutoriaCtrl.getTutorias = async (req, res) => {
+    /* #swagger.tags = ['Tutorias']
+       #swagger.summary = 'Listar todas las tutorías'
+       #swagger.description = 'Obtiene el listado completo de todas las tutorías registradas, incluyendo información del alumno, profesor, categoría y calificación.'
+       #swagger.responses[200] = {
+           description: 'Listado obtenido con éxito.',
+           schema: { $ref: '#/definitions/TutoriaResponse' }
+       }
+       #swagger.responses[500] = { description: 'Error del servidor.' }
+    */
     try {
         const tutorias = await Tutoria.findAll({
             include: [
@@ -25,6 +34,22 @@ tutoriaCtrl.getTutorias = async (req, res) => {
 };
 
 tutoriaCtrl.getTutoria = async (req, res) => {
+    /* #swagger.tags = ['Tutorias']
+       #swagger.summary = 'Obtener una tutoría por ID'
+       #swagger.description = 'Busca y retorna los detalles de una tutoría en particular mediante su ID.'
+       #swagger.parameters['id'] = {
+           in: 'path',
+           description: 'ID de la tutoría a buscar',
+           required: true,
+           type: 'integer'
+       }
+       #swagger.responses[200] = {
+           description: 'Tutoría encontrada.',
+           schema: { $ref: '#/definitions/TutoriaResponse' }
+       }
+       #swagger.responses[404] = { description: 'Tutoría no encontrada.' }
+       #swagger.responses[500] = { description: 'Error del servidor.' }
+    */
     try {
         const tutoria = await Tutoria.findOne({
             where: { id: req.params.id },
@@ -43,6 +68,24 @@ tutoriaCtrl.getTutoria = async (req, res) => {
 };
 
 tutoriaCtrl.createTutoria = async (req, res) => {
+    /* #swagger.tags = ['Tutorias']
+       #swagger.summary = 'Crear una nueva tutoría'
+       #swagger.description = 'Crea una nueva tutoría asignando un alumno y un profesor, definiendo la categoría, modalidad y precio.'
+       #swagger.security = [{ bearerAuth: [] }]
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+           in: 'body',
+           description: 'Datos necesarios para la tutoría.',
+           required: true,
+           schema: { $ref: '#/definitions/TutoriaRequest' }
+       }
+       #swagger.responses[200] = {
+           description: 'Tutoría creada correctamente.',
+           schema: { $ref: '#/definitions/TutoriaResponse' }
+       }
+       #swagger.responses[400] = { description: 'El alumno o profesor es inválido.' }
+       #swagger.responses[500] = { description: 'Error del servidor.' }
+    */
     try {
         const alumno = await Usuario.findOne({ where: { id: req.body.alumnoId, rol: 'alumno' } });
         const profesor = await Usuario.findOne({ where: { id: req.body.profesorId, rol: 'profesor' } });
@@ -76,6 +119,30 @@ tutoriaCtrl.createTutoria = async (req, res) => {
 };
 
 tutoriaCtrl.editTutoria = async (req, res) => {
+    /* #swagger.tags = ['Tutorias']
+       #swagger.summary = 'Actualizar o cambiar estado de una tutoría'
+       #swagger.description = 'Permite modificar los datos de una tutoría (incluyendo estado). Si el estado cambia a "aceptada", se generará automáticamente un evento y un enlace de Google Meet si corresponde.'
+       #swagger.security = [{ bearerAuth: [] }]
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['id'] = {
+           in: 'path',
+           description: 'ID de la tutoría a actualizar',
+           required: true,
+           type: 'integer'
+       }
+       #swagger.parameters['body'] = {
+           in: 'body',
+           description: 'Datos de la tutoría a actualizar.',
+           required: true,
+           schema: { $ref: '#/definitions/TutoriaRequest' }
+       }
+       #swagger.responses[200] = {
+           description: 'Tutoría actualizada correctamente.',
+           schema: { $ref: '#/definitions/SuccessResponse' }
+       }
+       #swagger.responses[404] = { description: 'Tutoría no encontrada.' }
+       #swagger.responses[500] = { description: 'Error del servidor.' }
+    */
     try {
         const tutoriaExistente = await Tutoria.findByPk(req.params.id);
         if (!tutoriaExistente) {
@@ -177,6 +244,22 @@ tutoriaCtrl.editTutoria = async (req, res) => {
 };
 
 tutoriaCtrl.deleteTutoria = async (req, res) => {
+    /* #swagger.tags = ['Tutorias']
+       #swagger.summary = 'Eliminar una tutoría'
+       #swagger.description = 'Elimina una tutoría por su ID. Falla si tiene registros dependientes a menos que se hayan eliminado previamente.'
+       #swagger.security = [{ bearerAuth: [] }]
+       #swagger.parameters['id'] = {
+           in: 'path',
+           description: 'ID de la tutoría a eliminar.',
+           required: true,
+           type: 'integer'
+       }
+       #swagger.responses[200] = {
+           description: 'Tutoría eliminada correctamente.',
+           schema: { $ref: '#/definitions/SuccessResponse' }
+       }
+       #swagger.responses[500] = { description: 'Error del servidor.' }
+    */
     try {
         await Tutoria.destroy({ where: { id: req.params.id } });
         await registrarAuditoria(
