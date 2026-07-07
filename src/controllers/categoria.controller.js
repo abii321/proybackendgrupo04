@@ -7,10 +7,19 @@ const categoriaCtrl = {};
 const { Op, where } = require('sequelize');
 
 categoriaCtrl.getCategorias = async (req, res) => {
+    /* #swagger.tags = ['Categorias']
+       #swagger.summary = 'Listar todas las categorías'
+       #swagger.description = 'Retorna la lista completa de asignaturas/categorías disponibles.'
+       #swagger.responses[200] = {
+         description: 'Categorías obtenidas correctamente.',
+         schema: { status: 1, msg: 'success', data: [] }
+       }
+       #swagger.responses[500] = { description: 'Error al obtener categorías.' }
+    */
     try {
         const categorias = await Categoria.findAll({
             attributes: {
-                exclude: [ 'createdAt, updatedAt' ]
+                exclude: ['createdAt, updatedAt']
             }
         });
         res.json({ status: 1, msg: 'success', data: categorias });
@@ -21,6 +30,21 @@ categoriaCtrl.getCategorias = async (req, res) => {
 
 
 categoriaCtrl.getCategoria = async (req, res) => {
+    /* #swagger.tags = ['Categorias']
+       #swagger.summary = 'Obtener una categoría por ID'
+       #swagger.description = 'Retorna los datos de una categoría específica.'
+       #swagger.parameters['id'] = {
+         in: 'path',
+         description: 'ID de la categoría.',
+         required: true,
+         type: 'integer'
+       }
+       #swagger.responses[200] = {
+         description: 'Categoría encontrada.',
+         schema: { $ref: '#/definitions/CategoriaResponse' }
+       }
+       #swagger.responses[500] = { description: 'Error al obtener categoría.' }
+    */
     try {
         const categoria = await Categoria.findByPk(req.params.id);
         if (!categoria) return res.json({ status: 0, msg: 'Categoría no encontrada' });
@@ -31,6 +55,22 @@ categoriaCtrl.getCategoria = async (req, res) => {
 };
 
 categoriaCtrl.createCategoria = async (req, res) => {
+    /* #swagger.tags = ['Categorias']
+       #swagger.summary = 'Crear una categoría'
+       #swagger.description = 'Crea una nueva categoría de asignatura.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Datos de la categoría a crear.',
+         required: true,
+         schema: { $ref: '#/definitions/CategoriaRequest' }
+       }
+       #swagger.responses[200] = {
+         description: 'Categoría creada correctamente.',
+         schema: { $ref: '#/definitions/CategoriaResponse' }
+       }
+       #swagger.responses[500] = { description: 'Error al crear categoría.' }
+    */
     try {
         const nueva = await Categoria.create({
             nombre: req.body.nombre,
@@ -43,6 +83,28 @@ categoriaCtrl.createCategoria = async (req, res) => {
 };
 
 categoriaCtrl.editCategoria = async (req, res) => {
+    /* #swagger.tags = ['Categorias']
+       #swagger.summary = 'Actualizar una categoría'
+       #swagger.description = 'Actualiza el nombre y descripción de una categoría existente.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['id'] = {
+         in: 'path',
+         description: 'ID de la categoría a actualizar.',
+         required: true,
+         type: 'integer'
+       }
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Datos actualizados de la categoría.',
+         required: true,
+         schema: { $ref: '#/definitions/CategoriaRequest' }
+       }
+       #swagger.responses[200] = {
+         description: 'Categoría actualizada correctamente.',
+         schema: { $ref: '#/definitions/SuccessResponse' }
+       }
+       #swagger.responses[500] = { description: 'Error al actualizar categoría.' }
+    */
     try {
         await Categoria.update({
             nombre: req.body.nombre,
@@ -55,6 +117,21 @@ categoriaCtrl.editCategoria = async (req, res) => {
 };
 
 categoriaCtrl.deleteCategoria = async (req, res) => {
+    /* #swagger.tags = ['Categorias']
+       #swagger.summary = 'Eliminar una categoría'
+       #swagger.description = 'Elimina físicamente una categoría por su ID.'
+       #swagger.parameters['id'] = {
+         in: 'path',
+         description: 'ID de la categoría a eliminar.',
+         required: true,
+         type: 'integer'
+       }
+       #swagger.responses[200] = {
+         description: 'Categoría eliminada correctamente.',
+         schema: { $ref: '#/definitions/SuccessResponse' }
+       }
+       #swagger.responses[500] = { description: 'Error al eliminar categoría.' }
+    */
     try {
         await Categoria.destroy({ where: { id: req.params.id } });
         res.json({ status: 1, msg: 'Categoría eliminada correctamente' });
@@ -64,13 +141,30 @@ categoriaCtrl.deleteCategoria = async (req, res) => {
 };
 
 categoriaCtrl.asociarProfesor = async (req, res) => {
+    /* #swagger.tags = ['Categorias']
+       #swagger.summary = 'Asociar profesor a categoría'
+       #swagger.description = 'Establece una relación activa entre un profesor y una categoría.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Datos de la asociación.',
+         required: true,
+         schema: { $ref: '#/definitions/AsociarProfesorRequest' }
+       }
+       #swagger.responses[200] = {
+         description: 'Profesor asociado correctamente.',
+         schema: { $ref: '#/definitions/SuccessResponse' }
+       }
+       #swagger.responses[400] = { description: 'Profesor o categoría no válidos.' }
+       #swagger.responses[500] = { description: 'Error al asociar profesor.' }
+    */
     try {
         const { profesorId, categoriaId } = req.body;
 
         const profesor = await Usuario.findByPk(profesorId);
         const categoria = await Categoria.findByPk(categoriaId);
         if (!profesor || !categoria) return res.status(400).json({ status: 0, msg: 'El profesor o la categoría especificada no es válida.' });
-        
+
         const relacion = await ProfesorCategoria.findOne({ where: { profesorId, categoriaId } });
 
         if (relacion && relacion.estado === 'inactivo') {
@@ -87,13 +181,31 @@ categoriaCtrl.asociarProfesor = async (req, res) => {
 };
 
 categoriaCtrl.desasociarProfesor = async (req, res) => {
+    /* #swagger.tags = ['Categorias']
+       #swagger.summary = 'Desasociar profesor de categoría'
+       #swagger.description = 'Cambia a inactivo el estado de la relación entre el profesor y la categoría.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Datos de la desasociación.',
+         required: true,
+         schema: { $ref: '#/definitions/AsociarProfesorRequest' }
+       }
+       #swagger.responses[200] = {
+         description: 'Profesor desasociado correctamente.',
+         schema: { $ref: '#/definitions/SuccessResponse' }
+       }
+       #swagger.responses[400] = { description: 'La asociación no existe.' }
+       #swagger.responses[409] = { description: 'El profesor tiene tutorías activas en esta categoría.' }
+       #swagger.responses[500] = { description: 'Error interno al desasociar.' }
+    */
     try {
         const { profesorId, categoriaId } = req.body;
 
         const relacion = await ProfesorCategoria.findOne({ where: { profesorId, categoriaId } });
-        if(!relacion) return res.status(400).json({ status: 0, msg: 'La asociación no existe.' });
+        if (!relacion) return res.status(400).json({ status: 0, msg: 'La asociación no existe.' });
 
-         // Verificar que no tenga tutorías activas
+        // Verificar que no tenga tutorías activas
         const tutoriaActiva = await Tutoria.findOne({
             where: {
                 profesorId,
@@ -103,9 +215,9 @@ categoriaCtrl.desasociarProfesor = async (req, res) => {
                 }
             }
         });
-        if (tutoriaActiva) 
+        if (tutoriaActiva)
             return res.status(409).json({ status: 0, msg: 'No se puede quitar la categoría porque el profesor tiene tutorías activas en ella.' });
-        
+
         relacion.estado = 'inactivo'; await relacion.save();
         res.json({ status: 1, msg: 'Profesor desasociado de la categoría' });
     } catch (error) {
@@ -115,6 +227,21 @@ categoriaCtrl.desasociarProfesor = async (req, res) => {
 };
 
 categoriaCtrl.getCategoriasProfesor = async (req, res) => {
+    /* #swagger.tags = ['Categorias']
+       #swagger.summary = 'Obtener categorías de un profesor'
+       #swagger.description = 'Retorna todas las asignaturas activas que enseña un profesor específico.'
+       #swagger.parameters['profesorId'] = {
+         in: 'path',
+         description: 'ID del profesor.',
+         required: true,
+         type: 'integer'
+       }
+       #swagger.responses[200] = {
+         description: 'Categorías del profesor obtenidas correctamente.',
+         schema: { status: 1, data: [] }
+       }
+       #swagger.responses[500] = { description: 'Error al obtener categorías.' }
+    */
     try {
         const { profesorId } = req.params;
         const categorias = await Categoria.findAll({
@@ -133,7 +260,7 @@ categoriaCtrl.getCategoriasProfesor = async (req, res) => {
             }]
         });
         res.json({ status: 1, data: categorias });
-    } catch (error) {   
+    } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al obtener categorías del profesor' });
     }
 }

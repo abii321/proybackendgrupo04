@@ -1,7 +1,7 @@
 const Usuario = require('../models/usuario.model');
 const Categoria = require('../models/categoria.model');
-const SolicitudAyuda = require('../models/solicitudes/solicitudAyuda.model');
-const RespuestaAyuda = require('../models/solicitudes/respuestaAyuda.model');
+// const SolicitudAyuda = require('../models/solicitudes/solicitudAyuda.model');
+// const RespuestaAyuda = require('../models/solicitudes/respuestaAyuda.model');
 const Tutoria = require('../models/tutoria.model');
 const Calificacion = require('../models/calificacion.model');
 const HorarioDisponible = require('../models/horarioDisponible.model');
@@ -9,9 +9,9 @@ const Precio = require('../models/precio.model');
 
 const contextService = {};
 
-contextService.buildContext = async (userMessage) => {
+contextService.buildContext = async (userMessage = '') => {
 
-    const msg = userMessage.toLowerCase();
+    const msg = (userMessage || '').toLowerCase();
 
     // categorías siempre
     const categorias = await Categoria.findAll({
@@ -24,7 +24,7 @@ contextService.buildContext = async (userMessage) => {
     });
 
     let profesores = [];
-    let solicitudesAbiertas = [];
+    // let solicitudesAbiertas = [];
     let tutorias = [];
     let calificaciones = [];
 
@@ -52,19 +52,19 @@ contextService.buildContext = async (userMessage) => {
         });
     }
 
-    // solicitudes solo si la pregunta es sobre ayuda o solicitudes
-    const keywords_solicitudes = ['solicitud', 'ayuda', 'pregunta', 'duda', 'consulta', 'abierta', 'problema', 'tarea', 'proyecto', 'ensayo', 'examen', 'prueba', 'trabajo', 'investigación', 'tema'];
-    if (keywords_solicitudes.some(k => msg.includes(k))) {
-        solicitudesAbiertas = await SolicitudAyuda.findAll({
-            where: { estado: ['ABIERTA', 'RESUELTA'] },
-            attributes: ['id', 'titulo', 'descripcion', 'estado', 'fecha_creacion'],
-            include: [{
-                model: RespuestaAyuda,
-                as: 'respuestas',
-                attributes: ['id', 'respuesta', 'precio', 'estado'],
-            }],
-        });
-    }
+    // // solicitudes solo si la pregunta es sobre ayuda o solicitudes
+    // const keywords_solicitudes = ['solicitud', 'ayuda', 'pregunta', 'duda', 'consulta', 'abierta', 'problema', 'tarea', 'proyecto', 'ensayo', 'examen', 'prueba', 'trabajo', 'investigación', 'tema'];
+    // if (keywords_solicitudes.some(k => msg.includes(k))) {
+    //     solicitudesAbiertas = await SolicitudAyuda.findAll({
+    //         where: { estado: ['ABIERTA', 'RESUELTA'] },
+    //         attributes: ['id', 'titulo', 'descripcion', 'estado', 'fecha_creacion'],
+    //         include: [{
+    //             model: RespuestaAyuda,
+    //             as: 'respuestas',
+    //             attributes: ['id', 'respuesta', 'precio', 'estado'],
+    //         }],
+    //     });
+    // }
 
     // tutorías solo si la pregunta es sobre tutorías o clases
     const keywords_tutorias = ['tutoria', 'tutoría', 'clase', 'sesion', 'sesión', 'reserva', 'agendar'];
@@ -99,7 +99,7 @@ contextService.buildContext = async (userMessage) => {
 Respondé siempre en español, de forma amable y concisa.
 No uses markdown ni símbolos de formato como asteriscos, guiones o saltos de línea innecesarios.
 Solo respondé preguntas relacionadas con la plataforma.
-Si te preguntan algo que no está en el contexto respondé: "No tengo esa información disponible, no rompas los huevos".
+Si te preguntan algo que no está en el contexto respondé: "No tengo esa información disponible.".
 Respondé en máximo 3 oraciones.
 
 CONTEXTO ACTUAL:
@@ -115,9 +115,9 @@ ${JSON.stringify(precios)}
         contexto += `\nPROFESORES ACTIVOS (${profesores.length}):\n${JSON.stringify(profesores)}\n`;
     }
 
-    if (solicitudesAbiertas.length > 0) {
-        contexto += `\nSOLICITUDES ABIERTAS (${solicitudesAbiertas.length}):\n${JSON.stringify(solicitudesAbiertas)}\n`;
-    }
+    // if (solicitudesAbiertas.length > 0) {
+    //     contexto += `\nSOLICITUDES ABIERTAS (${solicitudesAbiertas.length}):\n${JSON.stringify(solicitudesAbiertas)}\n`;
+    // }
 
     if (tutorias.length > 0) {
         contexto += `\nTUTORÍAS (${tutorias.length}):\n${JSON.stringify(tutorias)}\n`;
