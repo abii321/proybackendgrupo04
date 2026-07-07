@@ -17,7 +17,9 @@ async function seedUsuarios() {
             contrasenia: "Carlos321#",
             genero: "masculino",
             universidad: "UNJu",
-            carrera: "Ingeniería Informática"
+            carrera: "Ingeniería Informática",
+            lat: -24.1833,
+            lng: -65.3312
         },
         {
             rol: "admin",
@@ -27,7 +29,9 @@ async function seedUsuarios() {
             contrasenia: "Lucía321#",
             genero: "femenino",
             universidad: "UNJu",
-            carrera: "Lic. Sistemas"
+            carrera: "Lic. Sistemas",
+            lat: -24.1954,
+            lng: -65.2987
         },
         {
             rol: "admin",
@@ -37,7 +41,9 @@ async function seedUsuarios() {
             contrasenia: "Miguel321#",
             genero: "masculino",
             universidad: "UNJu",
-            carrera: "Ingeniería"
+            carrera: "Ingeniería",
+            lat: -24.1858,
+            lng: -65.3015
         },
 
         // ======================
@@ -52,7 +58,9 @@ async function seedUsuarios() {
             contrasenia: "Juan321#",
             genero: "masculino",
             universidad: "UNJu",
-            carrera: "Profesorado Matemática"
+            carrera: "Profesorado Matemática",
+            lat: -24.176,
+            lng: -65.315
         },
         {
             rol: "profesor",
@@ -62,7 +70,9 @@ async function seedUsuarios() {
             contrasenia: "María321#",
             genero: "femenino",
             universidad: "UNJu",
-            carrera: "Ingeniería Informática"
+            carrera: "Ingeniería Informática",
+            lat: -24.19,
+            lng: -65.29
         },
         {
             rol: "profesor",
@@ -72,7 +82,9 @@ async function seedUsuarios() {
             contrasenia: "Pedro321#",
             genero: "masculino",
             universidad: "UNJu",
-            carrera: "Lic. Física"
+            carrera: "Lic. Física",
+            lat: -24.18,
+            lng: -65.32
         },
         {
             rol: "profesor",
@@ -82,7 +94,9 @@ async function seedUsuarios() {
             contrasenia: "Ana321#",
             genero: "femenino",
             universidad: "UNJu",
-            carrera: "Lic. Química"
+            carrera: "Lic. Química",
+            lat: -24.20,
+            lng: -65.31
         },
         {
             rol: "profesor",
@@ -92,7 +106,9 @@ async function seedUsuarios() {
             contrasenia: "Sofía321#",
             genero: "femenino",
             universidad: "UNJu",
-            carrera: "Profesorado Inglés"
+            carrera: "Profesorado Inglés",
+            lat: -24.17,
+            lng: -65.295
         },
 
         // ======================
@@ -107,7 +123,9 @@ async function seedUsuarios() {
             contrasenia: "Agustín321#",
             genero: "masculino",
             universidad: "UNJu",
-            carrera: "Ingeniería"
+            carrera: "Ingeniería",
+            lat: -24.188,
+            lng: -65.305
         },
         {
             rol: "alumno",
@@ -117,7 +135,9 @@ async function seedUsuarios() {
             contrasenia: "Florencia321#",
             genero: "femenino",
             universidad: "UNJu",
-            carrera: "APU"
+            carrera: "APU",
+            lat: -24.181,
+            lng: -65.319
         },
         {
             rol: "alumno",
@@ -127,7 +147,9 @@ async function seedUsuarios() {
             contrasenia: "Bruno321#",
             genero: "masculino",
             universidad: "UNJu",
-            carrera: "Arquitectura"
+            carrera: "Arquitectura",
+            lat: -24.192,
+            lng: -65.323
         },
         {
             rol: "alumno",
@@ -137,7 +159,9 @@ async function seedUsuarios() {
             contrasenia: "Valentina321#",
             genero: "femenino",
             universidad: "UNJu",
-            carrera: "Medicina"
+            carrera: "Medicina",
+            lat: -24.179,
+            lng: -65.299
         },
         {
             rol: "alumno",
@@ -147,7 +171,9 @@ async function seedUsuarios() {
             contrasenia: "Lucas321#",
             genero: "masculino",
             universidad: "UNJu",
-            carrera: "Contador"
+            carrera: "Contador",
+            lat: -24.184,
+            lng: -65.287
         }
 
     ];
@@ -167,6 +193,8 @@ async function seedUsuarios() {
             proveedorAuth: "local",
             foto: null,
             ubicacion: "San Salvador de Jujuy",
+            lat: u.lat,
+            lng: u.lng,
             universidad: u.universidad,
             carrera: u.carrera
         });
