@@ -2,6 +2,7 @@ require('dotenv').config(); // Mover al inicio del archivo
 
 const Usuario = require('../models/usuario.model');
 const passwordService = require('../services/password.service')
+const registrarAuditoria = require("../helpers/auditoria.helper");
 
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client( process.env.GOOGLE_CLIENT_ID );
@@ -39,6 +40,14 @@ autenticacionCtrl.signUpUsuario = async (req, res) => {
             universidad: data.universidad,
             carrera: data.carrera,
         });
+            await registrarAuditoria(
+                req,
+                "CREATE",
+                "Usuario",
+                usuario.id,
+                `Se registró el usuario ${usuario.nombre} ${usuario.apellido}`,
+                usuario.id
+            );
 
         return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
 
@@ -64,7 +73,15 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
 
         else {
             console.log("JWT_SECRET:", process.env.JWT_SECRET);
-            const unToken = jwt.sign({id: user.id}, process.env.JWT_SECRET); 
+            const unToken = jwt.sign({id: user.id}, process.env.JWT_SECRET);
+                await registrarAuditoria(
+                    req,
+                    "LOGIN",
+                    "Usuario",
+                    user.id,
+                    "Inicio de sesión",
+                    user.id
+                );
             res.json({
                 status: 1, msg: "success",
                 id: user.id, 
@@ -125,6 +142,14 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
                 carrera: data.carrera,
                 genero: data.genero,
             });
+            await registrarAuditoria(
+                    req,
+                    "CREATE",
+                    "Usuario",
+                    usuario.id,
+                    "Registro mediante Google",
+                    usuario.id
+                );
         }
         return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
         
@@ -155,12 +180,27 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
         });
 
         if (!usuario) {
+            await registrarAuditoria(
+                req,
+                "LOGIN_FAIL",
+                "Usuario",
+                null,
+                `Intento de inicio de sesión fallido para ${req.body.email}`
+            );
             return res.json({
                 status: 0,
                 msg: "Usuario no registrado"
             });
         }
         const unToken = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET);
+            await registrarAuditoria(
+                req,
+                "LOGIN_GOOGLE",
+                "Usuario",
+                usuario.id,
+                "Inicio de sesión con Google",
+                usuario.id
+            );
         console.log("Usuario encontrado en BD - proveedorAuth:", usuario.proveedorAuth);
         return res.json({
             status: 1,

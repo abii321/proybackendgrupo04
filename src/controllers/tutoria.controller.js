@@ -2,6 +2,7 @@ const Tutoria = require('../models/tutoria.model');
 const Usuario = require('../models/usuario.model');
 const Categoria = require('../models/categoria.model'); 
 const Calificacion = require('../models/calificacion.model');
+const registrarAuditoria = require("../helpers/auditoria.helper");
 const googleCalendarService = require('../services/google-calendar.service');
 
 const tutoriaCtrl = {};
@@ -60,6 +61,14 @@ tutoriaCtrl.createTutoria = async (req, res) => {
             fechaHora: req.body.fechaHora,
             estado: req.body.estado || 'pendiente'
         });
+        await registrarAuditoria(
+                req,
+                "CREATE",
+                "Tutoria",
+                nueva.id,
+                `El alumno ${alumno.nombre} ${alumno.apellido} solicitó una tutoría con ${profesor.nombre} ${profesor.apellido}`,
+                alumno.id
+            );
         res.json({ status: 1, msg: 'Tutoría creada correctamente', data: nueva });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al crear tutoría' });
@@ -104,6 +113,14 @@ tutoriaCtrl.editTutoria = async (req, res) => {
                 );
                 enlaceMeet = googleData.linkMeet || null;
                 eventId = googleData.idEvento;
+                    await registrarAuditoria(
+                    req,
+                    "CREATE",
+                    "GoogleCalendar",
+                    req.params.id,
+                    "Se creó el evento de Google Calendar y el enlace Meet.",
+                    profesor.id
+                  );
             } catch (googleError) {
                 console.error("Error en Google Calendar (usando fallback de simulación):", googleError);
                 enlaceMeet = modalidad === 'virtual' ? "https://meet.google.com/abc-defg-hij" : null;
@@ -123,6 +140,35 @@ tutoriaCtrl.editTutoria = async (req, res) => {
             enlaceMeet: enlaceMeet,
             googleEventId: eventId
         }, { where: { id: req.params.id } });
+            let descripcion = "Actualizó una tutoría";
+
+            switch(req.body.estado){
+
+                case "aceptada":
+                    descripcion =
+                    `El profesor ${profesor.nombre} ${profesor.apellido} aceptó la tutoría`;
+                    break;
+
+                case "rechazada":
+                    descripcion =
+                    `El profesor ${profesor.nombre} ${profesor.apellido} rechazó la tutoría`;
+                    break;
+
+                case "finalizada":
+                    descripcion =
+                    `La tutoría fue marcada como finalizada`;
+                    break;
+
+            }
+            await registrarAuditoria(
+                req,
+                "UPDATE",
+                "Tutoria",
+                req.params.id,
+                descripcion,
+                profesor.id
+            );
+
 
         res.json({ status: 1, msg: 'Tutoría actualizada correctamente', enlaceMeet: enlaceMeet });
     } catch (error) {
@@ -133,6 +179,14 @@ tutoriaCtrl.editTutoria = async (req, res) => {
 tutoriaCtrl.deleteTutoria = async (req, res) => {
     try {
         await Tutoria.destroy({ where: { id: req.params.id } });
+        await registrarAuditoria(
+            req,
+            "DELETE",
+            "Tutoria",
+            req.params.id,
+            "Se eliminó la tutoría",
+            null
+        );
         res.json({ status: 1, msg: 'Tutoría eliminada correctamente' });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al eliminar tutoría' });

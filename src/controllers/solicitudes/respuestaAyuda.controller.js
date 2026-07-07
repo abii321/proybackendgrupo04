@@ -1,6 +1,6 @@
 const RespuestaAyuda = require('./../../models/solicitudes/respuestaAyuda.model');
 const SolicitudAyuda = require('./../../models/solicitudes/solicitudAyuda.model');
-
+const registrarAuditoria = require("../../helpers/auditoria.helper");
 const respuestaCtrl = {};
 
 // Listar todas las respuestas por ID de solicitud (GET)
@@ -53,7 +53,10 @@ respuestaCtrl.createRespuesta = async (req, res) => {
        #swagger.responses[500] = { description: 'Error al crear respuesta.' }
     */
     try {
-        const solicitud = await SolicitudAyuda.findByPk(req.body.solicitudId);
+        console.log(req.body);
+        console.log(req.body.solicitudId);
+        console.log(req.body.usuarioId);
+        const solicitud = await SolicitudAyuda.findByPk(req.body.idSolicitud);
 
         if (!solicitud) {
             return res.status(404).json({
@@ -70,12 +73,13 @@ respuestaCtrl.createRespuesta = async (req, res) => {
         }
 
         const nueva = await RespuestaAyuda.create({
-            solicitudId: req.body.solicitudId,
-            usuarioId: req.body.usuarioId,
+            solicitudId: req.body.idSolicitud,
+            usuarioId: req.body.idUsuario,
             respuesta: req.body.respuesta,
             precio: req.body.precio,
             archivoAdjunto: req.body.archivoAdjunto
         });
+
 
         res.json({
             status: 1,
@@ -172,6 +176,14 @@ respuestaCtrl.aceptarRespuesta = async (req, res) => {
         await respuesta.update({
             estado: 'ACEPTADA'
         });
+        await registrarAuditoria(
+            req,
+            "UPDATE",
+            "RespuestaAyuda",
+            respuesta.id,
+            "Se aceptó una respuesta de ayuda.",
+            respuesta.id_usuario
+        );
 
         await SolicitudAyuda.update({
             estado: 'RESUELTA'
@@ -180,6 +192,14 @@ respuestaCtrl.aceptarRespuesta = async (req, res) => {
                 id: respuesta.solicitudId
             }
         });
+        await registrarAuditoria(
+            req,
+            "UPDATE",
+            "RespuestaAyuda",
+            respuesta.id,
+            "Se aceptó una respuesta de ayuda.",
+            respuesta.id_usuario
+        );
 
         res.json({
             status: 1,
@@ -218,6 +238,14 @@ respuestaCtrl.deleteRespuesta = async (req, res) => {
                 id: req.params.id
             }
         });
+                await registrarAuditoria(
+            req,
+            "DELETE",
+            "RespuestaAyuda",
+            req.params.id,
+            "Se eliminó una respuesta de ayuda.",
+            respuesta?.id_usuario
+        );
 
         res.json({
             status: 1,

@@ -151,7 +151,9 @@ async function seedProfesorCategorias() {
             estado: "activo"
         }
 
-    ]);
+    ],{ 
+    ignoreDuplicates: true // <--- ESTA LÍNEA EVITA QUE TU SERVIDOR SE CAIGA
+});
 
     console.log("ProfesorCategoria cargado.");
 }

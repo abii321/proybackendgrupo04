@@ -1,6 +1,6 @@
 const SolicitudAyuda = require('../../models/solicitudes/solicitudAyuda.model');
 const RespuestaAyuda = require('../../models/solicitudes/respuestaAyuda.model');
-
+const registrarAuditoria = require("../../helpers/auditoria.helper");
 const solicitudCtrl = {};
 
 // Listar todas las solicitudes (GET)
@@ -43,13 +43,19 @@ solicitudCtrl.getSolicitud = async (req, res) => {
     try {
         const solicitud = await SolicitudAyuda.findOne({
             where: { id: req.params.id },
-            include: [{ model: RespuestaAyuda, as: 'respuestas' }]
+            include: [{ model: RespuestaAyuda, as: 'respuestas' }
+                
+            ]
         });
         if (!solicitud) return res.json({ status: 0, msg: 'Solicitud no encontrada' });
 
         res.json({ status: 1, msg: 'success', data: solicitud });
     } catch (error) {
-        res.status(500).json({ status: 0, msg: 'Error al obtener solicitud' });
+        console.error(error);
+        res.status(500).json({
+            status: 0,
+            msg: "Error al obtener solicitud"
+        });
     }
 };
 
@@ -80,6 +86,19 @@ solicitudCtrl.createSolicitud = async (req, res) => {
             descripcion: req.body.descripcion,
             archivoAdjunto: req.body.archivoAdjunto
         });
+            await registrarAuditoria(
+
+            req,
+
+            "CREATE",
+
+            "SolicitudAyuda",
+
+            nueva.id,
+
+            `Creó la solicitud "${nueva.titulo}"`
+
+             );
         res.json({ status: 1, msg: 'Solicitud creada correctamente', data: nueva });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al crear solicitud' });
@@ -118,6 +137,14 @@ solicitudCtrl.editSolicitud = async (req, res) => {
             categoriaId: req.body.categoriaId,
             archivoAdjunto: req.body.archivoAdjunto
         }, { where: { id: req.params.id } });
+        await registrarAuditoria(
+            req,
+            "UPDATE",
+            "SolicitudAyuda",
+            req.params.id,
+            "Se actualizó la solicitud de ayuda",
+            null
+        );
         res.json({ status: 1, msg: 'Solicitud actualizada correctamente' });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al actualizar solicitud' });
@@ -143,9 +170,18 @@ solicitudCtrl.cerrarSolicitud = async (req, res) => {
        #swagger.responses[500] = { description: 'Error al cerrar solicitud.' }
     */
     try {
+        const solicitud = await SolicitudAyuda.findByPk(req.params.id);
         await SolicitudAyuda.update(
             { estado: 'CERRADA' },
             { where: { id: req.params.id } }
+        );
+         await registrarAuditoria(
+            req,
+            "UPDATE",
+            "SolicitudAyuda",
+            solicitud.id,
+            `Se cerró la solicitud "${solicitud.titulo}"`,
+            solicitud.id_usuario
         );
         res.json({ status: 1, msg: 'Solicitud cerrada correctamente' });
     } catch (error) {
@@ -172,7 +208,16 @@ solicitudCtrl.deleteSolicitud = async (req, res) => {
        #swagger.responses[500] = { description: 'Error al eliminar solicitud.' }
     */
     try {
+        const solicitud = await SolicitudAyuda.findByPk(req.params.id);
         await SolicitudAyuda.destroy({ where: { id: req.params.id } });
+          await registrarAuditoria(
+            req,
+            "DELETE",
+            "SolicitudAyuda",
+            req.params.id,
+            `Se eliminó la solicitud "${solicitud?.titulo}"`,
+            solicitud?.id_usuario
+        );
         res.json({ status: 1, msg: 'Solicitud eliminada correctamente' });
     } catch (error) {
         res.status(500).json({ status: 0, msg: 'Error al eliminar solicitud' });

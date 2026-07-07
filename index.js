@@ -6,6 +6,8 @@ const sequelize = require('./config/database');
 const { DataTypes } = require('sequelize');
 
 const pagoRoutes = require("./src/routes/mercadoPago.route.js");
+
+require('./src/models/solicitudes/asociaciones.model.js'); // Importa las asociaciones para que se apliquen
 // --------------------------------
 //Creacion de la aplicacion 
 var app = express();
@@ -38,6 +40,7 @@ app.use('/api/categoria', require('./src/routes/categoria.route.js'));
 app.use('/api/mercadopago', require('./src/routes/mercadoPago.route.js'));
 app.use('/api/calificacion', require('./src/routes/calificacion.route.js'));
 
+app.use("/api/auditoria",require("./src/routes/auditoria.route.js"));
 
 // =========================
 // REDIRECCIONES DE MERCADO PAGO
@@ -89,7 +92,7 @@ const seedHorarios = require('./src/seeders/horariosDisponibles.seed.js');
 const seedAdmin = require('./src/seeders/admin.seed.js');
 
 
-sequelize.sync({ force: true })
+sequelize.sync({ force: false })
     .then(async () => {
         console.log('Tablas de PostgreSQL sincronizadas');
 

@@ -1,6 +1,7 @@
 const Usuario = require('../models/usuario.model');
 const Categoria = require('../models/categoria.model');
 const HorarioDisponible = require('../models/horarioDisponible.model');
+const registrarAuditoria = require("../helpers/auditoria.helper");
 
 const usuarioCtrl = {};
 
@@ -122,6 +123,14 @@ usuarioCtrl.updateUsuario = async (req, res) => {
                 { model: HorarioDisponible, as: 'horarios' }
             ]
         });
+                await registrarAuditoria(
+                    req,
+                    "UPDATE",
+                    "Usuario",
+                    usuario.id,
+                    `Actualizó el perfil del usuario ${usuario.nombre} ${usuario.apellido}`,
+                    usuario.id
+                );
 
         res.json({ status: '1', msg: 'Usuario actualizado correctamente.', usuario: usuarioActualizado });
     } catch (error) {
@@ -139,6 +148,14 @@ usuarioCtrl.addHorario = async (req, res) => {
             horaInicio: horaInicio,
             horaFin: horaFin
         });
+        await registrarAuditoria(
+            req,
+            "CREATE",
+            "HorarioDisponible",
+            nuevo.id,
+            `Agregó un horario (${diaSemana} ${horaInicio}-${horaFin})`,
+            usuarioId
+        );
         res.json({ status: 1, msg: 'Horario agregado correctamente', data: nuevo });
     } catch (error) {
         console.error(error);
@@ -150,6 +167,14 @@ usuarioCtrl.deleteHorario = async (req, res) => {
     try {
         const { id } = req.params;
         await HorarioDisponible.destroy({ where: { id } });
+        await registrarAuditoria(
+            req,
+            "DELETE",
+            "HorarioDisponible",
+            id,
+            `Eliminó un horario`,
+            null
+        );
         res.json({ status: 1, msg: 'Horario eliminado correctamente' });
     } catch (error) {
         console.error(error);
