@@ -4,8 +4,45 @@ const Categoria = require('../models/categoria.model');
 const Calificacion = require('../models/calificacion.model');
 const registrarAuditoria = require("../helpers/auditoria.helper");
 const googleCalendarService = require('../services/google-calendar.service');
+const sanitizeHtml = require('sanitize-html');
 
 const tutoriaCtrl = {};
+const solicitudCtrl = {};
+
+solicitudCtrl.createSolicitud = async (req, res) => {
+    try {
+        const data = req.body;
+
+        const textoOriginal = data.mensaje || ""; 
+        
+        // sanitizeHtml se encarga de borrar cualquier etiqueta <script>, <iframe> o HTML peligroso
+        const mensajeSeguro = sanitizeHtml(textoOriginal);
+
+        // Guardamos en la base de datos usando la versión LIMPIA
+        const nuevaSolicitud = await Tutoria.create({
+            usuarioId: data.usuarioId,
+            profesorId: data.profesorId,
+            categoriaId: data.categoriaId,
+            fechaHora: data.fechaHora,
+            modalidad: data.modalidad,
+            precio: data.precio,
+
+            mensaje: mensajeSeguro 
+        });
+
+        return res.status(201).json({ 
+            status: 1, 
+            msg: "Solicitud registrada correctamente", 
+            data: nuevaSolicitud 
+        });
+
+    } catch (error) {
+        console.log("Error al crear solicitud:", error);
+        return res.status(500).json({ status: 0, msg: "Error interno del servidor" });
+    }
+}
+
+module.exports = solicitudCtrl;
 
 tutoriaCtrl.getTutorias = async (req, res) => {
     /* #swagger.tags = ['Tutorias']
