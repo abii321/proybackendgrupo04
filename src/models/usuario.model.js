@@ -17,7 +17,7 @@ const Usuario = sequelize.define('Usuario', {
     lng: { type: DataTypes.FLOAT, allowNull: true },
     universidad: { type: DataTypes.STRING, allowNull: false},
     carrera: { type: DataTypes.STRING, allowNull: false },
-    
+    //descripcion: { type: DataTypes.STRING, allowNull: true }
 }, {
     tableName: 'usuarios',
     timestamps: true,
