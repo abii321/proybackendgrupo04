@@ -84,7 +84,7 @@ usuarioCtrl.getUsuarios = async (req, res) => {
                     const suma = calificaciones.reduce((sum, c) => sum + c.calificacion, 0);
                     userJson.rating = parseFloat((suma / calificaciones.length).toFixed(1));
                 } else {
-                    userJson.rating = 5.0;
+                    userJson.rating = 0.0;
                 }
             }
             usuariosData.push(userJson);

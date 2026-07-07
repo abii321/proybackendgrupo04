@@ -53,9 +53,6 @@ respuestaCtrl.createRespuesta = async (req, res) => {
        #swagger.responses[500] = { description: 'Error al crear respuesta.' }
     */
     try {
-        console.log(req.body);
-        console.log(req.body.solicitudId);
-        console.log(req.body.usuarioId);
         const solicitud = await SolicitudAyuda.findByPk(req.body.idSolicitud);
 
         if (!solicitud) {

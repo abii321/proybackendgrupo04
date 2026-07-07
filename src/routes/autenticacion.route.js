@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const autenticacionCtrl = require('../controllers/autenticacion.controller');
 const { body, validationResult } = require('express-validator');
+const loginLimiter = require('../middleware/loginIntentos');
 
 const validarCampos = (req, res, next) => {
     const errores = validationResult(req);
@@ -20,7 +21,7 @@ router.post('/signup', [
     validarCampos
 ], autenticacionCtrl.signUpUsuario);
 router.post('/signUp', autenticacionCtrl.signUpUsuario);
-router.post('/login', autenticacionCtrl.loginUsuario);
+router.post('/login', loginLimiter, autenticacionCtrl.loginUsuario);
 router.post('/signUpGoogle', autenticacionCtrl.signUpGoogle);
 router.post('/loginGoogle', autenticacionCtrl.loginGoogle);
 //router.post('/vincularGoogle', autenticacionCtrl.vincularGoogle);

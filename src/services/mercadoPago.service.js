@@ -8,7 +8,6 @@ const client = new MercadoPagoConfig({
     accessToken: process.env.MP_ACCESS_TOKEN
     
 });
-console.log(process.env.MP_ACCESS_TOKEN);
 
 const preference = new Preference(client);
 const payment = new Payment(client);
@@ -71,8 +70,6 @@ async function crearPreferencia(idRespuesta) {
     }
 
     const preferencia = await preference.create({ body });
-
-     console.log("ENTIDAD COMPLETA:", entidad);
 
     entidad.preferenceId = preferencia.id;
 
