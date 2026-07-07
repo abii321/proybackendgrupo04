@@ -161,6 +161,7 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
             });
         }
         const unToken = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET);
+        console.log("Usuario encontrado en BD - proveedorAuth:", usuario.proveedorAuth);
         return res.json({
             status: 1,
             msg: "success",
