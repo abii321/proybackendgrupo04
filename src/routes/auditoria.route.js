@@ -4,6 +4,8 @@ const router=express.Router();
 
 const auditoriaCtrl=require("../controllers/auditoria.controller");
 
-router.get("/",auditoriaCtrl.getAuditorias);
+const authCtrl = require("../controllers/auth.controller");
+
+router.get("/", authCtrl.verifyToken, authCtrl.verifyAdmin, auditoriaCtrl.getAuditorias);
 
 module.exports=router;
