@@ -67,7 +67,11 @@
   "paths": {
     "/pago-exitoso": {
       "get": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Redirección de pago exitoso",
+        "description": "Endpoint al que redirige MercadoPago cuando el pago es exitoso.",
         "responses": {
           "default": {
             "description": ""
@@ -77,7 +81,11 @@
     },
     "/pago-error": {
       "get": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Redirección de pago fallido",
+        "description": "Endpoint al que redirige MercadoPago cuando el pago falla.",
         "responses": {
           "default": {
             "description": ""
@@ -87,7 +95,11 @@
     },
     "/pago-pendiente": {
       "get": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Redirección de pago pendiente",
+        "description": "Endpoint al que redirige MercadoPago cuando el pago está pendiente.",
         "responses": {
           "default": {
             "description": ""
@@ -1758,7 +1770,11 @@
     },
     "/api/tutoria/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Listar todas las tutorías",
+        "description": "Obtiene el listado completo de todas las tutorías registradas, incluyendo información del alumno, profesor, categoría y calificación.",
         "parameters": [
           {
             "name": "authorization",
@@ -1768,18 +1784,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Listado obtenido con éxito.",
+            "schema": {
+              "$ref": "#/definitions/TutoriaResponse"
+            }
           },
           "401": {
             "description": "Unauthorized"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Crear una nueva tutoría",
+        "description": "Crea una nueva tutoría asignando un alumno y un profesor, definiendo la categoría, modalidad y precio.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "authorization",
@@ -1789,62 +1815,51 @@
           {
             "name": "body",
             "in": "body",
+            "description": "Datos necesarios para la tutoría.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "alumnoId": {
-                  "example": "any"
-                },
-                "profesorId": {
-                  "example": "any"
-                },
-                "categoriaId": {
-                  "example": "any"
-                },
-                "modalidad": {
-                  "example": "any"
-                },
-                "precioAcordado": {
-                  "example": "any"
-                },
-                "mensaje": {
-                  "example": "any"
-                },
-                "fechaHora": {
-                  "example": "any"
-                },
-                "estado": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/TutoriaRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Tutoría creada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/TutoriaResponse"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "El alumno o profesor es inválido."
           },
           "401": {
             "description": "Unauthorized"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/tutoria/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Obtener una tutoría por ID",
+        "description": "Busca y retorna los detalles de una tutoría en particular mediante su ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID de la tutoría a buscar"
           },
           {
             "name": "authorization",
@@ -1854,24 +1869,38 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Tutoría encontrada.",
+            "schema": {
+              "$ref": "#/definitions/TutoriaResponse"
+            }
           },
           "401": {
             "description": "Unauthorized"
           },
+          "404": {
+            "description": "Tutoría no encontrada."
+          },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Actualizar o cambiar estado de una tutoría",
+        "description": "Permite modificar los datos de una tutoría (incluyendo estado). Si el estado cambia a \"aceptada\", se generará automáticamente un evento y un enlace de Google Meet si corresponde.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID de la tutoría a actualizar"
           },
           {
             "name": "authorization",
@@ -1881,46 +1910,19 @@
           {
             "name": "body",
             "in": "body",
+            "description": "Datos de la tutoría a actualizar.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "alumnoId": {
-                  "example": "any"
-                },
-                "profesorId": {
-                  "example": "any"
-                },
-                "categoriaId": {
-                  "example": "any"
-                },
-                "modalidad": {
-                  "example": "any"
-                },
-                "precioAcordado": {
-                  "example": "any"
-                },
-                "mensaje": {
-                  "example": "any"
-                },
-                "fechaHora": {
-                  "example": "any"
-                },
-                "enlaceMeet": {
-                  "example": "any"
-                },
-                "googleEventId": {
-                  "example": "any"
-                },
-                "estado": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/TutoriaRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Tutoría actualizada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -1929,21 +1931,31 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Not Found"
+            "description": "Tutoría no encontrada."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Eliminar una tutoría",
+        "description": "Elimina una tutoría por su ID. Falla si tiene registros dependientes a menos que se hayan eliminado previamente.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID de la tutoría a eliminar."
           },
           {
             "name": "authorization",
@@ -1953,15 +1965,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Tutoría eliminada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "401": {
             "description": "Unauthorized"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/categoria/profesor": {
@@ -2378,6 +2398,23 @@
         }
       }
     },
+    "/api/auditoria/": {
+      "get": {
+        "tags": [
+          "Auditorias"
+        ],
+        "summary": "Obtener todas las auditorías",
+        "description": "Retorna una lista de todas las auditorías, incluyendo información del usuario.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/precio/": {
       "get": {
         "tags": [
@@ -2707,6 +2744,10 @@
           "type": "number",
           "example": 1
         },
+        "categoriaId": {
+          "type": "number",
+          "example": 2
+        },
         "titulo": {
           "type": "string",
           "example": "Necesito ayuda con cálculo"
@@ -2768,11 +2809,11 @@
     "RespuestaAyuda": {
       "type": "object",
       "properties": {
-        "solicitudId": {
+        "idSolicitud": {
           "type": "number",
           "example": 1
         },
-        "usuarioId": {
+        "idUsuario": {
           "type": "number",
           "example": 3
         },
@@ -2873,6 +2914,93 @@
         "estado": {
           "type": "string",
           "example": "activo"
+        }
+      }
+    },
+    "TutoriaRequest": {
+      "type": "object",
+      "properties": {
+        "alumnoId": {
+          "type": "number",
+          "example": 1
+        },
+        "profesorId": {
+          "type": "number",
+          "example": 2
+        },
+        "categoriaId": {
+          "type": "number",
+          "example": 1
+        },
+        "modalidad": {
+          "type": "string",
+          "example": "virtual"
+        },
+        "precioAcordado": {
+          "type": "number",
+          "example": 1500
+        },
+        "mensaje": {
+          "type": "string",
+          "example": "Necesito clases de preparación para el parcial"
+        },
+        "fechaHora": {
+          "type": "string",
+          "example": "2025-06-01T10:00:00.000Z"
+        }
+      }
+    },
+    "TutoriaResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "alumnoId": {
+              "type": "number",
+              "example": 1
+            },
+            "profesorId": {
+              "type": "number",
+              "example": 2
+            },
+            "categoriaId": {
+              "type": "number",
+              "example": 1
+            },
+            "modalidad": {
+              "type": "string",
+              "example": "virtual"
+            },
+            "precioAcordado": {
+              "type": "number",
+              "example": 1500
+            },
+            "mensaje": {
+              "type": "string",
+              "example": "Necesito clases de preparación para el parcial"
+            },
+            "fechaHora": {
+              "type": "string",
+              "example": "2025-06-01T10:00:00.000Z"
+            },
+            "estado": {
+              "type": "string",
+              "example": "pendiente"
+            }
+          }
         }
       }
     },

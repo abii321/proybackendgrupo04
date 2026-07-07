@@ -105,6 +105,7 @@ const doc = {
         // ── Solicitud de Ayuda ──────────────────────────────────────────────
         SolicitudAyuda: {
             usuarioId: 1,
+            categoriaId: 2,
             titulo: 'Necesito ayuda con cálculo',
             descripcion: 'No entiendo integrales dobles.',
             archivoAdjunto: null
@@ -125,8 +126,8 @@ const doc = {
         },
         // ── Respuesta de Ayuda ──────────────────────────────────────────────
         RespuestaAyuda: {
-            solicitudId: 1,
-            usuarioId: 3,
+            idSolicitud: 1,
+            idUsuario: 3,
             respuesta: 'Puedo ayudarte con integrales dobles.',
             precio: 500,
             archivoAdjunto: null
@@ -159,6 +160,30 @@ const doc = {
             estado: 'activo'
         },
         // ── Admin: Tutoría ──────────────────────────────────────────────────
+        TutoriaRequest: {
+            alumnoId: 1,
+            profesorId: 2,
+            categoriaId: 1,
+            modalidad: 'virtual',
+            precioAcordado: 1500,
+            mensaje: 'Necesito clases de preparación para el parcial',
+            fechaHora: '2025-06-01T10:00:00.000Z'
+        },
+        TutoriaResponse: {
+            status: 1,
+            msg: 'success',
+            data: {
+                id: 1,
+                alumnoId: 1,
+                profesorId: 2,
+                categoriaId: 1,
+                modalidad: 'virtual',
+                precioAcordado: 1500,
+                mensaje: 'Necesito clases de preparación para el parcial',
+                fechaHora: '2025-06-01T10:00:00.000Z',
+                estado: 'pendiente'
+            }
+        },
         AdminUpdateTutoria: {
             estado: 'CONFIRMADA',
             modalidad: 'virtual',

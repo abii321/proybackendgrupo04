@@ -48,6 +48,9 @@ app.use("/api/auditoria",require("./src/routes/auditoria.route.js"));
 // =========================
 
 app.get("/pago-exitoso", (req, res) => {
+    // #swagger.tags = ['MercadoPago']
+    // #swagger.summary = 'Redirección de pago exitoso'
+    // #swagger.description = 'Endpoint al que redirige MercadoPago cuando el pago es exitoso.'
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
     res.redirect(
         `${frontendUrl}/pago-exitoso?` +
@@ -56,6 +59,9 @@ app.get("/pago-exitoso", (req, res) => {
 });
 
 app.get("/pago-error", (req, res) => {
+    // #swagger.tags = ['MercadoPago']
+    // #swagger.summary = 'Redirección de pago fallido'
+    // #swagger.description = 'Endpoint al que redirige MercadoPago cuando el pago falla.'
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
     res.redirect(
         `${frontendUrl}/pago-error?` +
@@ -64,6 +70,9 @@ app.get("/pago-error", (req, res) => {
 });
 
 app.get("/pago-pendiente", (req, res) => {
+    // #swagger.tags = ['MercadoPago']
+    // #swagger.summary = 'Redirección de pago pendiente'
+    // #swagger.description = 'Endpoint al que redirige MercadoPago cuando el pago está pendiente.'
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
     res.redirect(
         `${frontendUrl}/pago-pendiente?` +
