@@ -93,7 +93,7 @@ sequelize.sync({ force: true })
     .then(async () => {
         console.log('Tablas de PostgreSQL sincronizadas');
 
-        // datos precargados
+        //  datos precargados
         await seedPrecios();
         await seedCategorias();
         await seedUsuarios();
