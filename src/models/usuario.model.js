@@ -10,14 +10,14 @@ const Usuario = sequelize.define('Usuario', {
     contraseniaHash: { type: DataTypes.STRING, allowNull: true }, 
     genero: { type: DataTypes.ENUM('femenino', 'masculino'), allowNull: false },
     estado: { type: DataTypes.ENUM('activo','inactivo'), allowNull: false },
-    proveedorAuth: { type: DataTypes.ENUM('local','Google','Microsoft'), allowNull: false},
+    proveedorAuth: { type: DataTypes.ENUM('local','Google'), allowNull: false},
     foto: { type: DataTypes.STRING, allowNull: true },
     ubicacion: { type: DataTypes.STRING, allowNull: true },
     lat: { type: DataTypes.FLOAT, allowNull: true },
     lng: { type: DataTypes.FLOAT, allowNull: true },
     universidad: { type: DataTypes.STRING, allowNull: false},
     carrera: { type: DataTypes.STRING, allowNull: false },
-    
+    //descripcion: { type: DataTypes.STRING, allowNull: true }
 }, {
     tableName: 'usuarios',
     timestamps: true,

@@ -5,8 +5,9 @@ const authCtrl = require('./../../controllers/auth.controller');
 
 router.get('/solicitud/:solicitudId', respuestaCtrl.getRespuestasBySolicitud);
 
-// Proteger todas las rutas de solicitudes (requiere sesión iniciada)
+// Proteger todas las rutas de respuestas (requiere sesión iniciada)
 router.use(authCtrl.verifyToken);
+
 router.post('/', respuestaCtrl.createRespuesta);
 router.put('/:id', respuestaCtrl.editRespuesta);
 router.put('/:id/aceptar', respuestaCtrl.aceptarRespuesta);

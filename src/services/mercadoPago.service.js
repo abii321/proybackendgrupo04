@@ -28,34 +28,48 @@ async function crearPreferencia(idRespuesta) {
     const precioCobrar = tipo === 'ayuda' ? Number(entidad.precio) : Number(entidad.precioAcordado);
     const tituloItem = tipo === 'ayuda' ? "Pago de respuesta a solicitud de ayuda" : "Pago de sesión de tutoría";
 
-    const preferencia = await preference.create({
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
+    const prodFrontendUrl = process.env.PRODUCTION_FRONTEND_URL;
 
-        body: {
+    const isBridge = !!prodFrontendUrl;
+    const targetFrontendUrl = isBridge ? prodFrontendUrl : frontendUrl;
 
-            items: [
-                {
-                    title: tituloItem,
-                    quantity: 1,
-                    currency_id: "ARS",
-                    unit_price: precioCobrar
-                }
-            ],
+    const backUrls = isBridge 
+        ? {
+            success: `${targetFrontendUrl}/pago-bridge?target=pago-exitoso`,
+            failure: `${targetFrontendUrl}/pago-bridge?target=pago-error`,
+            pending: `${targetFrontendUrl}/pago-bridge?target=pago-pendiente`
+          }
+        : {
+            success: `${targetFrontendUrl}/pago-exitoso`,
+            failure: `${targetFrontendUrl}/pago-error`,
+            pending: `${targetFrontendUrl}/pago-pendiente`
+          };
 
-            external_reference: `${tipo}:${entidad.id}`,
+    const body = {
 
-            notification_url: "https://thesaurus-thong-doing.ngrok-free.dev/api/mercadopago/webhook",
+        items: [
+            {
+                title: tituloItem,
+                quantity: 1,
+                currency_id: "ARS",
+                unit_price: precioCobrar
+            }
+        ],
 
-           back_urls: {
-                success: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-exitoso`,
-                failure: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-error`,
-                pending: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-pendiente`
-            },
-            auto_return: "approved"
-        
+        external_reference: `${tipo}:${entidad.id}`,
 
-        }
+        notification_url: "https://thesaurus-thong-doing.ngrok-free.dev/api/mercadopago/webhook",
 
-    });
+        back_urls: backUrls
+
+    };
+
+    if (targetFrontendUrl.startsWith("https://")) {
+        body.auto_return = "approved";
+    }
+
+    const preferencia = await preference.create({ body });
 
      console.log("ENTIDAD COMPLETA:", entidad);
 

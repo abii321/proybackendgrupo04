@@ -3,12 +3,6 @@ const sequelize = require('../../config/database');
 const Tutoria = require('./tutoria.model');
 
 const Calificacion = sequelize.define('Calificacion', {
-    tutoriaId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: true,
-        references: { model: 'tutorias', key: 'id' }
-    },
     calificacion: {
         type: DataTypes.INTEGER,
         allowNull: false,
