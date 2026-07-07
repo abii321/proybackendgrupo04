@@ -92,7 +92,7 @@ const seedHorarios = require('./src/seeders/horariosDisponibles.seed.js');
 const seedAdmin = require('./src/seeders/admin.seed.js');
 
 
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
     .then(async () => {
         console.log('Tablas de PostgreSQL sincronizadas');
 
