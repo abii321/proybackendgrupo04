@@ -4,7 +4,9 @@ const Usuario = require("../models/usuario.model");
 const auditoriaCtrl = {};
 
 auditoriaCtrl.getAuditorias = async(req,res)=>{
-
+    // #swagger.tags = ['Auditorias']
+    // #swagger.summary = 'Obtener todas las auditorías'
+    // #swagger.description = 'Retorna una lista de todas las auditorías, incluyendo información del usuario.'
     try{
 
         const auditorias = await Auditoria.findAll({

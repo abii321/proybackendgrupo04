@@ -1,16 +1,20 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "TutorMatch API",
-    "description": "Documentación de la API de TutorMatch — Grupo 04",
+    "title": "Tutorias API",
+    "description": "Documentación de la API de Tutorias — Grupo 04",
     "version": "1.0.0"
   },
   "host": "localhost:3000",
   "basePath": "/",
   "tags": [
     {
-      "name": "Admin",
-      "description": "Operaciones de administración (usuarios, tutorías, categorías y métricas)."
+      "name": "Autenticacion",
+      "description": "Operaciones de inicio de sesión y registro de usuarios."
+    },
+    {
+      "name": "Usuarios",
+      "description": "Operaciones para gestionar perfiles de alumnos y profesores."
     },
     {
       "name": "Solicitudes",
@@ -19,6 +23,34 @@
     {
       "name": "Respuestas",
       "description": "Operaciones relacionadas con las respuestas a las solicitudes."
+    },
+    {
+      "name": "Categorias",
+      "description": "Operaciones sobre categorías de asignaturas."
+    },
+    {
+      "name": "Horarios",
+      "description": "Operaciones sobre horarios disponibles de profesores."
+    },
+    {
+      "name": "Calificaciones",
+      "description": "Operaciones para calificar y obtener opiniones de tutorías."
+    },
+    {
+      "name": "MercadoPago",
+      "description": "Operaciones de integración con Mercado Pago."
+    },
+    {
+      "name": "Precios",
+      "description": "Operaciones sobre la lista de precios base."
+    },
+    {
+      "name": "Chat",
+      "description": "Operaciones de asistencia con Inteligencia Artificial."
+    },
+    {
+      "name": "Admin",
+      "description": "Operaciones de administración (usuarios, tutorías, categorías y métricas)."
     }
   ],
   "schemes": [
@@ -35,7 +67,11 @@
   "paths": {
     "/pago-exitoso": {
       "get": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Redirección de pago exitoso",
+        "description": "Endpoint al que redirige MercadoPago cuando el pago es exitoso.",
         "responses": {
           "default": {
             "description": ""
@@ -45,7 +81,11 @@
     },
     "/pago-error": {
       "get": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Redirección de pago fallido",
+        "description": "Endpoint al que redirige MercadoPago cuando el pago falla.",
         "responses": {
           "default": {
             "description": ""
@@ -55,7 +95,11 @@
     },
     "/pago-pendiente": {
       "get": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Redirección de pago pendiente",
+        "description": "Endpoint al que redirige MercadoPago cuando el pago está pendiente.",
         "responses": {
           "default": {
             "description": ""
@@ -932,154 +976,131 @@
     },
     "/api/autenticacion/signUp": {
       "post": {
-        "description": "",
+        "tags": [
+          "Autenticacion"
+        ],
+        "summary": "Registrar usuario local",
+        "description": "Registra un nuevo usuario en la base de datos con autenticación local.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Datos del usuario a registrar.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "contrasenia": {
-                  "example": "any"
-                },
-                "nombre": {
-                  "example": "any"
-                },
-                "apellido": {
-                  "example": "any"
-                },
-                "genero": {
-                  "example": "any"
-                },
-                "rol": {
-                  "example": "any"
-                },
-                "ubicacion": {
-                  "example": "any"
-                },
-                "lat": {
-                  "example": "any"
-                },
-                "lng": {
-                  "example": "any"
-                },
-                "universidad": {
-                  "example": "any"
-                },
-                "carrera": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/SignUpRequest"
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Usuario registrado correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "El email ya está registrado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al registrar usuario."
           }
         }
       }
     },
     "/api/autenticacion/login": {
       "post": {
-        "description": "",
+        "tags": [
+          "Autenticacion"
+        ],
+        "summary": "Iniciar sesión local",
+        "description": "Autentica a un usuario local y retorna su token JWT.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Credenciales de acceso.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/LoginRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Autenticación exitosa.",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Faltan credenciales."
           }
         }
       }
     },
     "/api/autenticacion/signUpGoogle": {
       "post": {
-        "description": "",
+        "tags": [
+          "Autenticacion"
+        ],
+        "summary": "Registrar usuario con Google",
+        "description": "Registra un nuevo usuario autenticado a través de Google.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Datos del usuario de Google y del perfil.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "token": {
-                  "example": "any"
-                },
-                "rol": {
-                  "example": "any"
-                },
-                "ubicacion": {
-                  "example": "any"
-                },
-                "lat": {
-                  "example": "any"
-                },
-                "lng": {
-                  "example": "any"
-                },
-                "universidad": {
-                  "example": "any"
-                },
-                "carrera": {
-                  "example": "any"
-                },
-                "genero": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/GoogleAuthRequest"
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Usuario registrado correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al registrar usuario."
           }
         }
       }
     },
     "/api/autenticacion/loginGoogle": {
       "post": {
-        "description": "",
+        "tags": [
+          "Autenticacion"
+        ],
+        "summary": "Iniciar sesión con Google",
+        "description": "Inicia sesión utilizando un token ID de Google.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Token de Google.",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "token": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "eyJhbGciOi..."
                 }
               }
             }
@@ -1087,147 +1108,210 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Autenticación exitosa.",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error en el servidor."
           }
         }
       }
     },
     "/api/usuario/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Listar usuarios o profesores",
+        "description": "Retorna todos los usuarios registrados. Permite filtrar por rol (ej. ?rol=profesor) para obtener sus tutorías dictadas, opiniones y rating.",
         "parameters": [
           {
             "name": "rol",
+            "in": "query",
+            "description": "Filtrar por rol: alumno, profesor, admin.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "schema",
             "in": "query",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Usuarios obtenidos correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/UsuarioUpdateRequest"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al obtener los usuarios."
           }
         }
       }
     },
     "/api/usuario/{id}": {
       "put": {
-        "description": "",
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Actualizar datos de perfil",
+        "description": "Actualiza la información del perfil del usuario (nombre, apellido, ubicación, carrera, tarifa base, etc.).",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID del usuario a actualizar."
           },
           {
             "name": "body",
             "in": "body",
+            "description": "Datos actualizados del usuario.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "nombre": {
-                  "example": "any"
-                },
-                "apellido": {
-                  "example": "any"
-                },
-                "ubicacion": {
-                  "example": "any"
-                },
-                "universidad": {
-                  "example": "any"
-                },
-                "carrera": {
-                  "example": "any"
-                },
-                "nivelAcademico": {
-                  "example": "any"
-                },
-                "biografia": {
-                  "example": "any"
-                },
-                "tarifaBase": {
-                  "example": "any"
-                },
-                "perfilProfesor": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/UsuarioUpdateRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Usuario actualizado correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "Usuario actualizado correctamente."
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Usuario no encontrado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al actualizar el usuario."
           }
         }
       }
     },
     "/api/usuario/horario": {
       "post": {
-        "description": "",
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Agregar horario disponible a profesor",
+        "description": "Registra un nuevo intervalo de disponibilidad horaria para un profesor.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Datos del nuevo horario.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "usuarioId": {
-                  "example": "any"
-                },
-                "diaSemana": {
-                  "example": "any"
-                },
-                "horaInicio": {
-                  "example": "any"
-                },
-                "horaFin": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/UsuarioAddHorarioRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Horario agregado correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "Horario agregado correctamente"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al agregar horario."
           }
         }
       }
     },
     "/api/usuario/horario/{id}": {
       "delete": {
-        "description": "",
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Eliminar horario disponible de profesor",
+        "description": "Elimina físicamente un intervalo de disponibilidad horaria.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID del horario disponible a eliminar."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Horario eliminado correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "Horario eliminado correctamente"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al eliminar horario."
           }
         }
       }
@@ -1686,463 +1770,641 @@
     },
     "/api/tutoria/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Listar todas las tutorías",
+        "description": "Obtiene el listado completo de todas las tutorías registradas, incluyendo información del alumno, profesor, categoría y calificación.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Listado obtenido con éxito.",
+            "schema": {
+              "$ref": "#/definitions/TutoriaResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Crear una nueva tutoría",
+        "description": "Crea una nueva tutoría asignando un alumno y un profesor, definiendo la categoría, modalidad y precio.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
+            "description": "Datos necesarios para la tutoría.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "alumnoId": {
-                  "example": "any"
-                },
-                "profesorId": {
-                  "example": "any"
-                },
-                "categoriaId": {
-                  "example": "any"
-                },
-                "modalidad": {
-                  "example": "any"
-                },
-                "precioAcordado": {
-                  "example": "any"
-                },
-                "mensaje": {
-                  "example": "any"
-                },
-                "fechaHora": {
-                  "example": "any"
-                },
-                "estado": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/TutoriaRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Tutoría creada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/TutoriaResponse"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "El alumno o profesor es inválido."
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/tutoria/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Obtener una tutoría por ID",
+        "description": "Busca y retorna los detalles de una tutoría en particular mediante su ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "integer",
+            "description": "ID de la tutoría a buscar"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Tutoría encontrada.",
+            "schema": {
+              "$ref": "#/definitions/TutoriaResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tutoría no encontrada."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Actualizar o cambiar estado de una tutoría",
+        "description": "Permite modificar los datos de una tutoría (incluyendo estado). Si el estado cambia a \"aceptada\", se generará automáticamente un evento y un enlace de Google Meet si corresponde.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "integer",
+            "description": "ID de la tutoría a actualizar"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
             "type": "string"
           },
           {
             "name": "body",
             "in": "body",
+            "description": "Datos de la tutoría a actualizar.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "alumnoId": {
-                  "example": "any"
-                },
-                "profesorId": {
-                  "example": "any"
-                },
-                "categoriaId": {
-                  "example": "any"
-                },
-                "modalidad": {
-                  "example": "any"
-                },
-                "precioAcordado": {
-                  "example": "any"
-                },
-                "mensaje": {
-                  "example": "any"
-                },
-                "fechaHora": {
-                  "example": "any"
-                },
-                "enlaceMeet": {
-                  "example": "any"
-                },
-                "googleEventId": {
-                  "example": "any"
-                },
-                "estado": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/TutoriaRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Tutoría actualizada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
-            "description": "Not Found"
+            "description": "Tutoría no encontrada."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Tutorias"
+        ],
+        "summary": "Eliminar una tutoría",
+        "description": "Elimina una tutoría por su ID. Falla si tiene registros dependientes a menos que se hayan eliminado previamente.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "integer",
+            "description": "ID de la tutoría a eliminar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Tutoría eliminada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error del servidor."
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/categoria/profesor": {
       "post": {
-        "description": "",
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Asociar profesor a categoría",
+        "description": "Establece una relación activa entre un profesor y una categoría.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Datos de la asociación.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "profesorId": {
-                  "example": "any"
-                },
-                "categoriaId": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/AsociarProfesorRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Profesor asociado correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Profesor o categoría no válidos."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al asociar profesor."
           }
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Desasociar profesor de categoría",
+        "description": "Cambia a inactivo el estado de la relación entre el profesor y la categoría.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Datos de la desasociación.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "profesorId": {
-                  "example": "any"
-                },
-                "categoriaId": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/AsociarProfesorRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Profesor desasociado correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "La asociación no existe."
           },
           "409": {
-            "description": "Conflict"
+            "description": "El profesor tiene tutorías activas en esta categoría."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error interno al desasociar."
           }
         }
       }
     },
     "/api/categoria/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Listar todas las categorías",
+        "description": "Retorna la lista completa de asignaturas/categorías disponibles.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Categorías obtenidas correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al obtener categorías."
           }
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Crear una categoría",
+        "description": "Crea una nueva categoría de asignatura.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Datos de la categoría a crear.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "nombre": {
-                  "example": "any"
-                },
-                "descripcion": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/CategoriaRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Categoría creada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/CategoriaResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al crear categoría."
           }
         }
       }
     },
     "/api/categoria/profesor/{profesorId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Obtener categorías de un profesor",
+        "description": "Retorna todas las asignaturas activas que enseña un profesor específico.",
         "parameters": [
           {
             "name": "profesorId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID del profesor."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Categorías del profesor obtenidas correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "data": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al obtener categorías."
           }
         }
       }
     },
     "/api/categoria/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Obtener una categoría por ID",
+        "description": "Retorna los datos de una categoría específica.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID de la categoría."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Categoría encontrada.",
+            "schema": {
+              "$ref": "#/definitions/CategoriaResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al obtener categoría."
           }
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Actualizar una categoría",
+        "description": "Actualiza el nombre y descripción de una categoría existente.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID de la categoría a actualizar."
           },
           {
             "name": "body",
             "in": "body",
+            "description": "Datos actualizados de la categoría.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "nombre": {
-                  "example": "any"
-                },
-                "descripcion": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/CategoriaRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Categoría actualizada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al actualizar categoría."
           }
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Eliminar una categoría",
+        "description": "Elimina físicamente una categoría por su ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID de la categoría a eliminar."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Categoría eliminada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al eliminar categoría."
           }
         }
       }
     },
     "/api/mercadopago/crear-preferencia": {
       "post": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Crear preferencia de pago",
+        "description": "Genera una preferencia en Mercado Pago asociada a una respuesta de ayuda para poder iniciar el checkout en el frontend.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "ID de la respuesta de ayuda a pagar.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "respuestaId": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/PreferenciaRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Preferencia de pago creada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/PreferenciaResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al crear la preferencia."
           }
         }
       }
     },
     "/api/mercadopago/webhook": {
       "post": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Webhook de notificaciones de pago",
+        "description": "Recibe notificaciones instantáneas de pago (IPN) desde Mercado Pago para procesar y validar el estado de los pagos.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Payload enviado por Mercado Pago.",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Notificación procesada."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error interno."
           }
         }
       }
     },
     "/api/calificacion/": {
       "post": {
-        "description": "",
+        "tags": [
+          "Calificaciones"
+        ],
+        "summary": "Crear una calificación para una tutoría",
+        "description": "Permite al alumno calificar una tutoría finalizada o completada.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Datos de la calificación.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "tutoriaId": {
-                  "example": "any"
-                },
-                "calificacion": {
-                  "example": "any"
-                },
-                "comentario": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/CalificacionRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Calificación creada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/CalificacionResponse"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Faltan campos obligatorios o tutoría no finalizada."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Tutoría no encontrada."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al calificar la tutoría."
           }
         }
       }
     },
     "/api/calificacion/tutoria/{tutoriaId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Calificaciones"
+        ],
+        "summary": "Obtener calificación de una tutoría",
+        "description": "Obtiene los detalles de calificación asociados a un ID de tutoría.",
         "parameters": [
           {
             "name": "tutoriaId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID de la tutoría."
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Calificación obtenida correctamente.",
+            "schema": {
+              "$ref": "#/definitions/CalificacionResponse"
+            }
+          },
+          "500": {
+            "description": "Error al obtener calificación."
+          }
+        }
+      }
+    },
+    "/api/auditoria/": {
+      "get": {
+        "tags": [
+          "Auditorias"
+        ],
+        "summary": "Obtener todas las auditorías",
+        "description": "Retorna una lista de todas las auditorías, incluyendo información del usuario.",
         "responses": {
           "200": {
             "description": "OK"
@@ -2155,139 +2417,336 @@
     },
     "/api/precio/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Precios"
+        ],
+        "summary": "Obtener precios base",
+        "description": "Retorna la lista de precios y tarifas base registradas en el sistema.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Precios obtenidos correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al obtener precios."
           }
         }
       }
     },
     "/api/horarioDisponible/": {
       "post": {
-        "description": "",
+        "tags": [
+          "Horarios"
+        ],
+        "summary": "Crear un horario disponible",
+        "description": "Registra un nuevo horario disponible para dar tutorías.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Datos del horario.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "profesorId": {
-                  "example": "any"
-                },
-                "diaSemana": {
-                  "example": "any"
-                },
-                "horaInicio": {
-                  "example": "any"
-                },
-                "horaFin": {
-                  "example": "any"
-                },
-                "modalidad": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/HorarioRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Horario creado o reactivado correctamente.",
+            "schema": {
+              "$ref": "#/definitions/HorarioResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al crear horario."
           }
         }
       }
     },
     "/api/horarioDisponible/profesor/{profesorId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Horarios"
+        ],
+        "summary": "Obtener horarios de un profesor",
+        "description": "Retorna todos los horarios disponibles registrados como activos para un profesor.",
         "parameters": [
           {
             "name": "profesorId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID del profesor."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Horarios obtenidos correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "data": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al obtener horarios."
           }
         }
       }
     },
     "/api/horarioDisponible/{id}": {
       "delete": {
-        "description": "",
+        "tags": [
+          "Horarios"
+        ],
+        "summary": "Eliminar un horario",
+        "description": "Desactiva lógicamente el horario disponible de un profesor (lo marca como inactivo).",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID del horario disponible a eliminar."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Horario eliminado correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Horario no encontrado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al eliminar horario."
           }
         }
       }
     },
     "/api/chat/": {
       "post": {
-        "description": "",
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Consultar al asistente de IA",
+        "description": "Recibe una consulta, genera un prompt con el contexto del sistema de tutorías y retorna la respuesta de la IA.",
+        "consumes": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Mensaje para la IA.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/ChatRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Respuesta generada correctamente por la IA.",
+            "schema": {
+              "$ref": "#/definitions/ChatResponse"
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "El mensaje no puede estar vacío."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error al procesar el mensaje."
           }
         }
       }
     }
   },
   "definitions": {
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "admin@admin.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "Admin123!"
+        }
+      }
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "success"
+        },
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "email": {
+          "type": "string",
+          "example": "admin@admin.com"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Administrador"
+        },
+        "apellido": {
+          "type": "string",
+          "example": "Sistema"
+        },
+        "rol": {
+          "type": "string",
+          "example": "admin"
+        },
+        "token": {
+          "type": "string",
+          "example": "eyJhbGciOiJIUzI1NiIsIn..."
+        }
+      }
+    },
+    "SignUpRequest": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Juan"
+        },
+        "apellido": {
+          "type": "string",
+          "example": "Perez"
+        },
+        "email": {
+          "type": "string",
+          "example": "juan@example.com"
+        },
+        "contrasenia": {
+          "type": "string",
+          "example": "Juan123!"
+        },
+        "genero": {
+          "type": "string",
+          "example": "masculino"
+        },
+        "rol": {
+          "type": "string",
+          "example": "alumno"
+        },
+        "universidad": {
+          "type": "string",
+          "example": "UNC"
+        },
+        "carrera": {
+          "type": "string",
+          "example": "Ingeniería"
+        },
+        "ubicacion": {
+          "type": "string",
+          "example": "Cordoba, Argentina"
+        },
+        "lat": {
+          "type": "number",
+          "example": -31.416
+        },
+        "lng": {
+          "type": "number",
+          "example": -64.183
+        }
+      }
+    },
+    "GoogleAuthRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "example": "eyJhbGciOi..."
+        },
+        "rol": {
+          "type": "string",
+          "example": "alumno"
+        },
+        "universidad": {
+          "type": "string",
+          "example": "UNC"
+        },
+        "carrera": {
+          "type": "string",
+          "example": "Ingeniería"
+        },
+        "genero": {
+          "type": "string",
+          "example": "masculino"
+        },
+        "ubicacion": {
+          "type": "string",
+          "example": "Cordoba, Argentina"
+        },
+        "lat": {
+          "type": "number",
+          "example": -31.416
+        },
+        "lng": {
+          "type": "number",
+          "example": -64.183
+        }
+      }
+    },
     "SolicitudAyuda": {
       "type": "object",
       "properties": {
         "usuarioId": {
           "type": "number",
           "example": 1
+        },
+        "categoriaId": {
+          "type": "number",
+          "example": 2
         },
         "titulo": {
           "type": "string",
@@ -2350,11 +2809,11 @@
     "RespuestaAyuda": {
       "type": "object",
       "properties": {
-        "solicitudId": {
+        "idSolicitud": {
           "type": "number",
           "example": 1
         },
-        "usuarioId": {
+        "idUsuario": {
           "type": "number",
           "example": 3
         },
@@ -2442,7 +2901,7 @@
         },
         "universidad": {
           "type": "string",
-          "example": "UNC"
+          "example": "UNJU"
         },
         "carrera": {
           "type": "string",
@@ -2455,6 +2914,93 @@
         "estado": {
           "type": "string",
           "example": "activo"
+        }
+      }
+    },
+    "TutoriaRequest": {
+      "type": "object",
+      "properties": {
+        "alumnoId": {
+          "type": "number",
+          "example": 1
+        },
+        "profesorId": {
+          "type": "number",
+          "example": 2
+        },
+        "categoriaId": {
+          "type": "number",
+          "example": 1
+        },
+        "modalidad": {
+          "type": "string",
+          "example": "virtual"
+        },
+        "precioAcordado": {
+          "type": "number",
+          "example": 1500
+        },
+        "mensaje": {
+          "type": "string",
+          "example": "Necesito clases de preparación para el parcial"
+        },
+        "fechaHora": {
+          "type": "string",
+          "example": "2025-06-01T10:00:00.000Z"
+        }
+      }
+    },
+    "TutoriaResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "alumnoId": {
+              "type": "number",
+              "example": 1
+            },
+            "profesorId": {
+              "type": "number",
+              "example": 2
+            },
+            "categoriaId": {
+              "type": "number",
+              "example": 1
+            },
+            "modalidad": {
+              "type": "string",
+              "example": "virtual"
+            },
+            "precioAcordado": {
+              "type": "number",
+              "example": 1500
+            },
+            "mensaje": {
+              "type": "string",
+              "example": "Necesito clases de preparación para el parcial"
+            },
+            "fechaHora": {
+              "type": "string",
+              "example": "2025-06-01T10:00:00.000Z"
+            },
+            "estado": {
+              "type": "string",
+              "example": "pendiente"
+            }
+          }
         }
       }
     },
@@ -2497,6 +3043,294 @@
         "descripcion": {
           "type": "string",
           "example": "Cálculo, álgebra y estadística"
+        }
+      }
+    },
+    "CalificacionRequest": {
+      "type": "object",
+      "properties": {
+        "tutoriaId": {
+          "type": "number",
+          "example": 1
+        },
+        "calificacion": {
+          "type": "number",
+          "example": 5
+        },
+        "comentario": {
+          "type": "string",
+          "example": "Excelente clase, muy clara explicación."
+        }
+      }
+    },
+    "CalificacionResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "Calificación creada correctamente"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "tutoriaId": {
+              "type": "number",
+              "example": 1
+            },
+            "calificacion": {
+              "type": "number",
+              "example": 5
+            },
+            "comentario": {
+              "type": "string",
+              "example": "Excelente clase, muy clara explicación."
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2025-01-01T00:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "CategoriaRequest": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Física"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Mecánica, termodinámica y óptica"
+        }
+      }
+    },
+    "CategoriaResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "nombre": {
+              "type": "string",
+              "example": "Física"
+            },
+            "descripcion": {
+              "type": "string",
+              "example": "Mecánica, termodinámica y óptica"
+            }
+          }
+        }
+      }
+    },
+    "AsociarProfesorRequest": {
+      "type": "object",
+      "properties": {
+        "profesorId": {
+          "type": "number",
+          "example": 1
+        },
+        "categoriaId": {
+          "type": "number",
+          "example": 2
+        }
+      }
+    },
+    "HorarioRequest": {
+      "type": "object",
+      "properties": {
+        "profesorId": {
+          "type": "number",
+          "example": 1
+        },
+        "diaSemana": {
+          "type": "string",
+          "example": "Lunes"
+        },
+        "horaInicio": {
+          "type": "string",
+          "example": "09:00"
+        },
+        "horaFin": {
+          "type": "string",
+          "example": "11:00"
+        },
+        "modalidad": {
+          "type": "string",
+          "example": "virtual"
+        }
+      }
+    },
+    "HorarioResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "Horario creado"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "profesorId": {
+              "type": "number",
+              "example": 1
+            },
+            "diaSemana": {
+              "type": "string",
+              "example": "Lunes"
+            },
+            "horaInicio": {
+              "type": "string",
+              "example": "09:00"
+            },
+            "horaFin": {
+              "type": "string",
+              "example": "11:00"
+            },
+            "modalidad": {
+              "type": "string",
+              "example": "virtual"
+            },
+            "estado": {
+              "type": "string",
+              "example": "activo"
+            }
+          }
+        }
+      }
+    },
+    "PreferenciaRequest": {
+      "type": "object",
+      "properties": {
+        "respuestaId": {
+          "type": "number",
+          "example": 1
+        }
+      }
+    },
+    "PreferenciaResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "init_point": {
+          "type": "string",
+          "example": "https://www.mercadopago.com.ar/checkout/v1/redirect?..."
+        }
+      }
+    },
+    "ChatRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "¿Cuánto profesores activos hay?"
+        }
+      }
+    },
+    "ChatResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "string",
+          "example": "Según la información disponible, los profesores activos son 5..."
+        }
+      }
+    },
+    "UsuarioUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Juan"
+        },
+        "apellido": {
+          "type": "string",
+          "example": "Perez"
+        },
+        "ubicacion": {
+          "type": "string",
+          "example": "Cordoba, Argentina"
+        },
+        "universidad": {
+          "type": "string",
+          "example": "UNC"
+        },
+        "carrera": {
+          "type": "string",
+          "example": "Ingeniería"
+        },
+        "nivelAcademico": {
+          "type": "string",
+          "example": "universitario"
+        },
+        "biografia": {
+          "type": "string",
+          "example": "Me gusta estudiar programación."
+        },
+        "tarifaBase": {
+          "type": "number",
+          "example": 1200
+        }
+      }
+    },
+    "UsuarioAddHorarioRequest": {
+      "type": "object",
+      "properties": {
+        "usuarioId": {
+          "type": "number",
+          "example": 1
+        },
+        "diaSemana": {
+          "type": "string",
+          "example": "Martes"
+        },
+        "horaInicio": {
+          "type": "string",
+          "example": "14:00"
+        },
+        "horaFin": {
+          "type": "string",
+          "example": "16:00"
         }
       }
     },

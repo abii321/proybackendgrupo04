@@ -5,13 +5,30 @@ const passwordService = require('../services/password.service')
 const registrarAuditoria = require("../helpers/auditoria.helper");
 
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client( process.env.GOOGLE_CLIENT_ID );
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const jwt = require('jsonwebtoken');
 
 const autenticacionCtrl = {};
 
 autenticacionCtrl.signUpUsuario = async (req, res) => {
+    /* #swagger.tags = ['Autenticacion']
+       #swagger.summary = 'Registrar usuario local'
+       #swagger.description = 'Registra un nuevo usuario en la base de datos con autenticación local.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Datos del usuario a registrar.',
+         required: true,
+         schema: { $ref: '#/definitions/SignUpRequest' }
+       }
+       #swagger.responses[201] = {
+         description: 'Usuario registrado correctamente.',
+         schema: { $ref: '#/definitions/SuccessResponse' }
+       }
+       #swagger.responses[400] = { description: 'El email ya está registrado.' }
+       #swagger.responses[500] = { description: 'Error al registrar usuario.' }
+    */
     try {
         const data = req.body;
         console.log(data);
@@ -52,13 +69,29 @@ autenticacionCtrl.signUpUsuario = async (req, res) => {
         return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
 
     } catch (error) {
-         console.error('ERROR:', error.message);
+        console.error('ERROR:', error.message);
         res.status(500).json({ status: '0', msg: error.message });
         //return res.status(500).json({ status: "0", msg: "Error al registrar usuario." });
     }
 }
 
 autenticacionCtrl.loginUsuario = async (req, res) => {
+    /* #swagger.tags = ['Autenticacion']
+       #swagger.summary = 'Iniciar sesión local'
+       #swagger.description = 'Autentica a un usuario local y retorna su token JWT.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Credenciales de acceso.',
+         required: true,
+         schema: { $ref: '#/definitions/LoginRequest' }
+       }
+       #swagger.responses[200] = {
+         description: 'Autenticación exitosa.',
+         schema: { $ref: '#/definitions/LoginResponse' }
+       }
+       #swagger.responses[400] = { description: 'Faltan credenciales.' }
+    */
     if (!req.body.email || !req.body.password) return res.status(400).json({ status: 0, msg: "Faltan credenciales" });
 
     try {
@@ -67,8 +100,8 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
                 email: req.body.email,
             }
         });
-        
-        const coincide = await passwordService.comparePassword( req.body.password, user.contraseniaHash );
+
+        const coincide = await passwordService.comparePassword(req.body.password, user.contraseniaHash);
         if (!user || !coincide) return res.json({ status: 0, msg: "not found" });
 
         else {
@@ -84,7 +117,7 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
                 );
             res.json({
                 status: 1, msg: "success",
-                id: user.id, 
+                id: user.id,
                 email: user.email,
                 nombre: user.nombre,
                 apellido: user.apellido,
@@ -105,6 +138,22 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
 }
 
 autenticacionCtrl.signUpGoogle = async (req, res) => {
+    /* #swagger.tags = ['Autenticacion']
+       #swagger.summary = 'Registrar usuario con Google'
+       #swagger.description = 'Registra un nuevo usuario autenticado a través de Google.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Datos del usuario de Google y del perfil.',
+         required: true,
+         schema: { $ref: '#/definitions/GoogleAuthRequest' }
+       }
+       #swagger.responses[201] = {
+         description: 'Usuario registrado correctamente.',
+         schema: { $ref: '#/definitions/SuccessResponse' }
+       }
+       #swagger.responses[500] = { description: 'Error al registrar usuario.' }
+    */
     try {
         const data = req.body;
         console.log(process.env.GOOGLE_CLIENT_ID);
@@ -112,7 +161,8 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
         // Verificar que el token realmente proviene de Google
         const ticket = await client.verifyIdToken({
             idToken: data.token,
-            audience: process.env.GOOGLE_CLIENT_ID })
+            audience: process.env.GOOGLE_CLIENT_ID
+        })
 
         // Información del usuario
         const payload = ticket.getPayload();
@@ -153,15 +203,30 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
                 );
         }
         return res.status(201).json({ status: "1", msg: "Usuario registrado correctamente." });
-        
-    } catch (error) {
-    console.error(error);
 
-    return res.status(500).json({ status: "0", msg: error.message });
-}
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ status: "0", msg: error.message });
+    }
 }
 
 autenticacionCtrl.loginGoogle = async (req, res) => {
+    /* #swagger.tags = ['Autenticacion']
+       #swagger.summary = 'Iniciar sesión con Google'
+       #swagger.description = 'Inicia sesión utilizando un token ID de Google.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Token de Google.',
+         required: true,
+         schema: { token: 'eyJhbGciOi...' }
+       }
+       #swagger.responses[200] = {
+         description: 'Autenticación exitosa.',
+         schema: { $ref: '#/definitions/LoginResponse' }
+       }
+       #swagger.responses[500] = { description: 'Error en el servidor.' }
+    */
     try {
         const { token } = req.body;
 

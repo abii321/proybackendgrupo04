@@ -6,17 +6,32 @@ const registrarAuditoria = require("../helpers/auditoria.helper");
 const usuarioCtrl = {};
 
 usuarioCtrl.getUsuarios = async (req, res) => {
+    /* #swagger.tags = ['Usuarios']
+       #swagger.summary = 'Listar usuarios o profesores'
+       #swagger.description = 'Retorna todos los usuarios registrados. Permite filtrar por rol (ej. ?rol=profesor) para obtener sus tutorías dictadas, opiniones y rating.'
+       #swagger.parameters['rol'] = {
+         in: 'query',
+         description: 'Filtrar por rol: alumno, profesor, admin.',
+         required: false,
+         type: 'string'
+       }
+       #swagger.responses[200] = {
+         description: 'Usuarios obtenidos correctamente.',
+         schema: { type: 'array', items: { $ref: '#/definitions/UsuarioUpdateRequest' } }
+       }
+       #swagger.responses[500] = { description: 'Error al obtener los usuarios.' }
+    */
     try {
         const { rol } = req.query;
         const whereClause = rol ? { rol } : {};
         const include = [];
 
         if (!rol || rol === 'profesor') {
-            include.push({ 
-                model: Categoria, 
-                as: 'categoriasEnseniadas', 
-                attributes: ['id', 'nombre'], 
-                through: { attributes: [] } 
+            include.push({
+                model: Categoria,
+                as: 'categoriasEnseniadas',
+                attributes: ['id', 'nombre'],
+                through: { attributes: [] }
             });
             include.push({ model: HorarioDisponible, as: 'horarios' });
         }
@@ -83,6 +98,29 @@ usuarioCtrl.getUsuarios = async (req, res) => {
 };
 
 usuarioCtrl.updateUsuario = async (req, res) => {
+    /* #swagger.tags = ['Usuarios']
+       #swagger.summary = 'Actualizar datos de perfil'
+       #swagger.description = 'Actualiza la información del perfil del usuario (nombre, apellido, ubicación, carrera, tarifa base, etc.).'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['id'] = {
+         in: 'path',
+         description: 'ID del usuario a actualizar.',
+         required: true,
+         type: 'integer'
+       }
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Datos actualizados del usuario.',
+         required: true,
+         schema: { $ref: '#/definitions/UsuarioUpdateRequest' }
+       }
+       #swagger.responses[200] = {
+         description: 'Usuario actualizado correctamente.',
+         schema: { status: '1', msg: 'Usuario actualizado correctamente.' }
+       }
+       #swagger.responses[404] = { description: 'Usuario no encontrado.' }
+       #swagger.responses[500] = { description: 'Error al actualizar el usuario.' }
+    */
     try {
         const { id } = req.params;
         const data = req.body;
@@ -140,6 +178,22 @@ usuarioCtrl.updateUsuario = async (req, res) => {
 };
 
 usuarioCtrl.addHorario = async (req, res) => {
+    /* #swagger.tags = ['Usuarios']
+       #swagger.summary = 'Agregar horario disponible a profesor'
+       #swagger.description = 'Registra un nuevo intervalo de disponibilidad horaria para un profesor.'
+       #swagger.consumes = ['application/json']
+       #swagger.parameters['body'] = {
+         in: 'body',
+         description: 'Datos del nuevo horario.',
+         required: true,
+         schema: { $ref: '#/definitions/UsuarioAddHorarioRequest' }
+       }
+       #swagger.responses[200] = {
+         description: 'Horario agregado correctamente.',
+         schema: { status: 1, msg: 'Horario agregado correctamente' }
+       }
+       #swagger.responses[500] = { description: 'Error al agregar horario.' }
+    */
     try {
         const { usuarioId, diaSemana, horaInicio, horaFin } = req.body;
         const nuevo = await HorarioDisponible.create({
@@ -164,6 +218,21 @@ usuarioCtrl.addHorario = async (req, res) => {
 };
 
 usuarioCtrl.deleteHorario = async (req, res) => {
+    /* #swagger.tags = ['Usuarios']
+       #swagger.summary = 'Eliminar horario disponible de profesor'
+       #swagger.description = 'Elimina físicamente un intervalo de disponibilidad horaria.'
+       #swagger.parameters['id'] = {
+         in: 'path',
+         description: 'ID del horario disponible a eliminar.',
+         required: true,
+         type: 'integer'
+       }
+       #swagger.responses[200] = {
+         description: 'Horario eliminado correctamente.',
+         schema: { status: 1, msg: 'Horario eliminado correctamente' }
+       }
+       #swagger.responses[500] = { description: 'Error al eliminar horario.' }
+    */
     try {
         const { id } = req.params;
         await HorarioDisponible.destroy({ where: { id } });
