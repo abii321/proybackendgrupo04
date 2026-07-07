@@ -151,7 +151,11 @@ async function seedProfesorCategorias() {
             estado: "activo"
         }
 
-    ]);
+    ],
+    {
+        ignoreDuplicates: true
+    }
+);
 
     console.log("ProfesorCategoria cargado.");
 }

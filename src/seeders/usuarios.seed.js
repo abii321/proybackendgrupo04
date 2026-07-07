@@ -165,7 +165,7 @@ async function seedUsuarios() {
         },
         {
             rol: "alumno",
-            nombre: "Lucas",
+            nombre: "Facundo",
             apellido: "Fernandez",
             email: "lucas@tutorias.com",
             contrasenia: "Lucas321#",
@@ -177,12 +177,11 @@ async function seedUsuarios() {
         }
 
     ];
-
+    
+    const usuariosConHash = []; 
     for (const u of usuarios) {
-
         const hash = await bcrypt.hash(u.contrasenia, 10);
-
-        await Usuario.create({
+        usuariosConHash.push({
             rol: u.rol,
             nombre: u.nombre,
             apellido: u.apellido,
@@ -198,10 +197,13 @@ async function seedUsuarios() {
             universidad: u.universidad,
             carrera: u.carrera
         });
-
     }
 
+    await Usuario.bulkCreate(usuariosConHash, { ignoreDuplicates: true });
     console.log("Usuarios cargados.");
+    
 }
+
+    
 
 module.exports = seedUsuarios;
