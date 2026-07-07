@@ -1,6 +1,7 @@
 const HorarioDisponible = require('../models/horarioDisponible.model');
 
 const horarioCtrl = {};
+const { Op } = require('sequelize');
 
 horarioCtrl.getHorariosProfesor = async (req, res) => {
     try {
@@ -32,7 +33,7 @@ horarioCtrl.createHorario = async (req, res) => {
             }
         });
         if (busq) {
-            busq.estado = 'activo';
+            busq.estado = { [Op.in]: ['pendiente', 'aceptada'] }
             await busq.save();
             return res.json({ status: 1, msg: 'Horario reactivado', data: busq });
         }
