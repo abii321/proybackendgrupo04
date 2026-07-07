@@ -2,12 +2,12 @@ const swaggerAutogen = require('swagger-autogen')();
 
 const doc = {
     info: {
-        title: 'TutorMatch API',
-        description: 'Documentación de la API de TutorMatch — Grupo 04',
+        title: 'Tutorias API',
+        description: 'Documentación de la API de Tutorias — Grupo 04',
         version: '1.0.0'
     },
     host: 'localhost:3000',
-    basePath: '/api',
+    basePath: '/',
     schemes: ['http'],
     securityDefinitions: {
         bearerAuth: {
@@ -35,7 +35,6 @@ const doc = {
         // ── Solicitud de Ayuda ──────────────────────────────────────────────
         SolicitudAyuda: {
             usuarioId: 1,
-            categoriaId: 2,
             titulo: 'Necesito ayuda con cálculo',
             descripcion: 'No entiendo integrales dobles.',
             archivoAdjunto: null
@@ -46,7 +45,6 @@ const doc = {
             data: {
                 id: 1,
                 usuarioId: 1,
-                categoriaId: 2,
                 titulo: 'Necesito ayuda con cálculo',
                 descripcion: 'No entiendo integrales dobles.',
                 archivoAdjunto: null,
@@ -119,12 +117,11 @@ const doc = {
 const outputFile = './swagger_output.json';
 
 const endpointsFiles = [
-    './src/routes/solicitudes/solicitudAyuda.route.js',
-    './src/routes/solicitudes/respuestaAyuda.route.js',
-    './src/routes/admin.route.js'
+    './index.js'
 ];
 
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
     console.log(`Documentación generada en ${outputFile}`);
 });
+
 

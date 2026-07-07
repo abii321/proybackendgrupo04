@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "host": "localhost:3000",
-  "basePath": "/api",
+  "basePath": "/",
   "tags": [
     {
       "name": "Admin",
@@ -33,318 +33,37 @@
     }
   },
   "paths": {
-    "/": {
+    "/pago-exitoso": {
       "get": {
-        "tags": [
-          "Solicitudes"
-        ],
-        "summary": "Listar todas las solicitudes",
-        "description": "Retorna el listado completo de solicitudes de ayuda.",
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Listado de solicitudes obtenido correctamente.",
-            "schema": {
-              "$ref": "#/definitions/SolicitudAyudaResponse"
-            }
-          },
-          "500": {
-            "description": "Error interno del servidor."
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Respuestas"
-        ],
-        "summary": "Crear una respuesta",
-        "description": "Crea una nueva respuesta para una solicitud abierta. Requiere autenticación.",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Datos de la respuesta a crear.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/RespuestaAyuda"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta creada correctamente.",
-            "schema": {
-              "$ref": "#/definitions/RespuestaAyudaResponse"
-            }
-          },
-          "400": {
-            "description": "La solicitud ya no acepta respuestas."
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "La solicitud no existe."
-          },
-          "500": {
-            "description": "Error al crear respuesta."
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/{id}": {
-      "get": {
-        "tags": [
-          "Solicitudes"
-        ],
-        "summary": "Obtener una solicitud por ID",
-        "description": "Retorna una solicitud de ayuda específica junto con sus respuestas.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID de la solicitud."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Solicitud encontrada.",
-            "schema": {
-              "$ref": "#/definitions/SolicitudAyudaResponse"
-            }
-          },
-          "404": {
-            "description": "Solicitud no encontrada."
-          },
-          "500": {
-            "description": "Error interno del servidor."
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Respuestas"
-        ],
-        "summary": "Actualizar una respuesta",
-        "description": "Actualiza el contenido de una respuesta existente. Requiere autenticación.",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID de la respuesta a actualizar."
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Datos actualizados de la respuesta.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/RespuestaAyuda"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta actualizada correctamente.",
-            "schema": {
-              "$ref": "#/definitions/SuccessResponse"
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Error al actualizar respuesta."
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Respuestas"
-        ],
-        "summary": "Eliminar una respuesta",
-        "description": "Elimina una respuesta por su ID. Requiere autenticación.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID de la respuesta a eliminar."
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta eliminada correctamente.",
-            "schema": {
-              "$ref": "#/definitions/SuccessResponse"
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Error al eliminar respuesta."
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/{id}/cerrar": {
-      "put": {
-        "tags": [
-          "Solicitudes"
-        ],
-        "summary": "Cerrar una solicitud",
-        "description": "Cambia el estado de una solicitud a CERRADA. Requiere autenticación.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID de la solicitud a cerrar."
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Solicitud cerrada correctamente.",
-            "schema": {
-              "$ref": "#/definitions/SuccessResponse"
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Error al cerrar solicitud."
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/solicitud/{solicitudId}": {
-      "get": {
-        "tags": [
-          "Respuestas"
-        ],
-        "summary": "Listar respuestas por solicitud",
-        "description": "Retorna todas las respuestas asociadas a una solicitud de ayuda específica.",
-        "parameters": [
-          {
-            "name": "solicitudId",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID de la solicitud."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuestas obtenidas correctamente.",
-            "schema": {
-              "$ref": "#/definitions/RespuestaAyudaResponse"
-            }
-          },
-          "500": {
-            "description": "Error interno del servidor."
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/{id}/aceptar": {
-      "put": {
-        "tags": [
-          "Respuestas"
-        ],
-        "summary": "Aceptar una respuesta",
-        "description": "Marca una respuesta como ACEPTADA y cierra la solicitud como RESUELTA. Requiere autenticación.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID de la respuesta a aceptar."
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
+    "/pago-error": {
+      "get": {
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Respuesta aceptada.",
-            "schema": {
-              "$ref": "#/definitions/SuccessResponse"
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Respuesta no encontrada."
-          },
-          "500": {
-            "description": "Error al aceptar la respuesta."
+          "default": {
+            "description": ""
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
+        }
       }
     },
-    "/summary": {
+    "/pago-pendiente": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/admin/summary": {
       "get": {
         "tags": [
           "Admin"
@@ -423,7 +142,7 @@
         ]
       }
     },
-    "/users-by-role": {
+    "/api/admin/users-by-role": {
       "get": {
         "tags": [
           "Admin"
@@ -497,7 +216,7 @@
         ]
       }
     },
-    "/requests-by-state": {
+    "/api/admin/requests-by-state": {
       "get": {
         "tags": [
           "Admin"
@@ -567,7 +286,7 @@
         ]
       }
     },
-    "/tutorials-by-state": {
+    "/api/admin/tutorials-by-state": {
       "get": {
         "tags": [
           "Admin"
@@ -637,7 +356,7 @@
         ]
       }
     },
-    "/tutorials-by-month": {
+    "/api/admin/tutorials-by-month": {
       "get": {
         "tags": [
           "Admin"
@@ -707,7 +426,7 @@
         ]
       }
     },
-    "/full-tutorials": {
+    "/api/admin/full-tutorials": {
       "get": {
         "tags": [
           "Admin"
@@ -766,7 +485,7 @@
         ]
       }
     },
-    "/users": {
+    "/api/admin/users": {
       "get": {
         "tags": [
           "Admin"
@@ -825,7 +544,7 @@
         ]
       }
     },
-    "/users/{id}": {
+    "/api/admin/users/{id}": {
       "put": {
         "tags": [
           "Admin"
@@ -934,7 +653,7 @@
         ]
       }
     },
-    "/tutorials/{id}": {
+    "/api/admin/tutorials/{id}": {
       "put": {
         "tags": [
           "Admin"
@@ -1043,7 +762,7 @@
         ]
       }
     },
-    "/categories-list": {
+    "/api/admin/categories-list": {
       "get": {
         "tags": [
           "Admin"
@@ -1102,7 +821,7 @@
         ]
       }
     },
-    "/categories/{id}": {
+    "/api/admin/categories/{id}": {
       "put": {
         "tags": [
           "Admin"
@@ -1210,6 +929,1356 @@
           }
         ]
       }
+    },
+    "/api/autenticacion/signUp": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "contrasenia": {
+                  "example": "any"
+                },
+                "nombre": {
+                  "example": "any"
+                },
+                "apellido": {
+                  "example": "any"
+                },
+                "genero": {
+                  "example": "any"
+                },
+                "rol": {
+                  "example": "any"
+                },
+                "ubicacion": {
+                  "example": "any"
+                },
+                "lat": {
+                  "example": "any"
+                },
+                "lng": {
+                  "example": "any"
+                },
+                "universidad": {
+                  "example": "any"
+                },
+                "carrera": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/autenticacion/login": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/autenticacion/signUpGoogle": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "example": "any"
+                },
+                "rol": {
+                  "example": "any"
+                },
+                "ubicacion": {
+                  "example": "any"
+                },
+                "lat": {
+                  "example": "any"
+                },
+                "lng": {
+                  "example": "any"
+                },
+                "universidad": {
+                  "example": "any"
+                },
+                "carrera": {
+                  "example": "any"
+                },
+                "genero": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/autenticacion/loginGoogle": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/usuario/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "rol",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/usuario/{id}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "example": "any"
+                },
+                "apellido": {
+                  "example": "any"
+                },
+                "ubicacion": {
+                  "example": "any"
+                },
+                "universidad": {
+                  "example": "any"
+                },
+                "carrera": {
+                  "example": "any"
+                },
+                "nivelAcademico": {
+                  "example": "any"
+                },
+                "biografia": {
+                  "example": "any"
+                },
+                "tarifaBase": {
+                  "example": "any"
+                },
+                "perfilProfesor": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/usuario/horario": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "usuarioId": {
+                  "example": "any"
+                },
+                "diaSemana": {
+                  "example": "any"
+                },
+                "horaInicio": {
+                  "example": "any"
+                },
+                "horaFin": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/usuario/horario/{id}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/solicitud/": {
+      "get": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Listar todas las solicitudes",
+        "description": "Retorna el listado completo de solicitudes de ayuda.",
+        "responses": {
+          "200": {
+            "description": "Listado de solicitudes obtenido correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SolicitudAyudaResponse"
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Crear una solicitud de ayuda",
+        "description": "Crea una nueva solicitud de ayuda. Requiere autenticación.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos de la solicitud a crear.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SolicitudAyuda"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitud creada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SolicitudAyudaResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al crear solicitud."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/solicitud/{id}": {
+      "get": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Obtener una solicitud por ID",
+        "description": "Retorna una solicitud de ayuda específica junto con sus respuestas.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la solicitud."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitud encontrada.",
+            "schema": {
+              "$ref": "#/definitions/SolicitudAyudaResponse"
+            }
+          },
+          "404": {
+            "description": "Solicitud no encontrada."
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Actualizar una solicitud",
+        "description": "Actualiza los datos de una solicitud de ayuda existente. Requiere autenticación.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la solicitud a actualizar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos actualizados de la solicitud.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SolicitudAyuda"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitud actualizada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al actualizar solicitud."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Eliminar una solicitud",
+        "description": "Elimina una solicitud de ayuda por su ID. Requiere autenticación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la solicitud a eliminar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitud eliminada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al eliminar solicitud."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/solicitud/{id}/cerrar": {
+      "put": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Cerrar una solicitud",
+        "description": "Cambia el estado de una solicitud a CERRADA. Requiere autenticación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la solicitud a cerrar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitud cerrada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al cerrar solicitud."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/respuesta/solicitud/{solicitudId}": {
+      "get": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Listar respuestas por solicitud",
+        "description": "Retorna todas las respuestas asociadas a una solicitud de ayuda específica.",
+        "parameters": [
+          {
+            "name": "solicitudId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la solicitud."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuestas obtenidas correctamente.",
+            "schema": {
+              "$ref": "#/definitions/RespuestaAyudaResponse"
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      }
+    },
+    "/api/respuesta/": {
+      "post": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Crear una respuesta",
+        "description": "Crea una nueva respuesta para una solicitud abierta. Requiere autenticación.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos de la respuesta a crear.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RespuestaAyuda"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta creada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/RespuestaAyudaResponse"
+            }
+          },
+          "400": {
+            "description": "La solicitud ya no acepta respuestas."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "La solicitud no existe."
+          },
+          "500": {
+            "description": "Error al crear respuesta."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/respuesta/{id}": {
+      "put": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Actualizar una respuesta",
+        "description": "Actualiza el contenido de una respuesta existente. Requiere autenticación.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la respuesta a actualizar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos actualizados de la respuesta.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RespuestaAyuda"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta actualizada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al actualizar respuesta."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Eliminar una respuesta",
+        "description": "Elimina una respuesta por su ID. Requiere autenticación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la respuesta a eliminar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta eliminada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al eliminar respuesta."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/respuesta/{id}/aceptar": {
+      "put": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Aceptar una respuesta",
+        "description": "Marca una respuesta como ACEPTADA y cierra la solicitud como RESUELTA. Requiere autenticación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la respuesta a aceptar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta aceptada.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Respuesta no encontrada."
+          },
+          "500": {
+            "description": "Error al aceptar la respuesta."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tutoria/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "alumnoId": {
+                  "example": "any"
+                },
+                "profesorId": {
+                  "example": "any"
+                },
+                "categoriaId": {
+                  "example": "any"
+                },
+                "modalidad": {
+                  "example": "any"
+                },
+                "precioAcordado": {
+                  "example": "any"
+                },
+                "mensaje": {
+                  "example": "any"
+                },
+                "fechaHora": {
+                  "example": "any"
+                },
+                "estado": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/tutoria/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "alumnoId": {
+                  "example": "any"
+                },
+                "profesorId": {
+                  "example": "any"
+                },
+                "categoriaId": {
+                  "example": "any"
+                },
+                "modalidad": {
+                  "example": "any"
+                },
+                "precioAcordado": {
+                  "example": "any"
+                },
+                "mensaje": {
+                  "example": "any"
+                },
+                "fechaHora": {
+                  "example": "any"
+                },
+                "enlaceMeet": {
+                  "example": "any"
+                },
+                "googleEventId": {
+                  "example": "any"
+                },
+                "estado": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/categoria/profesor": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "profesorId": {
+                  "example": "any"
+                },
+                "categoriaId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "profesorId": {
+                  "example": "any"
+                },
+                "categoriaId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/categoria/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "example": "any"
+                },
+                "descripcion": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/categoria/profesor/{profesorId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "profesorId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/categoria/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "example": "any"
+                },
+                "descripcion": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/mercadopago/crear-preferencia": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "respuestaId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/mercadopago/webhook": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/calificacion/": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "tutoriaId": {
+                  "example": "any"
+                },
+                "calificacion": {
+                  "example": "any"
+                },
+                "comentario": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/calificacion/tutoria/{tutoriaId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "tutoriaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/precio/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/horarioDisponible/": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "profesorId": {
+                  "example": "any"
+                },
+                "diaSemana": {
+                  "example": "any"
+                },
+                "horaInicio": {
+                  "example": "any"
+                },
+                "horaFin": {
+                  "example": "any"
+                },
+                "modalidad": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/horarioDisponible/profesor/{profesorId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "profesorId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/horarioDisponible/{id}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/chat/": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1219,10 +2288,6 @@
         "usuarioId": {
           "type": "number",
           "example": 1
-        },
-        "categoriaId": {
-          "type": "number",
-          "example": 2
         },
         "titulo": {
           "type": "string",
@@ -1256,10 +2321,6 @@
             "usuarioId": {
               "type": "number",
               "example": 1
-            },
-            "categoriaId": {
-              "type": "number",
-              "example": 2
             },
             "titulo": {
               "type": "string",
