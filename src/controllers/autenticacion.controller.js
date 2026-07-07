@@ -31,7 +31,6 @@ autenticacionCtrl.signUpUsuario = async (req, res) => {
     */
     try {
         const data = req.body;
-        console.log(data);
 
         const existe = await Usuario.findOne({
             where: {
@@ -105,7 +104,6 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
         if (!user || !coincide) return res.json({ status: 0, msg: "not found" });
 
         else {
-            console.log("JWT_SECRET:", process.env.JWT_SECRET);
             const unToken = jwt.sign({id: user.id}, process.env.JWT_SECRET);
                 await registrarAuditoria(
                     req,
@@ -156,7 +154,6 @@ autenticacionCtrl.signUpGoogle = async (req, res) => {
     */
     try {
         const data = req.body;
-        console.log(process.env.GOOGLE_CLIENT_ID);
 
         // Verificar que el token realmente proviene de Google
         const ticket = await client.verifyIdToken({
@@ -265,7 +262,6 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
                 "Inicio de sesión con Google",
                 usuario.id
             );
-        console.log("Usuario encontrado en BD - proveedorAuth:", usuario.proveedorAuth);
         return res.json({
             status: 1,
             msg: "success",

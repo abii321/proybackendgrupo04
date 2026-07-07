@@ -56,10 +56,6 @@ mercadoPagoCtrl.webhook = async (req, res) => {
        #swagger.responses[500] = { description: 'Error interno.' }
     */
     try {
-        console.log("Webhook recibido");
-
-        console.log(req.body);
-
         await mercadoPagoService.procesarWebhook(req.body);
 
         res.sendStatus(200);
