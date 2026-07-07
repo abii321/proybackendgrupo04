@@ -8,8 +8,8 @@ router.use(authCtrl.verifyToken);
 
 
 router.get('/', authCtrl.verifyToken, usuarioCtrl.getUsuarios);
-router.put('/:id', usuarioCtrl.updateUsuario);
-router.post('/horario', usuarioCtrl.addHorario);
-router.delete('/horario/:id', usuarioCtrl.deleteHorario);
+router.put('/:id', authCtrl.verifyToken, usuarioCtrl.updateUsuario);
+router.post('/horario', authCtrl.verifyToken, usuarioCtrl.addHorario);
+router.delete('/horario/:id', authCtrl.verifyToken, usuarioCtrl.deleteHorario);
 
 module.exports = router;

@@ -8,6 +8,6 @@ const authCtrl = require('../controllers/auth.controller');
 router.post('/crear-preferencia', authCtrl.verifyToken, mercadoPagoCtrl.crearPreferencia);
 
 // Webhook
-router.post('/webhook', mercadoPagoCtrl.webhook);
+router.post('/webhook', authCtrl.verifyToken, mercadoPagoCtrl.webhook);
 
 module.exports = router;
