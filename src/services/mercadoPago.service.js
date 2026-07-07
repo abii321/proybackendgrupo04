@@ -34,6 +34,18 @@ async function crearPreferencia(idRespuesta) {
     const isBridge = !!prodFrontendUrl;
     const targetFrontendUrl = isBridge ? prodFrontendUrl : frontendUrl;
 
+    const backUrls = isBridge 
+        ? {
+            success: `${targetFrontendUrl}/pago-bridge?target=pago-exitoso`,
+            failure: `${targetFrontendUrl}/pago-bridge?target=pago-error`,
+            pending: `${targetFrontendUrl}/pago-bridge?target=pago-pendiente`
+          }
+        : {
+            success: `${targetFrontendUrl}/pago-exitoso`,
+            failure: `${targetFrontendUrl}/pago-error`,
+            pending: `${targetFrontendUrl}/pago-pendiente`
+          };
+
     const body = {
 
         items: [
@@ -45,15 +57,11 @@ async function crearPreferencia(idRespuesta) {
             }
         ],
 
-        external_reference: `${tipo}:${entidad.id}${isBridge ? ':dev' : ''}`,
+        external_reference: `${tipo}:${entidad.id}`,
 
         notification_url: "https://thesaurus-thong-doing.ngrok-free.dev/api/mercadopago/webhook",
 
-        back_urls: {
-            success: `${targetFrontendUrl}/pago-exitoso`,
-            failure: `${targetFrontendUrl}/pago-error`,
-            pending: `${targetFrontendUrl}/pago-pendiente`
-        }
+        back_urls: backUrls
 
     };
 
