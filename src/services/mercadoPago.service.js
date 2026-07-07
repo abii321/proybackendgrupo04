@@ -28,34 +28,40 @@ async function crearPreferencia(idRespuesta) {
     const precioCobrar = tipo === 'ayuda' ? Number(entidad.precio) : Number(entidad.precioAcordado);
     const tituloItem = tipo === 'ayuda' ? "Pago de respuesta a solicitud de ayuda" : "Pago de sesión de tutoría";
 
-    const preferencia = await preference.create({
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4200";
+    const prodFrontendUrl = process.env.PRODUCTION_FRONTEND_URL;
 
-        body: {
+    const isBridge = !!prodFrontendUrl;
+    const targetFrontendUrl = isBridge ? prodFrontendUrl : frontendUrl;
 
-            items: [
-                {
-                    title: tituloItem,
-                    quantity: 1,
-                    currency_id: "ARS",
-                    unit_price: precioCobrar
-                }
-            ],
+    const body = {
 
-            external_reference: `${tipo}:${entidad.id}`,
+        items: [
+            {
+                title: tituloItem,
+                quantity: 1,
+                currency_id: "ARS",
+                unit_price: precioCobrar
+            }
+        ],
 
-            notification_url: "https://thesaurus-thong-doing.ngrok-free.dev/api/mercadopago/webhook",
+        external_reference: `${tipo}:${entidad.id}${isBridge ? ':dev' : ''}`,
 
-           back_urls: {
-                success: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-exitoso`,
-                failure: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-error`,
-                pending: `${process.env.FRONTEND_URL || "http://localhost:4200"}/pago-pendiente`
-            },
-            auto_return: "approved"
-        
+        notification_url: "https://thesaurus-thong-doing.ngrok-free.dev/api/mercadopago/webhook",
 
+        back_urls: {
+            success: `${targetFrontendUrl}/pago-exitoso`,
+            failure: `${targetFrontendUrl}/pago-error`,
+            pending: `${targetFrontendUrl}/pago-pendiente`
         }
 
-    });
+    };
+
+    if (targetFrontendUrl.startsWith("https://")) {
+        body.auto_return = "approved";
+    }
+
+    const preferencia = await preference.create({ body });
 
      console.log("ENTIDAD COMPLETA:", entidad);
 
