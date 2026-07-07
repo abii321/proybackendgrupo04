@@ -107,6 +107,7 @@ autenticacionCtrl.loginUsuario = async (req, res) => {
 autenticacionCtrl.signUpGoogle = async (req, res) => {
     try {
         const data = req.body;
+        console.log(process.env.GOOGLE_CLIENT_ID);
 
         // Verificar que el token realmente proviene de Google
         const ticket = await client.verifyIdToken({
@@ -170,8 +171,6 @@ autenticacionCtrl.loginGoogle = async (req, res) => {
         });
 
         const payload = ticket.getPayload();
-
-        console.log(payload);
 
         const usuario = await Usuario.findOne({
             where: {
