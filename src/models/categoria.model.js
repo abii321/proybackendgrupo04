@@ -2,12 +2,18 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 
 const Categoria = sequelize.define('Categoria', {
-    nombre: { type: DataTypes.STRING, allowNull: false, unique: true },
+    nombre: { type: DataTypes.STRING, allowNull: false },
     nivel: { type: DataTypes.ENUM('primario', 'secundario', 'terciario', 'universitario', 'doctorado'), allowNull: false },
     descripcion: { type: DataTypes.TEXT, allowNull: false }
 }, {
     tableName: 'categorias',
     timestamps: true,
+    indexes: [
+        {
+            unique: true,
+            fields: ['nombre', 'nivel']
+        }
+    ]
 });
 
 module.exports = Categoria;

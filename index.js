@@ -79,14 +79,20 @@ app.set('port', process.env.PORT || 3000);
 
 const seedPrecios = require('./src/seeders/precios.seed.js')
 const seedCategorias = require('./src/seeders/categorias.seed.js');
+const seedUsuarios = require('./src/seeders/usuarios.seed.js');
+const seedProfesorCategorias = require('./src/seeders/profesoresCategorias.seed.js');
+const seedHorarios = require('./src/seeders/horariosDisponibles.seed.js');
 
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
     .then(async () => {
         console.log('Tablas de PostgreSQL sincronizadas');
 
         // datos precargados
         await seedPrecios();
         await seedCategorias();
+        await seedUsuarios();
+        await seedProfesorCategorias();
+        await seedHorarios();
 
         app.listen(app.get('port'), () => { // Arranca el servidor 
             console.log(`Server started on port`, app.get('port'));
