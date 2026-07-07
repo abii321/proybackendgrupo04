@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node-dev index.js"
+    "dev": "node-dev index.js",
+    "swagger": "node swagger.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -23,7 +24,9 @@
     "mercadopago": "^3.2.0",
     "pg": "^8.22.0",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.8"
+    "sequelize": "^6.37.8",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "node-dev": "^8.0.0",

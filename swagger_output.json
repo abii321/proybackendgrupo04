@@ -1,0 +1,1469 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "TutorMatch API",
+    "description": "Documentación de la API de TutorMatch — Grupo 04",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Admin",
+      "description": "Operaciones de administración (usuarios, tutorías, categorías y métricas)."
+    },
+    {
+      "name": "Solicitudes",
+      "description": "Operaciones relacionadas con las solicitudes de ayuda."
+    },
+    {
+      "name": "Respuestas",
+      "description": "Operaciones relacionadas con las respuestas a las solicitudes."
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "JWT token. Formato: Bearer {token}"
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Listar todas las solicitudes",
+        "description": "Retorna el listado completo de solicitudes de ayuda.",
+        "responses": {
+          "200": {
+            "description": "Listado de solicitudes obtenido correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SolicitudAyudaResponse"
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Crear una respuesta",
+        "description": "Crea una nueva respuesta para una solicitud abierta. Requiere autenticación.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos de la respuesta a crear.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RespuestaAyuda"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta creada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/RespuestaAyudaResponse"
+            }
+          },
+          "400": {
+            "description": "La solicitud ya no acepta respuestas."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "La solicitud no existe."
+          },
+          "500": {
+            "description": "Error al crear respuesta."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{id}": {
+      "get": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Obtener una solicitud por ID",
+        "description": "Retorna una solicitud de ayuda específica junto con sus respuestas.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la solicitud."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitud encontrada.",
+            "schema": {
+              "$ref": "#/definitions/SolicitudAyudaResponse"
+            }
+          },
+          "404": {
+            "description": "Solicitud no encontrada."
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Actualizar una respuesta",
+        "description": "Actualiza el contenido de una respuesta existente. Requiere autenticación.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la respuesta a actualizar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos actualizados de la respuesta.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RespuestaAyuda"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta actualizada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al actualizar respuesta."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Eliminar una respuesta",
+        "description": "Elimina una respuesta por su ID. Requiere autenticación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la respuesta a eliminar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta eliminada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al eliminar respuesta."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{id}/cerrar": {
+      "put": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Cerrar una solicitud",
+        "description": "Cambia el estado de una solicitud a CERRADA. Requiere autenticación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la solicitud a cerrar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitud cerrada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Error al cerrar solicitud."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/solicitud/{solicitudId}": {
+      "get": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Listar respuestas por solicitud",
+        "description": "Retorna todas las respuestas asociadas a una solicitud de ayuda específica.",
+        "parameters": [
+          {
+            "name": "solicitudId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la solicitud."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuestas obtenidas correctamente.",
+            "schema": {
+              "$ref": "#/definitions/RespuestaAyudaResponse"
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      }
+    },
+    "/{id}/aceptar": {
+      "put": {
+        "tags": [
+          "Respuestas"
+        ],
+        "summary": "Aceptar una respuesta",
+        "description": "Marca una respuesta como ACEPTADA y cierra la solicitud como RESUELTA. Requiere autenticación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la respuesta a aceptar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta aceptada.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Respuesta no encontrada."
+          },
+          "500": {
+            "description": "Error al aceptar la respuesta."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/summary": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Resumen general del sistema",
+        "description": "Retorna métricas generales: total de usuarios, tutorías, solicitudes, categorías y calificación promedio.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resumen obtenido correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "totalUsers": {
+                      "type": "number",
+                      "example": 50
+                    },
+                    "totalTutorials": {
+                      "type": "number",
+                      "example": 120
+                    },
+                    "totalHelpRequests": {
+                      "type": "number",
+                      "example": 75
+                    },
+                    "totalCategories": {
+                      "type": "number",
+                      "example": 10
+                    },
+                    "avgRating": {
+                      "type": "string",
+                      "example": "4.3"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al obtener resumen."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users-by-role": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Usuarios agrupados por rol y estado",
+        "description": "Retorna el conteo de usuarios agrupado por rol (alumno, profesor, admin) y estado (activo, inactivo). Útil para gráficos de barra apilada.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos obtenidos correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "rol": {
+                        "type": "string",
+                        "example": "alumno"
+                      },
+                      "estado": {
+                        "type": "string",
+                        "example": "activo"
+                      },
+                      "count": {
+                        "type": "number",
+                        "example": 30
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al obtener usuarios por rol."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/requests-by-state": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Solicitudes agrupadas por estado",
+        "description": "Retorna el conteo de solicitudes de ayuda agrupadas por estado (ABIERTA, RESUELTA, CERRADA). Útil para gráficos de torta.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos obtenidos correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "estado": {
+                        "type": "string",
+                        "example": "ABIERTA"
+                      },
+                      "count": {
+                        "type": "number",
+                        "example": 40
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al obtener solicitudes por estado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tutorials-by-state": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Tutorías agrupadas por estado",
+        "description": "Retorna el conteo de tutorías agrupadas por estado. Útil para gráficos de torta.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos obtenidos correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "estado": {
+                        "type": "string",
+                        "example": "CONFIRMADA"
+                      },
+                      "count": {
+                        "type": "number",
+                        "example": 55
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al obtener tutorías por estado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tutorials-by-month": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Tutorías agrupadas por mes",
+        "description": "Retorna el conteo de tutorías del año actual agrupadas por mes. Útil para gráficos de línea.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos obtenidos correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "month": {
+                        "type": "string",
+                        "example": "01"
+                      },
+                      "count": {
+                        "type": "number",
+                        "example": 10
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al obtener tutorías por mes."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/full-tutorials": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Listado completo de tutorías",
+        "description": "Retorna el listado detallado de todas las tutorías, incluyendo alumno, profesor, categoría y calificación. Útil para DataTables.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tutorías obtenidas correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al obtener tutorías."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Listado de usuarios",
+        "description": "Retorna todos los usuarios registrados con sus atributos principales.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuarios obtenidos correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al obtener usuarios."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Actualizar un usuario",
+        "description": "Actualiza los datos de un usuario desde el panel de administración.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID del usuario a actualizar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos del usuario a actualizar.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdminUpdateUsuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Usuario no encontrado."
+          },
+          "500": {
+            "description": "Error al actualizar el usuario."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Eliminar un usuario",
+        "description": "Elimina un usuario por su ID. Falla si tiene tutorías o solicitudes asociadas.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID del usuario a eliminar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario eliminado correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "No se puede eliminar: tiene tutorías o solicitudes asociadas."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Usuario no encontrado."
+          },
+          "500": {
+            "description": "Error al eliminar el usuario."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tutorials/{id}": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Actualizar una tutoría",
+        "description": "Actualiza los datos de una tutoría existente desde el panel de administración.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la tutoría a actualizar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos de la tutoría a actualizar.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdminUpdateTutoria"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tutoría actualizada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Tutoría no encontrada."
+          },
+          "500": {
+            "description": "Error al actualizar tutoría."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Eliminar una tutoría",
+        "description": "Elimina una tutoría por su ID. Falla si tiene calificaciones asociadas.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la tutoría a eliminar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tutoría eliminada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "No se puede eliminar: tiene registros asociados."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al eliminar tutoría."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/categories-list": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Listado de categorías",
+        "description": "Retorna todas las categorías disponibles ordenadas alfabéticamente.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categorías obtenidas correctamente.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al obtener categorías."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/categories/{id}": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Actualizar una categoría",
+        "description": "Actualiza los datos de una categoría existente desde el panel de administración.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la categoría a actualizar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos de la categoría a actualizar.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdminUpdateCategoria"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoría actualizada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Categoría no encontrada."
+          },
+          "500": {
+            "description": "Error al actualizar categoría."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Eliminar una categoría",
+        "description": "Elimina una categoría por su ID. Falla si hay tutorías asociadas a ella.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID de la categoría a eliminar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoría eliminada correctamente.",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "No se puede eliminar: tiene tutorías asociadas."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error al eliminar categoría."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "SolicitudAyuda": {
+      "type": "object",
+      "properties": {
+        "usuarioId": {
+          "type": "number",
+          "example": 1
+        },
+        "categoriaId": {
+          "type": "number",
+          "example": 2
+        },
+        "titulo": {
+          "type": "string",
+          "example": "Necesito ayuda con cálculo"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "No entiendo integrales dobles."
+        },
+        "archivoAdjunto": {}
+      }
+    },
+    "SolicitudAyudaResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "usuarioId": {
+              "type": "number",
+              "example": 1
+            },
+            "categoriaId": {
+              "type": "number",
+              "example": 2
+            },
+            "titulo": {
+              "type": "string",
+              "example": "Necesito ayuda con cálculo"
+            },
+            "descripcion": {
+              "type": "string",
+              "example": "No entiendo integrales dobles."
+            },
+            "archivoAdjunto": {},
+            "estado": {
+              "type": "string",
+              "example": "ABIERTA"
+            },
+            "fecha_creacion": {
+              "type": "string",
+              "example": "2025-01-01T00:00:00.000Z"
+            },
+            "fecha_actualizacion": {
+              "type": "string",
+              "example": "2025-01-01T00:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "RespuestaAyuda": {
+      "type": "object",
+      "properties": {
+        "solicitudId": {
+          "type": "number",
+          "example": 1
+        },
+        "usuarioId": {
+          "type": "number",
+          "example": 3
+        },
+        "respuesta": {
+          "type": "string",
+          "example": "Puedo ayudarte con integrales dobles."
+        },
+        "precio": {
+          "type": "number",
+          "example": 500
+        },
+        "archivoAdjunto": {}
+      }
+    },
+    "RespuestaAyudaResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "solicitudId": {
+              "type": "number",
+              "example": 1
+            },
+            "usuarioId": {
+              "type": "number",
+              "example": 3
+            },
+            "respuesta": {
+              "type": "string",
+              "example": "Puedo ayudarte con integrales dobles."
+            },
+            "precio": {
+              "type": "number",
+              "example": 500
+            },
+            "estado": {
+              "type": "string",
+              "example": "PENDIENTE"
+            },
+            "pagada": {
+              "type": "boolean",
+              "example": false
+            },
+            "paymentId": {},
+            "archivoAdjunto": {},
+            "fecha_creacion": {
+              "type": "string",
+              "example": "2025-01-01T00:00:00.000Z"
+            },
+            "fecha_actualizacion": {
+              "type": "string",
+              "example": "2025-01-01T00:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "AdminUpdateUsuario": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Juan"
+        },
+        "apellido": {
+          "type": "string",
+          "example": "Pérez"
+        },
+        "email": {
+          "type": "string",
+          "example": "juan@example.com"
+        },
+        "universidad": {
+          "type": "string",
+          "example": "UNC"
+        },
+        "carrera": {
+          "type": "string",
+          "example": "Ingeniería"
+        },
+        "rol": {
+          "type": "string",
+          "example": "alumno"
+        },
+        "estado": {
+          "type": "string",
+          "example": "activo"
+        }
+      }
+    },
+    "AdminUpdateTutoria": {
+      "type": "object",
+      "properties": {
+        "estado": {
+          "type": "string",
+          "example": "CONFIRMADA"
+        },
+        "modalidad": {
+          "type": "string",
+          "example": "virtual"
+        },
+        "precioAcordado": {
+          "type": "number",
+          "example": 1500
+        },
+        "fechaHora": {
+          "type": "string",
+          "example": "2025-06-01T10:00:00.000Z"
+        },
+        "pagada": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "AdminUpdateCategoria": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Matemáticas"
+        },
+        "nivel": {
+          "type": "string",
+          "example": "universitario"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Cálculo, álgebra y estadística"
+        }
+      }
+    },
+    "SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "example": "Operación realizada correctamente"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 0
+        },
+        "msg": {
+          "type": "string",
+          "example": "Error al realizar la operación"
+        }
+      }
+    }
+  }
+}
