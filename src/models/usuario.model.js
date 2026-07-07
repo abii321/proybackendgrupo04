@@ -6,7 +6,7 @@ const Usuario = sequelize.define('Usuario', {
     rol: { type: DataTypes.ENUM('alumno','profesor','admin'), allowNull: false },
     nombre: { type: DataTypes.STRING, allowNull: false },
     apellido: { type: DataTypes.STRING, allowNull: true },
-    email: { type: DataTypes.STRING, allowNull:false },
+    email: { type: DataTypes.STRING, allowNull:false, unique: true},
     contraseniaHash: { type: DataTypes.STRING, allowNull: true }, 
     genero: { type: DataTypes.ENUM('femenino', 'masculino'), allowNull: false },
     estado: { type: DataTypes.ENUM('activo','inactivo'), allowNull: false },
