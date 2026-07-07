@@ -18,9 +18,12 @@ app.use(cors({
         : 'http://localhost:4200'
 }));
 
-//Cargar swagger 
-/*const swaggerUi = require('swagger-ui-express'); 
-const swaggerFile = require('./swagger_output.json'); // Asegúrate de que esta ruta sea correcta*/
+// Cargar swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json');
+
+// Documentación Swagger UI
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 //Rutas 
 app.use('/api/admin', require('./src/routes/admin.route'));
