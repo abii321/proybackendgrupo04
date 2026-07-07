@@ -32,7 +32,9 @@ async function seedHorarios(){
     }
 
     if (horarios.length > 0) {
-        await HorarioDisponible.bulkCreate(horarios);
+        await HorarioDisponible.bulkCreate(horarios, {
+            ignoreDuplicates: true
+        });
     }
 
     console.log("Horarios cargados.");
