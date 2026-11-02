@@ -194,6 +194,13 @@ tutoriaCtrl.editTutoria = async (req, res) => {
             return res.status(400).json({ status: 0, msg: 'El alumno o el profesor especificado no es válido.' });
         }
 
+        if (req.body.estado === 'aceptada' && !tutoriaExistente.pagada) {
+            return res.status(400).json({ 
+                status: 0, 
+                msg: 'No se puede aceptar una tutoría que aún no ha sido pagada por el alumno.' 
+            });
+        }
+
         const modalidad = req.body.modalidad || tutoriaExistente.modalidad;
         const precioAcordado = req.body.precioAcordado || tutoriaExistente.precioAcordado;
         const mensaje = req.body.mensaje !== undefined ? req.body.mensaje : tutoriaExistente.mensaje;
