@@ -33,6 +33,7 @@ chatCtrl.sendMessage = async (req, res) => {
         const response = await aiService.getResponse(systemPrompt, message);
 
         res.json({ status: 1, msg: 'success', data: response });
+        
 
     } catch (error) {
         console.error('Error en chat:', error);
